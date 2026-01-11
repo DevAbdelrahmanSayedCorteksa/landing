@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { motion } from "motion/react";
@@ -102,8 +103,11 @@ export function OtpForm() {
         const verifyForLogin = sessionStorage.getItem("verifyForLogin");
         const verifyForForgotPassword = sessionStorage.getItem("verifyForForgotPassword");
 
-        // Clear OTP session
-        handleLogoutOtp();
+        // Clear only OTP flags and isOtp cookie (keep the auth token)
+        sessionStorage.removeItem("verifyRegister");
+        sessionStorage.removeItem("verifyForLogin");
+        sessionStorage.removeItem("verifyForForgotPassword");
+        Cookies.remove("isOtp");
 
         if (verifyForForgotPassword) {
           router.push("/reset-password");
