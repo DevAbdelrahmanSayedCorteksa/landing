@@ -149,6 +149,16 @@
     @apply bg-background text-foreground;
   }
 
+  /* Smooth scroll behavior */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Improve scroll offset for anchor links */
+  section[id] {
+    scroll-margin-top: 6rem;
+  }
+
   /* Glassmorphism Toast Styles with Gradient & Noise */
   [data-sonner-toast] {
     background: linear-gradient(
