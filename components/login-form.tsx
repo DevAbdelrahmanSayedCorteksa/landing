@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -9,15 +10,55 @@ import { Checkbox } from "./ui/checkbox";
 import { Divider } from "./ui/divider";
 import { IconBrandGoogle, IconEye, IconEyeOff } from "@tabler/icons-react";
 import { motion } from "motion/react";
+import { toast } from "sonner";
+import { login } from "@/lib/auth/LoginService";
+import { handleLogin, handleOtpLogin } from "@/lib/services/AuthLocalService";
+import { ApiResponse } from "@/lib/types/apiResponse";
+import { LoginResponse } from "@/lib/types/authTypes";
+import { OK, ACCEPTED, UNAUTHORIZED_ERROR } from "@/lib/services/statusCodes";
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log("Form submitted");
+    setIsLoading(true);
+
+    try {
+      const response = await login(email, password);
+      const res = response as ApiResponse<LoginResponse>;
+
+      if (res.status === OK) {
+        handleLogin(res.data);
+        toast.success("Login successful");
+        router.push("/multi-step-form");
+      } else if (res.status === ACCEPTED) {
+        // OTP required
+        handleOtpLogin(res.data.token);
+        sessionStorage.setItem("verifyForLogin", "true");
+        toast.info(res.message || "Please verify OTP");
+        router.push("/otp");
+      } else {
+        toast.error("Login failed");
+      }
+    } catch (error: any) {
+      if (error.response?.status === UNAUTHORIZED_ERROR) {
+        // Email not verified - needs OTP
+        handleOtpLogin(error.response.data.data.otpToken);
+        sessionStorage.setItem("verifyRegister", "true");
+        toast.error(error.response.data.message);
+        router.push("/otp");
+      } else {
+        toast.error(error.response?.data?.message || "Login failed");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -65,6 +106,8 @@ export function LoginForm() {
           id="email"
           type="email"
           placeholder="you@example.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           required
         />
       </motion.div>
@@ -82,6 +125,8 @@ export function LoginForm() {
             id="password"
             type={showPassword ? "text" : "password"}
             placeholder="••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
           <button
@@ -132,8 +177,8 @@ export function LoginForm() {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.3, delay: 0.9 }}
       >
-        <Button type="submit" className="w-full">
-          Sign in
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? "Signing in..." : "Sign in"}
         </Button>
       </motion.div>
 

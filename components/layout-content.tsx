@@ -6,7 +6,12 @@ import { Footer } from "@/components/footer";
 
 export function LayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const hideNavAndFooter = pathname === "/login" || pathname === "/signup" || pathname === "/forgot-password";
+  const hideNavAndFooter =
+    pathname === "/login" ||
+    pathname === "/signup" ||
+    pathname === "/forgot-password" ||
+    pathname === "/otp" ||
+    pathname === "/multi-step-form";
 
   return (
     <>

@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Inter, Manrope } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { LayoutContent } from "@/components/layout-content";
+import { Toaster } from "sonner";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -37,6 +38,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <LayoutContent>{children}</LayoutContent>
+          <Toaster position="top-right" richColors />
         </ThemeProvider>
       </body>
     </html>

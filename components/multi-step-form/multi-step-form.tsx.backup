@@ -1,0 +1,792 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "motion/react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { MultiSelect } from "@/components/ui/multi-select";
+import { IconCheck, IconArrowLeft } from "@tabler/icons-react";
+import { toast } from "sonner";
+import { steperService } from "@/lib/services/SteperService";
+import { handleLogout } from "@/lib/services/AuthLocalService";
+import { OK } from "@/lib/services/statusCodes";
+
+interface FormData {
+  // Required fields
+  workspace_name: string;
+  subdomain: string;
+  pricing_plan_slug: string;
+  pricing_plan_period: "sixMonths" | "nineMonths" | "twelveMonths";
+
+  // Optional fields
+  invitation_emails?: string[];
+
+  // UI-only fields
+  workspace_skip_naming?: boolean;
+  invite_skipped?: boolean;
+}
+
+// Pricing periods
+const periods = [
+  { value: "sixMonths" as const, label: "6 Months" },
+  { value: "nineMonths" as const, label: "9 Months" },
+  { value: "twelveMonths" as const, label: "12 Months" },
+];
+
+// Mock pricing plans
+const pricingPlans = [
+  {
+    slug: "starter",
+    name: "Starter",
+    price: "$29/month",
+    features: ["Up to 5 users", "Basic features", "Email support"],
+  },
+  {
+    slug: "professional",
+    name: "Professional",
+    price: "$99/month",
+    features: ["Up to 20 users", "Advanced features", "Priority support"],
+  },
+  {
+    slug: "enterprise",
+    name: "Enterprise",
+    price: "$299/month",
+    features: ["Unlimited users", "All features", "24/7 dedicated support"],
+  },
+];
+
+export function MultiStepForm() {
+  const [currentStep, setCurrentStep] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  const [formData, setFormData] = useState<FormData>({
+    workspace_name: "",
+    subdomain: "",
+    pricing_plan_slug: "",
+    pricing_plan_period: "sixMonths",
+    invitation_emails: [],
+    workspace_skip_naming: false,
+    invite_skipped: false,
+  });
+
+  const updateFormData = (data: Partial<FormData>) => {
+    setFormData((prev) => ({ ...prev, ...data }));
+  };
+
+  const handleNext = () => {
+    if (!validateCurrentStep()) {
+      return;
+    }
+    if (currentStep < 2) {
+      setCurrentStep((prev) => prev + 1);
+    } else {
+      // On step 2 (last step), submit the form
+      handleSubmit();
+    }
+  };
+
+  const handleBack = () => {
+    if (currentStep > 1) {
+      setCurrentStep((prev) => prev - 1);
+    }
+  };
+
+  const validateCurrentStep = (): boolean => {
+    switch (currentStep) {
+      case 1:
+        // Step 1: Workspace Setup
+        if (!formData.workspace_skip_naming && !formData.workspace_name) {
+          toast.error("Please enter a workspace name or skip");
+          return false;
+        }
+        if (!formData.subdomain) {
+          toast.error("Please enter a subdomain");
+          return false;
+        }
+        if (!/^[a-zA-Z0-9-]+$/.test(formData.subdomain)) {
+          toast.error("Subdomain can only contain letters, numbers, and hyphens");
+          return false;
+        }
+        return true;
+
+      case 2:
+        // Step 2: Pricing Selection
+        if (!formData.pricing_plan_slug) {
+          toast.error("Please select a pricing plan");
+          return false;
+        }
+        return true;
+
+      default:
+        return true;
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!validateCurrentStep()) {
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const payload = {
+        pricing_plan_slug: formData.pricing_plan_slug,
+        pricing_plan_period: formData.pricing_plan_period,
+        workspace_name: formData.workspace_skip_naming ? "My Workspace" : formData.workspace_name,
+        subdomain: formData.subdomain,
+        invitation_emails: formData.invite_skipped ? [] : formData.invitation_emails,
+      };
+
+      const response = await steperService(payload);
+
+      if (response.status === OK) {
+        toast.success("Workspace created successfully!");
+        handleLogout();
+        window.open(`https://${formData.subdomain}.corteksa.net`, "_blank");
+        router.push("/login");
+      }
+    } catch (error: any) {
+      if (error.response?.status === 409) {
+        toast.error("Subdomain already taken. Please choose another.");
+      } else if (error.response?.status === 400) {
+        toast.error(error.response.data?.message || "Validation error. Please check your inputs.");
+      } else {
+        toast.error("Failed to create workspace. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const renderStep = () => {
+    switch (currentStep) {
+      case 1:
+        return <Step1WorkspaceSetup formData={formData} updateFormData={updateFormData} />;
+      case 2:
+        return <Step2PricingSelection formData={formData} updateFormData={updateFormData} />;
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="space-y-8">
+      {/* Step Content - NO PROGRESS BAR */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentStep}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.2, ease: "easeOut" }}
+        >
+          {renderStep()}
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Navigation Buttons - Clean & Simple */}
+      <div className="flex gap-4">
+        {currentStep > 1 && (
+          <Button type="button" variant="outline" onClick={handleBack} className="flex-1" disabled={isLoading}>
+            <IconArrowLeft className="size-4 mr-2" />
+            Back
+          </Button>
+        )}
+        <Button
+          type="button"
+          onClick={handleNext}
+          className={currentStep === 1 ? "w-full" : "flex-1"}
+          disabled={isLoading}
+        >
+          {currentStep === 2 ? (isLoading ? "Creating workspace..." : "Complete Setup") : "Continue"}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+// Step 1: Audience & Market Insight
+function Step1({
+  formData,
+  updateFormData,
+}: {
+  formData: FormData;
+  updateFormData: (data: Partial<FormData>) => void;
+}) {
+  const referralOptions = ["Google search", "LinkedIn", "Other"];
+  const teamSizeOptions = ["1-5", "6-20", "21-50", "51-100", "100+"];
+  const industryOptions = [
+    "Technology",
+    "Healthcare",
+    "Education",
+    "Finance",
+    "Other",
+  ];
+
+  return (
+    <div className="space-y-8">
+      <div>
+        <h2 className="text-3xl mb-2 tracking-tight font-display font-bold">
+          Tell us about your team
+        </h2>
+        <p className="text-sm text-neutral-500 dark:text-neutral-400">
+          Help us personalize your experience
+        </p>
+      </div>
+
+      {/* How did you hear */}
+      <div>
+        <Label htmlFor="referral" className="text-base font-medium block mb-3">How did you hear about us? *</Label>
+        <Select
+          value={formData.referral_source}
+          onValueChange={(value) => updateFormData({ referral_source: value })}
+        >
+          <SelectTrigger id="referral">
+            <SelectValue placeholder="Select an option" />
+          </SelectTrigger>
+          <SelectContent>
+            {referralOptions.map((option) => (
+              <SelectItem key={option} value={option}>
+                {option}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        {formData.referral_source === "Other" && (
+          <Input
+            placeholder="Please specify"
+            value={formData.referral_other}
+            onChange={(e) =>
+              updateFormData({ referral_other: e.target.value })
+            }
+            className="mt-3"
+          />
+        )}
+      </div>
+
+      {/* Team Size */}
+      <div>
+        <Label htmlFor="team-size" className="text-base font-medium block mb-3">Team size *</Label>
+        <Select
+          value={formData.team_size}
+          onValueChange={(value) => updateFormData({ team_size: value })}
+        >
+          <SelectTrigger id="team-size">
+            <SelectValue placeholder="Select team size" />
+          </SelectTrigger>
+          <SelectContent>
+            {teamSizeOptions.map((size) => (
+              <SelectItem key={size} value={size}>
+                {size}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Industry */}
+      <div>
+        <Label htmlFor="industry" className="text-base font-medium block mb-3">Industry *</Label>
+        <Select
+          value={formData.industry}
+          onValueChange={(value) => updateFormData({ industry: value })}
+        >
+          <SelectTrigger id="industry">
+            <SelectValue placeholder="Select industry" />
+          </SelectTrigger>
+          <SelectContent>
+            {industryOptions.map((industry) => (
+              <SelectItem key={industry} value={industry}>
+                {industry}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        {formData.industry === "Other" && (
+          <Input
+            placeholder="Please specify your industry"
+            value={formData.industry_other}
+            onChange={(e) =>
+              updateFormData({ industry_other: e.target.value })
+            }
+            className="mt-3"
+          />
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Step 2: Pain Points & Needs
+function Step2({
+  formData,
+  updateFormData,
+}: {
+  formData: FormData;
+  updateFormData: (data: Partial<FormData>) => void;
+}) {
+  const challengeOptions = [
+    { label: "Lead tracking", value: "Lead tracking" },
+    { label: "Pipeline visibility", value: "Pipeline visibility" },
+    { label: "Team collaboration", value: "Team collaboration" },
+    { label: "Customer support", value: "Customer support" },
+    { label: "Reporting", value: "Reporting" },
+    { label: "Other", value: "Other" },
+  ];
+
+  return (
+    <div className="space-y-8">
+      <div>
+        <h2 className="text-3xl mb-2 tracking-tight font-display font-bold">
+          Understanding your needs
+        </h2>
+        <p className="text-sm text-neutral-500 dark:text-neutral-400">
+          Select up to 5 business challenges you'd like to solve
+        </p>
+      </div>
+
+      <div>
+        <Label className="text-base font-medium block mb-3">Business Challenges * (Max 5)</Label>
+        <MultiSelect
+          options={challengeOptions}
+          selected={formData.pain_points}
+          onChange={(values) => updateFormData({ pain_points: values })}
+          placeholder="Select challenges..."
+          maxSelection={5}
+        />
+        {formData.pain_points.includes("Other") && (
+          <Input
+            placeholder="Please specify your challenge"
+            value={formData.challenge_other}
+            onChange={(e) =>
+              updateFormData({ challenge_other: e.target.value })
+            }
+            className="mt-3"
+          />
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Step 3: Tool Integrations
+function Step3({
+  formData,
+  updateFormData,
+}: {
+  formData: FormData;
+  updateFormData: (data: Partial<FormData>) => void;
+}) {
+  const toolOptions = [
+    { label: "Salesforce", value: "Salesforce" },
+    { label: "Trello", value: "Trello" },
+    { label: "HubSpot", value: "HubSpot" },
+    { label: "Pipedrive", value: "Pipedrive" },
+    { label: "Notion", value: "Notion" },
+    { label: "Other", value: "Other" },
+  ];
+
+  return (
+    <div className="space-y-8">
+      <div>
+        <h2 className="text-3xl mb-2 tracking-tight font-display font-bold">
+          Seamless integrations
+        </h2>
+        <p className="text-sm text-neutral-500 dark:text-neutral-400">
+          Connect the tools you already use
+        </p>
+      </div>
+
+      <div>
+        <Label className="text-base font-medium block mb-3">Current Tools</Label>
+        <MultiSelect
+          options={toolOptions}
+          selected={formData.tool_integrations || []}
+          onChange={(values) => {
+            updateFormData({
+              tool_integrations: values,
+              tool_none: false
+            });
+          }}
+          placeholder="Select tools..."
+          className={formData.tool_none ? "opacity-50 pointer-events-none" : ""}
+        />
+        {formData.tool_integrations?.includes("Other") && (
+          <Input
+            placeholder="Please specify the tool"
+            value={formData.tool_other}
+            onChange={(e) => updateFormData({ tool_other: e.target.value })}
+            className="mt-3"
+          />
+        )}
+
+        <div className="flex items-center space-x-3 pt-2">
+          <Checkbox
+            id="tool-none"
+            checked={formData.tool_none}
+            onCheckedChange={(checked) =>
+              updateFormData({
+                tool_none: checked as boolean,
+                tool_integrations: checked ? [] : formData.tool_integrations,
+              })
+            }
+          />
+          <label htmlFor="tool-none" className="text-sm font-medium cursor-pointer">
+            None of the above
+          </label>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Step 4: Pricing Selection
+function Step4({
+  formData,
+  updateFormData,
+}: {
+  formData: FormData;
+  updateFormData: (data: Partial<FormData>) => void;
+}) {
+  return (
+    <div className="space-y-8">
+      <div>
+        <h2 className="text-3xl mb-2 tracking-tight font-display font-bold">
+          Choose your plan
+        </h2>
+        <p className="text-sm text-neutral-500 dark:text-neutral-400">
+          Flexible pricing for teams of all sizes
+        </p>
+      </div>
+
+      {/* Period Selection */}
+      <div>
+        <Label className="text-base font-medium block mb-3">Billing Period</Label>
+        <Select
+          value={formData.pricing_plan_period}
+          onValueChange={(value) => updateFormData({ pricing_plan_period: value as any })}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select billing period" />
+          </SelectTrigger>
+          <SelectContent>
+            {periods.map((period) => (
+              <SelectItem key={period.value} value={period.value}>
+                {period.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Pricing Cards - Compact Design */}
+      <div>
+        <Label className="text-base font-medium block mb-3">Select Plan *</Label>
+        <div className="space-y-3">
+          {pricingPlans.map((plan) => (
+            <button
+              key={plan.slug}
+              type="button"
+              onClick={() => updateFormData({ pricing_plan_slug: plan.slug })}
+              className={`w-full p-4 rounded-lg border-2 text-left transition-all flex items-center justify-between ${
+                formData.pricing_plan_slug === plan.slug
+                  ? "border-primary bg-primary/5"
+                  : "border-border hover:border-primary/50"
+              }`}
+            >
+              <div className="flex items-center gap-4">
+                <div
+                  className={`flex h-5 w-5 items-center justify-center rounded-full border-2 transition-all ${
+                    formData.pricing_plan_slug === plan.slug
+                      ? "border-primary bg-primary"
+                      : "border-muted-foreground/30"
+                  }`}
+                >
+                  {formData.pricing_plan_slug === plan.slug && (
+                    <div className="h-2 w-2 rounded-full bg-primary-foreground" />
+                  )}
+                </div>
+                <div>
+                  <h3 className="font-semibold text-base">{plan.name}</h3>
+                  <p className="text-xs text-muted-foreground">{plan.features.join(" • ")}</p>
+                </div>
+              </div>
+              <p className="text-lg font-bold text-primary">{plan.price}</p>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Step 5: Workspace Setup
+function Step5({
+  formData,
+  updateFormData,
+}: {
+  formData: FormData;
+  updateFormData: (data: Partial<FormData>) => void;
+}) {
+  const [showInvites, setShowInvites] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState("");
+
+  const addInvite = () => {
+    if (!inviteEmail) return;
+
+    // Validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(inviteEmail)) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+
+    // Check for duplicates
+    if (formData.invitation_emails?.includes(inviteEmail)) {
+      toast.error("This email is already invited");
+      return;
+    }
+
+    updateFormData({
+      invitation_emails: [...(formData.invitation_emails || []), inviteEmail],
+    });
+    setInviteEmail("");
+  };
+
+  const removeInvite = (email: string) => {
+    updateFormData({
+      invitation_emails: formData.invitation_emails?.filter((e) => e !== email),
+    });
+  };
+
+  return (
+    <div className="space-y-8">
+      <div>
+        <h2 className="text-3xl mb-2 tracking-tight font-display font-bold">
+          Your workspace awaits
+        </h2>
+        <p className="text-sm text-neutral-500 dark:text-neutral-400">
+          Set up your team and start collaborating
+        </p>
+      </div>
+
+      {/* Workspace Name */}
+      <div>
+        <Label htmlFor="workspace-name" className="text-base font-medium block mb-3">Workspace Name *</Label>
+        <Input
+          id="workspace-name"
+          placeholder="My Awesome Company"
+          value={formData.workspace_name}
+          onChange={(e) => updateFormData({ workspace_name: e.target.value })}
+          disabled={formData.workspace_skip_naming}
+        />
+        <div className="flex items-center gap-2 mt-4">
+          <Checkbox
+            id="skip-naming"
+            checked={formData.workspace_skip_naming}
+            onCheckedChange={(checked) =>
+              updateFormData({ workspace_skip_naming: checked as boolean })
+            }
+          />
+          <label htmlFor="skip-naming" className="text-sm cursor-pointer">
+            Skip for now
+          </label>
+        </div>
+      </div>
+
+      {/* Subdomain */}
+      <div>
+        <Label htmlFor="subdomain" className="text-base font-medium block mb-3">Choose your subdomain *</Label>
+        <div className="relative">
+          <Input
+            id="subdomain"
+            placeholder="my-company"
+            value={formData.subdomain}
+            onChange={(e) =>
+              updateFormData({ subdomain: e.target.value.toLowerCase() })
+            }
+          />
+        </div>
+        <p className="text-xs text-muted-foreground">
+          Your workspace: <span className="text-primary font-medium">{formData.subdomain || "your-subdomain"}</span>.corteksa.com
+        </p>
+      </div>
+
+      {/* Team Invitations */}
+      <div>
+        <div className="flex items-center justify-between">
+          <Label className="text-base font-medium block mb-3">Invite Team Members (Optional)</Label>
+          {!showInvites && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setShowInvites(true)}
+            >
+              Invite Team
+            </Button>
+          )}
+        </div>
+
+        {showInvites && (
+          <div className="space-y-3">
+            <div className="flex gap-2">
+              <Input
+                placeholder="colleague@example.com"
+                value={inviteEmail}
+                onChange={(e) => setInviteEmail(e.target.value)}
+                onKeyPress={(e) => e.key === "Enter" && addInvite()}
+              />
+              <Button type="button" onClick={addInvite}>
+                Add
+              </Button>
+            </div>
+
+            {formData.invitation_emails && formData.invitation_emails.length > 0 && (
+              <div className="space-y-2">
+                {formData.invitation_emails.map((email) => (
+                  <div
+                    key={email}
+                    className="flex items-center justify-between p-2 bg-muted rounded-lg"
+                  >
+                    <span className="text-sm">{email}</span>
+                    <button
+                      type="button"
+                      onClick={() => removeInvite(email)}
+                      className="text-destructive hover:text-destructive/80"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="flex items-center gap-2 mt-4">
+              <Checkbox
+                id="skip-invites"
+                checked={formData.invite_skipped}
+                onCheckedChange={(checked) =>
+                  updateFormData({ invite_skipped: checked as boolean })
+                }
+              />
+              <label htmlFor="skip-invites" className="text-sm cursor-pointer">
+                Skip invitations for now
+              </label>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Step 6: System Setup
+function Step6({
+  formData,
+  handleSubmit,
+  isLoading,
+}: {
+  formData: FormData;
+  handleSubmit: () => void;
+  isLoading: boolean;
+}) {
+  // Get selected plan details
+  const selectedPlan = pricingPlans.find(
+    (plan) => plan.slug === formData.pricing_plan_slug
+  );
+  const selectedPeriod = periods.find(
+    (period) => period.value === formData.pricing_plan_period
+  );
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-3xl mb-2 tracking-tight font-display font-bold">
+          Almost there!
+        </h2>
+        <p className="text-sm text-neutral-500 dark:text-neutral-400">
+          Review your setup and complete your workspace
+        </p>
+      </div>
+
+      {/* Summary Card - Professional & Compact */}
+      <div className="border-2 border-border rounded-lg overflow-hidden">
+        {/* Workspace Info */}
+        <div className="p-4 border-b border-border">
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <p className="text-xs text-muted-foreground mb-1">Workspace</p>
+              <p className="font-semibold text-base">{formData.workspace_name || "My Workspace"}</p>
+              <p className="text-sm text-primary font-medium mt-0.5">{formData.subdomain}.corteksa.com</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Team & Industry - Two columns */}
+        <div className="grid grid-cols-2 border-b border-border">
+          <div className="p-4 border-r border-border">
+            <p className="text-xs text-muted-foreground mb-1">Industry</p>
+            <p className="font-medium text-sm">
+              {formData.industry === "Other" ? formData.industry_other : formData.industry}
+            </p>
+          </div>
+          <div className="p-4">
+            <p className="text-xs text-muted-foreground mb-1">Team Size</p>
+            <p className="font-medium text-sm">{formData.team_size}</p>
+          </div>
+        </div>
+
+        {/* Challenges & Team Members - Two columns */}
+        <div className="grid grid-cols-2 border-b border-border">
+          <div className="p-4 border-r border-border">
+            <p className="text-xs text-muted-foreground mb-1">Challenges</p>
+            <p className="font-medium text-sm">{formData.pain_points.length} selected</p>
+          </div>
+          <div className="p-4">
+            <p className="text-xs text-muted-foreground mb-1">Team Invites</p>
+            <p className="font-medium text-sm">
+              {formData.invitation_emails && formData.invitation_emails.length > 0
+                ? `${formData.invitation_emails.length} invited`
+                : "None"}
+            </p>
+          </div>
+        </div>
+
+        {/* Selected Plan */}
+        {selectedPlan && (
+          <div className="p-4 bg-primary/5">
+            <p className="text-xs text-muted-foreground mb-1">Selected Plan</p>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-semibold text-base">{selectedPlan.name}</p>
+                <p className="text-xs text-muted-foreground">{selectedPeriod?.label}</p>
+              </div>
+              <p className="text-lg font-bold text-primary">{selectedPlan.price}</p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Complete Button */}
+      <Button
+        type="button"
+        onClick={handleSubmit}
+        className="w-full h-12 text-base"
+        disabled={isLoading}
+      >
+        {isLoading ? "Creating your workspace..." : "Complete Setup"}
+      </Button>
+
+      <p className="text-xs text-center text-muted-foreground">
+        By completing setup, you'll be redirected to your new workspace
+      </p>
+    </div>
+  );
+}

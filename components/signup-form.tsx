@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -9,15 +10,65 @@ import { Checkbox } from "./ui/checkbox";
 import { Divider } from "./ui/divider";
 import { IconBrandGoogle, IconEye, IconEyeOff } from "@tabler/icons-react";
 import { motion } from "motion/react";
+import { toast } from "sonner";
+import { register } from "@/lib/auth/RegisterService";
+import { handleOtpLogin } from "@/lib/services/AuthLocalService";
+import { ApiResponse } from "@/lib/types/apiResponse";
+import { LoginResponse } from "@/lib/types/authTypes";
+import { CREATED, BAD_REQUEST } from "@/lib/services/statusCodes";
 
 export function SignupForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Signup form submitted");
+
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    if (!acceptTerms) {
+      toast.error("Please accept the terms and conditions");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await register({
+        name: email.split("@")[0], // Extract name from email
+        email,
+        password,
+      });
+
+      const res = response as ApiResponse<LoginResponse>;
+
+      if (res.status === CREATED) {
+        toast.success("Registration successful! Please verify your email.");
+        sessionStorage.setItem("verifyRegister", "true");
+        handleOtpLogin(res.data.token);
+        router.push("/otp");
+      } else if (res.status === BAD_REQUEST) {
+        toast.error(res.message);
+      }
+    } catch (error: any) {
+      if (error.response?.status === BAD_REQUEST) {
+        const message = error.response.data?.message || "Registration failed";
+        toast.error(message);
+      } else {
+        toast.error("Registration failed. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -57,7 +108,14 @@ export function SignupForm() {
         className="space-y-2"
       >
         <Label htmlFor="email">Email address</Label>
-        <Input id="email" type="email" placeholder="you@example.com" required />
+        <Input
+          id="email"
+          type="email"
+          placeholder="you@example.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
       </motion.div>
 
       {/* Password */}
@@ -73,6 +131,8 @@ export function SignupForm() {
             id="password"
             type={showPassword ? "text" : "password"}
             placeholder="••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
           <button
@@ -98,6 +158,8 @@ export function SignupForm() {
             id="confirmPassword"
             type={showConfirmPassword ? "text" : "password"}
             placeholder="••••••••"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
           <button
@@ -141,8 +203,8 @@ export function SignupForm() {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.3, delay: 1.0 }}
       >
-        <Button type="submit" className="w-full">
-          Sign up
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? "Creating account..." : "Sign up"}
         </Button>
       </motion.div>
 

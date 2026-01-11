@@ -2,20 +2,51 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { motion } from "motion/react";
 import { IconArrowLeft, IconCheck } from "@tabler/icons-react";
+import { toast } from "sonner";
+import { sendForgotPasswordEmail } from "@/lib/auth/ForgotPasswordService";
+import { handleOtpLogin } from "@/lib/services/AuthLocalService";
+import { ApiResponse } from "@/lib/types/apiResponse";
+import { ACCEPTED, BAD_REQUEST } from "@/lib/services/statusCodes";
 
 export function ForgotPasswordForm() {
   const [submitted, setSubmitted] = useState(false);
   const [email, setEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Password reset requested for:", email);
-    setSubmitted(true);
+    setIsLoading(true);
+
+    try {
+      const response = await sendForgotPasswordEmail(email);
+
+      if (response.status === ACCEPTED) {
+        toast.success("OTP sent to your email. Please verify to reset your password.");
+        sessionStorage.setItem("verifyForForgotPassword", "true");
+        if (response.data?.data?.otpToken) {
+          handleOtpLogin(response.data.data.otpToken);
+        }
+        router.push("/otp");
+      } else {
+        setSubmitted(true);
+      }
+    } catch (error: any) {
+      if (error.response?.status === BAD_REQUEST) {
+        const message = error.response.data?.message || "Failed to send reset email";
+        toast.error(message);
+      } else {
+        toast.error("Failed to send reset email. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (submitted) {
@@ -88,8 +119,8 @@ export function ForgotPasswordForm() {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.3, delay: 0.5 }}
       >
-        <Button type="submit" className="w-full">
-          Send reset link
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? "Sending..." : "Send reset link"}
         </Button>
       </motion.div>
 
