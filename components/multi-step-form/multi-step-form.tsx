@@ -135,7 +135,7 @@ export function MultiStepForm() {
         invitation_emails: formData.invitation_emails,
       };
 
-      const response = await steperService(payload);
+      const response = await steperService(payload) as any;
 
       if (response.status === OK) {
         toast.success("Workspace created successfully!");
