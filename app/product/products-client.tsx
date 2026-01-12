@@ -9,8 +9,6 @@ import {
   IconLanguage,
   IconDatabase,
   IconTool,
-  IconForms,
-  IconLink,
   IconLayoutKanban,
   IconSparkles,
   IconFileText,
@@ -25,10 +23,6 @@ import {
   IconPuzzle,
   IconCircleCheck,
   IconPlus,
-  IconTextSize,
-  IconNumber,
-  IconCalendar,
-  IconArrowRight,
 } from "@tabler/icons-react";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
@@ -396,154 +390,6 @@ const CardSkeleton = ({
   );
 };
 
-// Builder Visual - Activity List (inspired by Audit Trail)
-const BuilderVisual = () => {
-  const items = [
-    { title: "Client Unit", status: "active", color: "bg-blue-500" },
-    { title: "Project Unit", status: "processing", color: "bg-orange-500" },
-    { title: "Task Unit", status: "active", color: "bg-green-500" },
-  ];
-
-  return (
-    <div className="absolute inset-0 p-3 flex flex-col gap-2">
-      {items.map((item, idx) => (
-        <motion.div
-          key={item.title}
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: idx * 0.15, duration: 0.4 }}
-          className="flex items-center gap-2 p-2 bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700"
-        >
-          <div className={cn("size-3 rounded-full", item.color)}></div>
-          <span className="text-xs font-medium">{item.title}</span>
-          <span className={cn(
-            "ml-auto text-[10px] px-1.5 py-0.5 rounded",
-            item.status === "active" ? "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400" : "bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400"
-          )}>
-            {item.status}
-          </span>
-        </motion.div>
-      ))}
-    </div>
-  );
-};
-
-// Fields Visual - Grid with status badges (inspired by Approval Queue)
-const FieldsVisual = () => {
-  return (
-    <div
-      className={cn(
-        "absolute inset-0 flex items-center justify-center",
-        "[background-size:20px_20px]",
-        "[background-image:linear-gradient(to_right,var(--color-neutral-200)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-neutral-200)_1px,transparent_1px)]",
-        "dark:[background-image:linear-gradient(to_right,var(--color-neutral-700)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-neutral-700)_1px,transparent_1px)]"
-      )}
-    >
-      <div className="flex flex-col gap-3">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.1 }}
-          className="px-3 py-1.5 rounded-lg bg-blue-100 dark:bg-blue-900/30 border border-blue-300 dark:border-blue-700 text-blue-600 dark:text-blue-400 font-medium flex items-center gap-2"
-        >
-          <IconTextSize className="size-3" />
-          <span className="text-xs">Text</span>
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.2 }}
-          className="px-3 py-1.5 rounded-lg bg-green-100 dark:bg-green-900/30 border border-green-300 dark:border-green-700 text-green-600 dark:text-green-400 font-medium flex items-center gap-2"
-        >
-          <IconNumber className="size-3" />
-          <span className="text-xs">Number</span>
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.3 }}
-          className="px-3 py-1.5 rounded-lg bg-purple-100 dark:bg-purple-900/30 border border-purple-300 dark:border-purple-700 text-purple-600 dark:text-purple-400 font-medium flex items-center gap-2"
-        >
-          <IconCalendar className="size-3" />
-          <span className="text-xs">Date</span>
-        </motion.div>
-      </div>
-    </div>
-  );
-};
-
-// Relations Visual - Connected arrows
-const RelationsVisual = () => {
-  return (
-    <div className="absolute inset-0 flex items-center justify-center p-4">
-      <div className="flex items-center gap-2">
-        <motion.div
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.1 }}
-          className="px-2 py-1 rounded bg-primary/10 border border-primary/30 text-xs font-medium"
-        >
-          Clients
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.3 }}
-        >
-          <IconArrowRight className="size-4 text-primary" />
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, x: 10 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2 }}
-          className="px-2 py-1 rounded bg-primary/10 border border-primary/30 text-xs font-medium"
-        >
-          Projects
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.5 }}
-        >
-          <IconArrowRight className="size-4 text-primary" />
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, x: 10 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.4 }}
-          className="px-2 py-1 rounded bg-primary/10 border border-primary/30 text-xs font-medium"
-        >
-          Tasks
-        </motion.div>
-      </div>
-    </div>
-  );
-};
-
-// Kanban Visual - Column cards
-const KanbanVisual = () => {
-  return (
-    <div className="absolute inset-0 p-3 flex gap-2">
-      {["To Do", "In Progress", "Done"].map((col, idx) => (
-        <motion.div
-          key={col}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: idx * 0.15, duration: 0.4 }}
-          className="flex-1 flex flex-col gap-2"
-        >
-          <div className="text-[10px] font-bold text-neutral-600 dark:text-neutral-400 px-2">
-            {col}
-          </div>
-          <div className="flex-1 bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 p-2">
-            <div className="h-8 bg-neutral-100 dark:bg-neutral-700 rounded"></div>
-          </div>
-        </motion.div>
-      ))}
-    </div>
-  );
-};
-
 // Main Product Page Client Component
 export function ProductsPageClient() {
   return (
@@ -564,7 +410,7 @@ export function ProductsPageClient() {
         </Container>
       </section>
 
-      {/* Support + Language + Units + Assistant - Connected Grid */}
+      {/* All Features - Unified Grid */}
       <section className="pt-10 md:pt-20 lg:py-32">
         <Container>
           <div className="grid grid-cols-1 md:grid-cols-2 border-y border-neutral-200 dark:border-neutral-800">
@@ -601,7 +447,7 @@ export function ProductsPageClient() {
             </div>
 
             {/* Units */}
-            <div className="md:border-r border-neutral-200 dark:border-neutral-800">
+            <div className="md:border-r border-b border-neutral-200 dark:border-neutral-800">
               <CardContent>
                 <h2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
                   Create and customize units without a single line of code
@@ -617,7 +463,7 @@ export function ProductsPageClient() {
             </div>
 
             {/* Assistant */}
-            <div>
+            <div className="border-b border-neutral-200 dark:border-neutral-800">
               <CardContent>
                 <h2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
                   Organize your tasks, effortlessly
@@ -631,97 +477,8 @@ export function ProductsPageClient() {
                 <AssistantSkeletonVisual />
               </CardSkeleton>
             </div>
-          </div>
-        </Container>
-      </section>
 
-      {/* Units Sub-features: 4-column Grid with Visual Skeletons */}
-      <section className="py-10 md:py-20">
-        <Container>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Builder */}
-            <div className="relative">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <IconTool className="size-5 text-primary" />
-                </div>
-                <h3 className="font-bold text-lg text-neutral-600 dark:text-neutral-400">
-                  Builder
-                </h3>
-              </div>
-              <p className="text-neutral-500 text-sm md:text-base mb-4">
-                Create units that match the way your business actually works —
-                from clients and projects to site visits, approvals, and more.
-              </p>
-              <div className="relative h-64 border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden bg-neutral-50 dark:bg-neutral-900">
-                <BuilderVisual />
-              </div>
-            </div>
-
-            {/* Fields */}
-            <div className="relative">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <IconForms className="size-5 text-primary" />
-                </div>
-                <h3 className="font-bold text-lg text-neutral-600 dark:text-neutral-400">
-                  Fields
-                </h3>
-              </div>
-              <p className="text-neutral-500 text-sm md:text-base mb-4">
-                Use essential field types that keep information clean and
-                consistent: text, numbers, dates, and dropdown selections.
-              </p>
-              <div className="relative h-64 border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden bg-neutral-50 dark:bg-neutral-900">
-                <FieldsVisual />
-              </div>
-            </div>
-
-            {/* Relations */}
-            <div className="relative">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <IconLink className="size-5 text-primary" />
-                </div>
-                <h3 className="font-bold text-lg text-neutral-600 dark:text-neutral-400">
-                  Relations
-                </h3>
-              </div>
-              <p className="text-neutral-500 text-sm md:text-base mb-4">
-                Connect everything with simple one-to-many relationships. Link
-                clients → projects → tasks with clarity and structure.
-              </p>
-              <div className="relative h-64 border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden bg-neutral-50 dark:bg-neutral-900">
-                <RelationsVisual />
-              </div>
-            </div>
-
-            {/* Kanban */}
-            <div className="relative">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <IconLayoutKanban className="size-5 text-primary" />
-                </div>
-                <h3 className="font-bold text-lg text-neutral-600 dark:text-neutral-400">
-                  Kanban
-                </h3>
-              </div>
-              <p className="text-neutral-500 text-sm md:text-base mb-4">
-                See your entire workflow in motion. Every unit automatically comes
-                with a Kanban view that lets you track progress at a glance.
-              </p>
-              <div className="relative h-64 border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden bg-neutral-50 dark:bg-neutral-900">
-                <KanbanVisual />
-              </div>
-            </div>
-          </div>
-        </Container>
-      </section>
-
-      {/* Documents + Collaboration - 2x2 Grid */}
-      <section className="pt-10 md:pt-20 lg:py-32">
-        <Container>
-          <div className="grid grid-cols-1 md:grid-cols-2 border-y border-neutral-200 dark:border-neutral-800 divide-neutral-200 dark:divide-neutral-800">
+            {/* Documents */}
             <div className="md:border-r border-b border-neutral-200 dark:border-neutral-800">
               <CardContent>
                 <h2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
@@ -736,6 +493,8 @@ export function ProductsPageClient() {
                 <DocumentsSkeletonVisual />
               </CardSkeleton>
             </div>
+
+            {/* Collaboration */}
             <div className="border-b border-neutral-200 dark:border-neutral-800">
               <CardContent>
                 <h2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
@@ -750,6 +509,8 @@ export function ProductsPageClient() {
                 <CollaborationSkeletonVisual />
               </CardSkeleton>
             </div>
+
+            {/* Documents Generation */}
             <div className="md:border-r border-neutral-200 dark:border-neutral-800">
               <CardContent>
                 <h2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
