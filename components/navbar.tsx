@@ -16,8 +16,8 @@ const navlinks = [
     href: "/product",
   },
   {
-    title: "Socials",
-    href: "/socials",
+    title: "Blog",
+    href: "/blog",
   },
   {
     title: "Pricing",
