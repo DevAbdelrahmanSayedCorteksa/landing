@@ -29,7 +29,7 @@ export const pricingPlans: PricingPlan[] = [
     features: [
       "Corteksa Units: Up to X",
       "Up to X Custom Fields",
-      "Corteksa Assistant: Up to X",
+      "Cortex AI: Up to X",
       "Tasks management",
       "Up to X Kanban boards",
       "Unlimited Email Support (24 hrs)",
@@ -52,7 +52,7 @@ export const pricingPlans: PricingPlan[] = [
     features: [
       "Corteksa Units: Up to X",
       "Custom Fields",
-      "Corteksa Assistant Unlimited",
+      "Cortex AI Unlimited",
       "Tasks management",
       "Kanban boards",
       "Unlimited Email Support (4 hrs)",
@@ -81,7 +81,7 @@ export const pricingPlans: PricingPlan[] = [
     features: [
       "Corteksa Units Unlimited",
       "Custom Fields (unlimited)",
-      "Corteksa Assistant Unlimited",
+      "Cortex AI Unlimited",
       "Tasks management (unlimited)",
       "Unlimited Kanban boards",
       "Unlimited Chat Support (2 hrs)",
@@ -114,7 +114,7 @@ export const pricingPlans: PricingPlan[] = [
     features: [
       "Corteksa Units Unlimited",
       "Custom Fields (unlimited)",
-      "Corteksa Assistant Unlimited",
+      "Cortex AI Unlimited",
       "Tasks management (unlimited)",
       "Unlimited Kanban boards",
       "Unlimited Team Members",

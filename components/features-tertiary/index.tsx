@@ -29,7 +29,7 @@ export const FeaturesTertiary = () => {
           <div className="border-b border-neutral-200 dark:border-neutral-800">
             <CardContent>
               <h2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
-                Corteksa AI
+                Cortex AI
               </h2>
               <CardDescription>
                 Smart automation to help you work faster, make better decisions,

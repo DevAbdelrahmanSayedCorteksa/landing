@@ -50,7 +50,7 @@ const featureComparison: FeatureCategory[] = [
     features: [
       { name: "Corteksa Units", free: "Up to X", unlimited: "Up to X", business: "Unlimited", enterprise: "Unlimited" },
       { name: "Custom Fields", free: "Up to X", unlimited: true, business: "Unlimited", enterprise: "Unlimited" },
-      { name: "Corteksa Assistant", free: "Up to X", unlimited: "Unlimited", business: "Unlimited", enterprise: "Unlimited" },
+      { name: "Cortex AI", free: "Up to X", unlimited: "Unlimited", business: "Unlimited", enterprise: "Unlimited" },
       { name: "Tasks Management", free: true, unlimited: true, business: "Unlimited", enterprise: "Unlimited" },
       { name: "Kanban Boards", free: "Up to X", unlimited: true, business: "Unlimited", enterprise: "Unlimited" },
       { name: "Team Members", free: "Up to 3", unlimited: "Up to X", business: "Unlimited", enterprise: "Unlimited" },

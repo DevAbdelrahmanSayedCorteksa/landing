@@ -36,22 +36,22 @@ const UnitsSkeletonVisual = () => {
       <SkeletonCard
         className="absolute bottom-4 left-20 max-w-[90%] z-30"
         icon={<IconDatabase className="size-4 text-primary" />}
-        title="Client Units"
-        description="Track all client information, projects, and communications in one place"
+        title="Client Hub"
+        description="All client info, projects, and communications in one place"
         tags={["Custom Fields", "Relations", "Kanban"]}
       />
       <SkeletonCard
         className="absolute bottom-12 left-16 z-20"
         icon={<IconTool className="size-4 text-primary" />}
-        title="Project Builder"
-        description="Create project workflows with automated task assignments"
+        title="Project Workflow"
+        description="Automated task assignments and project templates"
         tags={["Automation", "Templates"]}
       />
       <SkeletonCard
         className="absolute bottom-24 left-12 max-w-[80%] z-10"
         icon={<IconLayoutKanban className="size-4 text-primary" />}
-        title="Task Board"
-        description="Visualize progress across all projects with drag-and-drop kanban"
+        title="Kanban View"
+        description="Drag-and-drop boards to visualize progress"
         tags={["Board View", "Progress"]}
       />
     </div>
@@ -284,7 +284,7 @@ const AssistantSkeletonVisual = () => {
           <div className="flex-1">
             <p className="text-xs font-bold mb-1">AI Suggestion</p>
             <p className="text-[10px] text-neutral-600 dark:text-neutral-400">
-              Prioritize "Client Review" task - deadline in 2 hours
+              Focus on &quot;Proposal Review&quot; — deadline approaching
             </p>
           </div>
         </div>
@@ -399,12 +399,11 @@ export function ProductsPageClient() {
         <Container>
           <div className="flex xl:flex-row flex-col xl:items-baseline-last justify-between gap-10">
             <Heading className="text-center lg:text-left">
-              Everything You Need <br /> To Run Your Business.
+              One platform. <br /> Endless possibilities.
             </Heading>
             <Subheading className="text-center lg:text-left mx-auto lg:mx-0">
-              From customizable units to document generation and team
-              collaboration — Corteksa brings order to your workflow with
-              powerful, easy-to-use tools.
+              From idea to execution, Corteksa gives you the tools to build,
+              organize, and grow — all without the complexity.
             </Subheading>
           </div>
         </Container>
@@ -418,11 +417,12 @@ export function ProductsPageClient() {
             <div className="md:border-r border-b border-neutral-200 dark:border-neutral-800">
               <CardContent>
                 <h2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
-                  Support that's always within reach
+                  We&apos;re in this together
                 </h2>
                 <CardDescription>
-                  Real people, real help — available whenever you need clarity,
-                  guidance, or a quick answer.
+                  Not just support — a partnership. Our team is always ready to
+                  guide you, answer questions, and help you get the most out of
+                  every feature.
                 </CardDescription>
               </CardContent>
               <CardSkeleton>
@@ -434,11 +434,12 @@ export function ProductsPageClient() {
             <div className="border-b border-neutral-200 dark:border-neutral-800">
               <CardContent>
                 <h2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
-                  Your work, your language
+                  Speak your language, literally
                 </h2>
                 <CardDescription>
-                  Everything in Corteksa is built to feel familiar, comfortable,
-                  and truly yours — no translations, no confusion.
+                  Switch seamlessly between Arabic and English. Every button,
+                  every label, every workflow — designed to feel natural in the
+                  language you think in.
                 </CardDescription>
               </CardContent>
               <CardSkeleton className="mask-radial-from-50% mask-t-from-50%">
@@ -450,11 +451,12 @@ export function ProductsPageClient() {
             <div className="md:border-r border-b border-neutral-200 dark:border-neutral-800">
               <CardContent>
                 <h2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
-                  Create and customize units without a single line of code
+                  Build anything. No code required.
                 </h2>
                 <CardDescription>
-                  Create units that bring order to your workflow, replace
-                  scattered tools, and give you the clarity you've always wanted.
+                  Clients, projects, products, invoices — create custom units
+                  that mirror how your business actually works. Add fields, set
+                  relations, and watch everything connect.
                 </CardDescription>
               </CardContent>
               <CardSkeleton>
@@ -462,15 +464,16 @@ export function ProductsPageClient() {
               </CardSkeleton>
             </div>
 
-            {/* Assistant */}
+            {/* Cortex AI */}
             <div className="border-b border-neutral-200 dark:border-neutral-800">
               <CardContent>
                 <h2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
-                  Organize your tasks, effortlessly
+                  Cortex AI
                 </h2>
                 <CardDescription>
-                  Let Corteksa Assistant help you manage your workload with
-                  intelligent suggestions and automated task organization.
+                  Your intelligent assistant that learns your patterns,
+                  suggests priorities, and keeps your workflow humming. Less
+                  thinking about what&apos;s next — more doing what matters.
                 </CardDescription>
               </CardContent>
               <CardSkeleton>
@@ -482,11 +485,12 @@ export function ProductsPageClient() {
             <div className="md:border-r border-b border-neutral-200 dark:border-neutral-800">
               <CardContent>
                 <h2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
-                  Manage your documents effortlessly
+                  Every document, one home
                 </h2>
                 <CardDescription>
-                  Create documents in one click and keep every file organized in a
-                  single place — always easy to find, always up to date.
+                  Contracts, proposals, invoices — upload, organize, and find
+                  anything in seconds. No more digging through folders or lost
+                  attachments.
                 </CardDescription>
               </CardContent>
               <CardSkeleton>
@@ -498,11 +502,11 @@ export function ProductsPageClient() {
             <div className="border-b border-neutral-200 dark:border-neutral-800">
               <CardContent>
                 <h2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
-                  Collaborate smoothly, no matter how your team works
+                  Teamwork without the chaos
                 </h2>
                 <CardDescription>
-                  Keep everyone aligned with clear tasks, organized communication,
-                  and the right permissions — all in one place.
+                  Assign tasks, mention teammates, track progress — everyone
+                  stays aligned without endless meetings or scattered messages.
                 </CardDescription>
               </CardContent>
               <CardSkeleton className="mask-radial-from-20%">
@@ -514,25 +518,28 @@ export function ProductsPageClient() {
             <div className="md:border-r border-neutral-200 dark:border-neutral-800">
               <CardContent>
                 <h2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
-                  Documents Generation
+                  One click. Done.
                 </h2>
                 <CardDescription>
-                  Create ready-to-send documents with a click. Build your templates
-                  once — like price offers, contracts, or reports.
+                  Build templates once — contracts, offers, reports. Then
+                  generate polished documents instantly with auto-filled data.
+                  Save hours every week.
                 </CardDescription>
               </CardContent>
               <CardSkeleton>
                 <DocumentsGenerationSkeletonVisual />
               </CardSkeleton>
             </div>
+            {/* Storage & Organization */}
             <div>
               <CardContent>
                 <h2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
-                  Storage & Organization
+                  Organized by design
                 </h2>
                 <CardDescription>
-                  Keep every file organized and easy to find. Upload and store all
-                  project and client documents in one place.
+                  Every file has its place. Smart folders, automatic
+                  organization, and powerful search mean you&apos;ll never lose
+                  a document again.
                 </CardDescription>
               </CardContent>
               <CardSkeleton>
@@ -553,8 +560,8 @@ export function ProductsPageClient() {
                 </h3>
               </div>
               <p className="text-neutral-500 text-sm md:text-base">
-                Assign tasks to team members with clear deadlines and priorities,
-                so everyone knows exactly what to do next.
+                Crystal-clear assignments with deadlines and priorities.
+                Everyone knows what&apos;s theirs and what&apos;s due.
               </p>
             </div>
             <div>
@@ -567,8 +574,8 @@ export function ProductsPageClient() {
                 </h3>
               </div>
               <p className="text-neutral-500 text-sm md:text-base">
-                Track the status of work at a glance. See what's done, what's
-                pending, and what's falling behind.
+                See the full picture at a glance. What&apos;s done, what&apos;s
+                pending, and what needs attention — all in real time.
               </p>
             </div>
             <div>
@@ -581,8 +588,8 @@ export function ProductsPageClient() {
                 </h3>
               </div>
               <p className="text-neutral-500 text-sm md:text-base">
-                Comment directly on any record to keep conversations organized.
-                Mention teammates to bring them into the discussion instantly.
+                Comments right where the work happens. Tag teammates, share
+                updates, and keep conversations in context.
               </p>
             </div>
           </div>
@@ -598,8 +605,8 @@ export function ProductsPageClient() {
                 </h3>
               </div>
               <p className="text-neutral-500 text-sm md:text-base">
-                View every action taken on a task or record. Know who did what,
-                when, and how things evolved.
+                A complete history of every action. Who did what, when, and how
+                things evolved — full transparency.
               </p>
             </div>
             <div>
@@ -612,9 +619,8 @@ export function ProductsPageClient() {
                 </h3>
               </div>
               <p className="text-neutral-500 text-sm md:text-base">
-                Control who can access what. Set roles, manage permissions (create,
-                read, update, delete), and assign multiple roles for flexible team
-                management.
+                Fine-grained access control. Define roles, set boundaries, and
+                trust that sensitive data stays protected.
               </p>
             </div>
           </div>
@@ -625,9 +631,9 @@ export function ProductsPageClient() {
       <section className="pt-10 md:pt-20 lg:pt-32 pb-20">
         <Container>
           <div className="text-center mb-10 md:mb-16 max-w-3xl mx-auto">
-            <Heading className="mb-4">Marketplace</Heading>
+            <Heading className="mb-4">Extend your workspace</Heading>
             <Subheading className="mx-auto">
-              Extend Corteksa with powerful integrations and add-ons
+              The Corteksa Marketplace is where your tools come together
             </Subheading>
           </div>
 
@@ -640,10 +646,12 @@ export function ProductsPageClient() {
                 Coming Soon
               </span>
               <h3 className="font-bold text-xl mb-3 text-neutral-800 dark:text-neutral-200">
-                Powerful Integrations & Extensions
+                The Corteksa Marketplace
               </h3>
               <p className="text-neutral-600 dark:text-neutral-400">
-                Connect with your favorite tools, automate workflows, and extend Corteksa with powerful integrations designed to enhance your productivity.
+                Connect the tools you love. From accounting software to
+                communication apps, our growing marketplace will bring
+                everything together in one unified hub.
               </p>
             </div>
           </div>
