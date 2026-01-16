@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter, Manrope } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/providers/theme-provider";
+import { QueryProvider } from "@/providers/query-provider";
 import { LayoutContent } from "@/components/layout-content";
 import { Toaster } from "sonner";
 
@@ -77,20 +78,22 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${manrope.variable} ${inter.variable} antialiased  `}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <LayoutContent>{children}</LayoutContent>
-          <Toaster
-            position="bottom-right"
-            richColors
-            expand={false}
-            visibleToasts={5}
-          />
-        </ThemeProvider>
+        <QueryProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <LayoutContent>{children}</LayoutContent>
+            <Toaster
+              position="bottom-right"
+              richColors
+              expand={false}
+              visibleToasts={5}
+            />
+          </ThemeProvider>
+        </QueryProvider>
         {/* <script src="https://www.wibbot.com/api/embed?wc=bJlBeyUiS9sWpHkFPR3-bHKU77PRBvhk" defer></script> */}
              </body>
     </html>

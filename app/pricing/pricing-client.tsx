@@ -1,11 +1,14 @@
 "use client";
 
 import { Fragment, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Container } from "@/components/container";
 import { Heading } from "@/components/heading";
 import { Subheading } from "@/components/subheading";
 import { Button } from "@/components/ui/button";
 import { PageTransition } from "@/components/page-transition";
+import { PeriodTabs } from "@/components/ui/period-tabs";
+import { AnimatedPrice } from "@/components/ui/animated-price";
 import {
   IconCircleCheckFilled,
   IconCheck,
@@ -18,8 +21,11 @@ import {
   IconSparkles,
   IconFlameFilled,
 } from "@tabler/icons-react";
+import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { pricingPlans, PricingPlan } from "@/lib/pricing-data";
+import Link from "next/link";
+import { PricingPlan, TimePeriod, TIME_PERIOD_LABELS } from "@/lib/types/pricing";
+import { PRICING_KEY, pricingService } from "@/lib/services/PricingService";
 
 // Type Definitions
 interface MarketplaceItem {
@@ -143,13 +149,6 @@ const marketplaceItems: MarketplaceItem[] = [
   },
 ];
 
-// Duration Options
-const durations = [
-  { value: "6months" as const, label: "6 Months" },
-  { value: "9months" as const, label: "9 Months" },
-  { value: "12months" as const, label: "12 Months" },
-];
-
 // Helper Function: Render Feature Value
 const renderFeatureValue = (value: boolean | string) => {
   if (typeof value === "boolean") {
@@ -163,23 +162,32 @@ const renderFeatureValue = (value: boolean | string) => {
 };
 
 // Pricing Card Component
-function PricingCard({ plan }: { plan: PricingPlan }) {
+interface PricingCardProps {
+  plan: PricingPlan;
+  selectedTimePeriod: TimePeriod;
+}
+
+function PricingCard({ plan, selectedTimePeriod }: PricingCardProps) {
   const [showAll, setShowAll] = useState(false);
-  const price = plan.monthlyPrice;
+  const price = plan.timePeriodPricing[selectedTimePeriod];
+  const periodLabel = TIME_PERIOD_LABELS[selectedTimePeriod];
   const displayedFeatures = showAll ? plan.features : plan.features.slice(0, 4);
   const hasMoreFeatures = plan.features.length > 4;
+
+  // Build the CTA link with URL params
+  const ctaHref = `/multi-step-form?plan=${plan.slug}&period=${selectedTimePeriod}`;
 
   return (
     <div
       className={cn(
         "relative rounded-3xl p-8 md:p-10 transition-all h-full flex flex-col",
-        plan.popular
+        plan.isPopular
           ? "bg-primary/10 border-2 border-primary/30"
           : "bg-neutral-100 dark:bg-neutral-800"
       )}
     >
       {/* Popular Icon */}
-      {plan.popular && (
+      {plan.isPopular && (
         <div className="absolute top-4 right-4">
           <IconFlameFilled className="size-6 text-primary" />
         </div>
@@ -190,41 +198,45 @@ function PricingCard({ plan }: { plan: PricingPlan }) {
         {plan.name}
       </h3>
 
-      {/* Price */}
+      {/* Price with Animation */}
       <div className="mb-4">
-        {price === null ? (
+        {price === null || price === undefined ? (
           <p className="text-4xl md:text-5xl font-bold font-display">Custom</p>
         ) : price === 0 ? (
           <div className="flex items-baseline gap-2">
             <p className="text-4xl md:text-5xl font-bold font-display">$0</p>
             <span className="text-base text-neutral-500 dark:text-neutral-400">
-              /month
+              /{periodLabel}
             </span>
           </div>
         ) : (
           <div className="flex items-baseline gap-2">
-            <span className="text-4xl md:text-5xl font-bold font-display">
-              ${price}
-            </span>
+            <AnimatedPrice
+              value={price}
+              className="text-4xl md:text-5xl font-bold font-display"
+            />
             <span className="text-base text-neutral-500 dark:text-neutral-400">
-              /user/month
+              /{periodLabel}
             </span>
           </div>
         )}
       </div>
 
-      {/* Description */}
-      <p className="text-base text-neutral-600 dark:text-neutral-400 mb-8">
-        {plan.description}
-      </p>
+      {/* Description - wrapper with fixed height for button alignment */}
+      <div className="h-[72px] overflow-hidden mb-6">
+        <p className="text-base text-neutral-600 dark:text-neutral-400">
+          {plan.description}
+        </p>
+      </div>
 
       {/* CTA Button */}
       <Button
+        asChild
         size="lg"
-        variant={plan.ctaVariant}
-        className={cn("w-full mb-8", plan.popular && "shadow-brand")}
+        variant={plan.buttonVariant === "contained" ? "default" : "outline"}
+        className={cn("w-full mb-8", plan.isPopular && "shadow-brand")}
       >
-        {plan.cta}
+        <Link href={ctaHref}>{plan.buttonText}</Link>
       </Button>
 
       {/* Features List */}
@@ -294,7 +306,14 @@ function MarketplaceCard({ item }: { item: MarketplaceItem }) {
 
 // Main Pricing Page Client Component
 export function PricingPageClient() {
-  const [selectedDuration, setSelectedDuration] = useState<"6months" | "9months" | "12months">("12months");
+  const [selectedTimePeriod, setSelectedTimePeriod] = useState<TimePeriod>("sixMonths");
+
+  const { data, isLoading } = useQuery({
+    queryKey: [PRICING_KEY],
+    queryFn: pricingService.getPricingPlans,
+  });
+
+  const plans = data?.data || [];
 
   return (
     <PageTransition>
@@ -318,24 +337,11 @@ export function PricingPageClient() {
       <section className="pt-10 md:pt-20 pb-6 md:pb-10">
         <Container>
           <div className="max-w-5xl mx-auto">
-            {/* Duration Selector */}
-            <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
-              {durations.map((duration) => (
-                <button
-                  key={duration.value}
-                  onClick={() => setSelectedDuration(duration.value)}
-                  className={cn(
-                    "px-6 py-2.5 rounded-full font-medium text-sm transition-all",
-                    selectedDuration === duration.value
-                      ? "bg-primary text-white shadow-brand"
-                      : "bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700"
-                  )}
-                  aria-label={`Select ${duration.label} duration`}
-                >
-                  {duration.label}
-                </button>
-              ))}
-            </div>
+            {/* Period Tabs */}
+            <PeriodTabs
+              selectedTimePeriod={selectedTimePeriod}
+              setSelectedTimePeriod={setSelectedTimePeriod}
+            />
 
             {/* Money-back Guarantee */}
             <div className="flex items-center justify-center gap-2 text-neutral-600 dark:text-neutral-400 mb-10">
@@ -349,11 +355,21 @@ export function PricingPageClient() {
       {/* Pricing Cards Grid */}
       <section className="pb-10 md:pb-20">
         <Container>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {pricingPlans.map((plan) => (
-              <PricingCard key={plan.id} plan={plan} />
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="flex justify-center py-20">
+              <Loader2 className="size-12 animate-spin text-primary" />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {plans.map((plan) => (
+                <PricingCard
+                  key={plan.slug}
+                  plan={plan}
+                  selectedTimePeriod={selectedTimePeriod}
+                />
+              ))}
+            </div>
+          )}
         </Container>
       </section>
 

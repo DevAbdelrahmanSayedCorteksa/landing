@@ -9,3 +9,4 @@ export const API_FORGOT_PASSWORD_ENDPOINT = `${versionApi}/${apiModuleUser}/auth
 export const API_RESET_PASSWORD_ENDPOINT = `${versionApi}/${apiModuleUser}/auth/reset-password`;
 export const API_USER_STEPER_ENDPOINT = `${versionApi}/${apiModuleUser}/auth/workspaces`;
 export const API_PRICING_PLANS_ENDPOINT = `${versionApi}/pricing/plans`;
+export const API_PRICING_ENDPOINT = `${versionApi}/${apiModuleUser}/pricing`;
