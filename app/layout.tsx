@@ -18,9 +18,55 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Agenforce Marketing Template - Aceternity UI Pro",
+  title: {
+    default: "Corteksa - The Brain Behind Your Business",
+    template: "%s | Corteksa",
+  },
   description:
-    "Agenforce is a multipurpose marketing template built with Next.js, Typescript, Tailwind CSS and Motion for react.",
+    "Corteksa is a flexible workspace to manage projects, clients, and documents in one place. Powered by Cortex AI to help you work smarter, not harder.",
+  keywords: [
+    "CRM",
+    "project management",
+    "client management",
+    "AI assistant",
+    "Cortex AI",
+    "business automation",
+    "task management",
+    "document management",
+    "team collaboration",
+    "Arabic CRM",
+    "bilingual CRM",
+  ],
+  authors: [{ name: "Corteksa" }],
+  creator: "Corteksa",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://corteksa.com",
+    siteName: "Corteksa",
+    title: "Corteksa - The Brain Behind Your Business",
+    description:
+      "Corteksa is a flexible workspace to manage projects, clients, and documents in one place. Powered by Cortex AI to help you work smarter, not harder.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Corteksa - The Brain Behind Your Business",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Corteksa - The Brain Behind Your Business",
+    description:
+      "Corteksa is a flexible workspace to manage projects, clients, and documents in one place. Powered by Cortex AI.",
+    images: ["/og-image.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({

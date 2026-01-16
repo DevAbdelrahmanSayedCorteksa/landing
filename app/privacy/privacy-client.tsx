@@ -7,6 +7,7 @@ import { Heading } from "@/components/heading";
 import { Subheading } from "@/components/subheading";
 import { IconArrowUp } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
+import { PageTransition } from "@/components/page-transition";
 
 export function PrivacyPageClient() {
   const [activeSection, setActiveSection] = useState("");
@@ -40,8 +41,9 @@ export function PrivacyPageClient() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
-      <Container className="py-10 md:py-20 lg:py-24">
+    <PageTransition>
+      <div className="min-h-screen bg-background">
+        <Container className="py-10 md:py-20 lg:py-24">
         {/* Hero Section */}
         <section className="mb-12 md:mb-16">
           <Heading as="h1" className="mb-4">
@@ -565,8 +567,9 @@ export function PrivacyPageClient() {
             </motion.button>
           )}
         </AnimatePresence>
-      </Container>
-    </div>
+        </Container>
+      </div>
+    </PageTransition>
   );
 }
 

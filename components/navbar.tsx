@@ -112,7 +112,9 @@ export const MobileNavbar = () => {
                 >
                   Login
                 </Link>
-                <Button>Signup</Button>
+                <Button asChild>
+                  <Link href="/signup">Signup</Link>
+                </Button>
               </div>
             </div>
           </motion.div>
@@ -144,7 +146,9 @@ export const DesktopNavbar = () => {
         >
           Login
         </Link>
-        <Button>Signup</Button>
+        <Button asChild>
+          <Link href="/signup">Signup</Link>
+        </Button>
       </div>
     </Container>
   );

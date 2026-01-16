@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect, useLayoutEffect } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "motion/react";
 import { Container } from "@/components/container";
 import { Button } from "@/components/ui/button";
+import { PageTransition } from "@/components/page-transition";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { BlogService } from "@/lib/services/BlogService";
@@ -148,11 +149,6 @@ export function BlogPageClient() {
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<"recent" | "popular">("recent");
 
-  // Scroll to top on mount - useLayoutEffect fires before paint
-  useLayoutEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-  }, []);
-
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
@@ -173,9 +169,10 @@ export function BlogPageClient() {
   const gridPosts = posts.slice(1);
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <section className="pt-10 md:pt-20 lg:pt-32 pb-10 md:pb-16">
+    <PageTransition>
+      <div className="min-h-screen bg-background">
+        {/* Hero Section */}
+        <section className="pt-10 md:pt-20 lg:pt-32 pb-10 md:pb-16">
         <Container>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
             {/* Left Side - Text & Subscribe */}
@@ -308,7 +305,8 @@ export function BlogPageClient() {
             </div>
           )}
         </Container>
-      </section>
-    </div>
+        </section>
+      </div>
+    </PageTransition>
   );
 }

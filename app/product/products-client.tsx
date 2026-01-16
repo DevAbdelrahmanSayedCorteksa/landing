@@ -4,6 +4,7 @@ import { Container } from "@/components/container";
 import { Heading } from "@/components/heading";
 import { Subheading } from "@/components/subheading";
 import { Button } from "@/components/ui/button";
+import { PageTransition } from "@/components/page-transition";
 import {
   IconHeadset,
   IconLanguage,
@@ -393,7 +394,8 @@ const CardSkeleton = ({
 // Main Product Page Client Component
 export function ProductsPageClient() {
   return (
-    <div className="min-h-screen bg-background">
+    <PageTransition>
+      <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <section className="pt-10 md:pt-20 lg:pt-32 relative overflow-hidden">
         <Container>
@@ -657,6 +659,7 @@ export function ProductsPageClient() {
           </div>
         </Container>
       </section>
-    </div>
+      </div>
+    </PageTransition>
   );
 }
