@@ -321,10 +321,9 @@ function Step2PricingSelection({
         className="mb-6"
       />
 
-      {/* Pricing Cards - Compact Selection Design */}
+      {/* Pricing Cards - Professional Grid Layout */}
       <div>
-        <Label className="text-base font-medium block mb-3">Select Plan *</Label>
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {plans.map((plan) => (
             <PricingCardCompact
               key={plan.slug}
@@ -340,7 +339,7 @@ function Step2PricingSelection({
   );
 }
 
-// Compact Pricing Card for Form Selection
+// Clean Pricing Card Design
 interface PricingCardCompactProps {
   plan: PricingPlan;
   selectedTimePeriod: TimePeriod;
@@ -362,52 +361,48 @@ function PricingCardCompact({
       type="button"
       onClick={() => onSelect(plan.slug)}
       className={cn(
-        "w-full p-4 rounded-lg border-2 text-left transition-all flex items-center justify-between",
-        isSelected
-          ? "border-primary bg-primary/5"
-          : "border-border hover:border-primary/50"
+        "w-full p-6 rounded-2xl text-center transition-all duration-200 relative",
+        "bg-neutral-100 dark:bg-neutral-800/80 hover:bg-neutral-200 dark:hover:bg-neutral-800",
+        isSelected && "ring-2 ring-primary/50 shadow-[0_4px_20px_rgba(124,58,237,0.15)]"
       )}
     >
-      <div className="flex items-center gap-4">
-        <div
-          className={cn(
-            "flex h-5 w-5 items-center justify-center rounded-full border-2 transition-all",
-            isSelected
-              ? "border-primary bg-primary"
-              : "border-muted-foreground/30"
-          )}
-        >
-          {isSelected && (
-            <div className="h-2 w-2 rounded-full bg-primary-foreground" />
-          )}
-        </div>
-        <div>
-          <div className="flex items-center gap-2">
-            <h3 className="font-semibold text-base">{plan.name}</h3>
-            {plan.isPopular && (
-              <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
-                Popular
-              </span>
-            )}
-          </div>
-          <p className="text-xs text-muted-foreground mt-0.5">{plan.description}</p>
-        </div>
-      </div>
-      <div className="text-right">
+      {/* Popular Badge */}
+      {plan.isPopular && (
+        <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 text-[10px] px-3 py-1 rounded-full bg-primary text-primary-foreground font-semibold uppercase tracking-wide">
+          Popular
+        </span>
+      )}
+
+      {/* Plan Name */}
+      <h3 className={cn(
+        "font-bold text-lg mb-3",
+        isSelected ? "text-primary" : "text-foreground"
+      )}>
+        {plan.name}
+      </h3>
+
+      {/* Price */}
+      <div className="mb-3">
         {price === null || price === undefined ? (
-          <p className="text-lg font-bold text-primary">Custom</p>
-        ) : price === 0 ? (
-          <p className="text-lg font-bold text-primary">$0</p>
+          <span className={cn(
+            "text-3xl font-bold",
+            isSelected ? "text-primary" : "text-foreground"
+          )}>Custom</span>
         ) : (
-          <div className="flex items-baseline gap-1">
-            <AnimatedPrice
-              value={price}
-              className="text-lg font-bold text-primary"
-            />
-            <span className="text-xs text-muted-foreground">/{periodLabel}</span>
+          <div className="flex items-baseline justify-center gap-1">
+            <span className={cn(
+              "text-3xl font-bold",
+              isSelected ? "text-primary" : "text-foreground"
+            )}>${price}</span>
+            <span className="text-sm text-muted-foreground">/{periodLabel}</span>
           </div>
         )}
       </div>
+
+      {/* Description */}
+      <p className="text-sm leading-relaxed text-muted-foreground">
+        {plan.description}
+      </p>
     </button>
   );
 }
