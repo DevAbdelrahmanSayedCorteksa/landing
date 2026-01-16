@@ -10,26 +10,29 @@ import { cn } from "@/lib/utils";
 export const FAQs = () => {
   const questions = [
     {
-      question: "What is Agenforce AI?",
-      answer: "Agenforce AI is a platform for building and managing AI agents.",
-    },
-    {
-      question: "Who is Agenforce AI built for?",
-      answer: "Agenforce AI is a platform for building and managing AI agents.",
-    },
-    {
-      question: "How does Agenforce AI work?",
-      answer: "Agenforce AI is a platform for building and managing AI agents.",
-    },
-    {
-      question: "Is there a free trial available?",
+      question: "What is Corteksa?",
       answer:
-        "Yes, we offer a 14-day free trial so you can explore all features before committing to a plan.",
+        "Corteksa is a flexible workspace to manage projects, clients, and documents in one place. It's designed to be simple yet powerful, adapting to how you work.",
+    },
+    {
+      question: "Who is Corteksa built for?",
+      answer:
+        "Corteksa is built for businesses that need simplicity without sacrificing flexibility. Whether you're a small team or a growing company, Corteksa fits your workflow.",
+    },
+    {
+      question: "Is there a free plan?",
+      answer:
+        "Yes! Corteksa offers a free forever plan to get you started. You can upgrade anytime as your needs grow.",
+    },
+    {
+      question: "What languages are supported?",
+      answer:
+        "Corteksa supports both Arabic and English interfaces. You can seamlessly switch between languages to work in the one that feels most natural.",
     },
     {
       question: "What kind of support do you provide?",
       answer:
-        "We provide 24/7 customer support through chat, email, and comprehensive documentation to help you get the most out of Agenforce AI.",
+        "We provide unlimited support because we see ourselves as your partner, not just a tool. Every step you take, we're here to help.",
     },
   ];
   return (

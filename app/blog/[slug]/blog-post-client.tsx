@@ -120,34 +120,16 @@ function CTASidebarCard() {
   );
 }
 
-// Related Post Card
+// Related Post Card - Clean minimal design
 function RelatedPostCard({ post }: { post: BlogPost }) {
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="group block bg-white dark:bg-neutral-800 rounded-xl overflow-hidden border border-neutral-200 dark:border-neutral-700 hover:shadow-lg transition-all"
+      className="group block"
     >
-      <div className="relative h-32 overflow-hidden">
-        <Image
-          src={post.featuredImage}
-          alt={post.title}
-          fill
-          className="object-cover group-hover:scale-105 transition-transform duration-300"
-        />
-      </div>
-      <div className="p-4">
-        <p
-          className={cn(
-            "text-xs font-bold uppercase tracking-wider mb-2",
-            getCategoryColor(post.category.slug)
-          )}
-        >
-          {post.category.name}
-        </p>
-        <h4 className="font-bold font-display text-neutral-800 dark:text-neutral-200 group-hover:text-primary transition-colors line-clamp-2">
-          {post.title}
-        </h4>
-      </div>
+      <h4 className="text-lg md:text-xl font-bold font-display text-neutral-900 dark:text-neutral-100 group-hover:text-primary transition-colors leading-snug">
+        {post.title}
+      </h4>
     </Link>
   );
 }
@@ -267,14 +249,20 @@ export function BlogPostClient({ post, relatedPosts }: BlogPostClientProps) {
         </Container>
       </section>
 
-      {/* Related Posts Section */}
+      {/* Recent Articles Section */}
       {relatedPosts.length > 0 && (
-        <section className="py-16 md:py-20 bg-neutral-50 dark:bg-neutral-900">
+        <section className="py-16 md:py-20 bg-background">
           <Container>
-            <h2 className="text-2xl md:text-3xl font-bold font-display text-center mb-10 text-neutral-900 dark:text-neutral-100">
-              Related Posts
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {/* Section Header */}
+            <div className="mb-10">
+              <h2 className="text-xs font-bold uppercase tracking-widest text-neutral-500 dark:text-neutral-400 mb-4">
+                Recent Articles
+              </h2>
+              <div className="h-px bg-neutral-200 dark:bg-neutral-700" />
+            </div>
+
+            {/* Articles Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
               {relatedPosts.map((relatedPost) => (
                 <RelatedPostCard key={relatedPost.id} post={relatedPost} />
               ))}

@@ -10,13 +10,13 @@ export const Outcomes = () => {
     <section className="pt-10 md:pt-20 lg:pt-32 relative overflow-hidden">
       <Container>
         <Heading>
-          Governed AI, <br />
-          Trusted Outcomes
+          More features <br />
+          coming soon
         </Heading>
 
         <Subheading className="py-8">
-          Deploy AI agents with built-in approvals, brand guardrails, and audit
-          trails. Every step is visible, reviewable, and compliant.
+          We&apos;re constantly building new capabilities to help you work
+          smarter. Here&apos;s what&apos;s on the horizon.
         </Subheading>
 
         <LandingImages

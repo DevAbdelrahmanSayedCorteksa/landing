@@ -13,12 +13,11 @@ export const Features = () => {
     <Container className="py-10 md:py-20 lg:py-32">
       <div className="flex xl:flex-row flex-col xl:items-baseline-last justify-between gap-10">
         <Heading className="text-center lg:text-left">
-          Built for Fast Moving <br /> Teams That Need Control.
+          Why Corteksa?
         </Heading>
         <Subheading className="text-center lg:text-left mx-auto lg:mx-0">
-          Agents work inside your existing tools, with built-in approvals, brand
-          and policy guardrails, and full traceability. Every action is
-          auditable, every outcome accountable.
+          We address real user frustrations with clarity, simplicity, and trust.
+          Every feature is designed to make your work easier.
         </Subheading>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 my-10 md:my-20">
@@ -27,7 +26,7 @@ export const Features = () => {
             <SkeletonOne />
           </CardSkeleton>
           <CardContent>
-            <CardTitle>Prebuilt Agents, Tuned to Your Workflows</CardTitle>
+            <CardTitle>Arabic Language Interface</CardTitle>
             <CardCTA>
               <IconPlus />
             </CardCTA>
@@ -38,7 +37,7 @@ export const Features = () => {
             <SkeletonTwo />
           </CardSkeleton>
           <CardContent>
-            <CardTitle>Automate Handoffs, Reduce Ops Friction</CardTitle>
+            <CardTitle>Tailored System Built Around You</CardTitle>
             <CardCTA>
               <IconPlus />
             </CardCTA>
@@ -49,7 +48,7 @@ export const Features = () => {
             <SkeletonThree />
           </CardSkeleton>
           <CardContent>
-            <CardTitle>Approvals, Guardrails, and Full Auditability</CardTitle>
+            <CardTitle>Unlimited Support, A True Partnership</CardTitle>
             <CardCTA>
               <IconPlus />
             </CardCTA>

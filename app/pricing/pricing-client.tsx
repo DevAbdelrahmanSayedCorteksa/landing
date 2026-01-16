@@ -15,24 +15,12 @@ import {
   IconUsers,
   IconClock,
   IconSparkles,
+  IconFlameFilled,
 } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
+import { pricingPlans, PricingPlan } from "@/lib/pricing-data";
 
 // Type Definitions
-interface PricingPlan {
-  id: string;
-  name: string;
-  monthlyPrice: number | null;
-  yearlyPrice: number | null;
-  yearlyDiscount: number;
-  popular: boolean;
-  description: string;
-  cta: string;
-  ctaVariant: "default" | "outline";
-  features: string[];
-  featureCategory?: string;
-}
-
 interface MarketplaceItem {
   id: string;
   name: string;
@@ -55,112 +43,6 @@ interface FeatureCategory {
   features: FeatureRow[];
 }
 
-// Pricing Plans Data
-const pricingPlans: PricingPlan[] = [
-  {
-    id: "free",
-    name: "Free Forever",
-    monthlyPrice: 0,
-    yearlyPrice: 0,
-    yearlyDiscount: 0,
-    popular: false,
-    description: "Perfect for personal use and small projects",
-    cta: "Get Started",
-    ctaVariant: "outline",
-    featureCategory: "KEY FEATURES",
-    features: [
-      "Corteksa Units*: Up to X",
-      "Up to X Custom Fields",
-      "Corteksa Assistant*: Up to X",
-      "Tasks management",
-      "Up to X Kanban boards",
-      "Unlimited Email Support (24 hrs)",
-      "Up to 3 Free Plan Members",
-      "100MB Data Storage",
-    ],
-  },
-  {
-    id: "light",
-    name: "Light",
-    monthlyPrice: 29,
-    yearlyPrice: 29,
-    yearlyDiscount: 0,
-    popular: false,
-    description: "For growing teams that need more power",
-    cta: "Get Started",
-    ctaVariant: "outline",
-    featureCategory: "EVERYTHING IN FREE +",
-    features: [
-      "Corteksa Units*: Up to X",
-      "Custom Fields",
-      "Corteksa Assistant Unlimited",
-      "Tasks management",
-      "Kanban boards",
-      "Unlimited Email Support (4 hrs)",
-      "Up to X Basic Plan Members",
-      "100MB Data Storage",
-      "Marketplace Access",
-      "Comments and Mentions",
-      "Email Integrations",
-      "Data Import and Export",
-      "Multi-language Support",
-      "Smart Dashboard",
-    ],
-  },
-  {
-    id: "advanced",
-    name: "Advanced",
-    monthlyPrice: 79,
-    yearlyPrice: 79,
-    yearlyDiscount: 0,
-    popular: true,
-    description: "Advanced features for professional teams",
-    cta: "Get Started",
-    ctaVariant: "default",
-    featureCategory: "EVERYTHING IN LIGHT +",
-    features: [
-      "Corteksa Units Unlimited",
-      "Custom Fields (unlimited)",
-      "Corteksa Assistant Unlimited",
-      "Tasks management (unlimited)",
-      "Unlimited Kanban boards",
-      "Unlimited Chat Support (2 hrs)",
-      "Unlimited Team Members",
-      "Unlimited Data Storage",
-      "Document Generation",
-      "Workflow Automation",
-      "Advanced Permissions",
-      "Audit Logging",
-    ],
-  },
-  {
-    id: "enterprise",
-    name: "Enterprise",
-    monthlyPrice: null,
-    yearlyPrice: null,
-    yearlyDiscount: 0,
-    popular: false,
-    description: "Flexible pricing for large organizations",
-    cta: "Contact Sales",
-    ctaVariant: "outline",
-    featureCategory: "EVERYTHING IN ADVANCED +",
-    features: [
-      "Corteksa Units Unlimited",
-      "Custom Fields (unlimited)",
-      "Corteksa Assistant Unlimited",
-      "Tasks management (unlimited)",
-      "Unlimited Kanban boards",
-      "Unlimited Team Members",
-      "Unlimited Data Storage",
-      "Daily Backup",
-      "White Label",
-      "System Customization",
-      "Unlimited Chat Support (1 hr)",
-      "Live Onboarding Training",
-    ],
-  },
-];
-
 // Feature Comparison Data
 const featureComparison: FeatureCategory[] = [
   {
@@ -178,7 +60,8 @@ const featureComparison: FeatureCategory[] = [
   {
     name: "Support & Communication",
     features: [
-      { name: "Email Support", free: "24 hrs", unlimited: "4 hrs", business: "Chat (2 hrs)", enterprise: "Chat (1 hr)" },
+      { name: "Email Support", free: "24 hrs", unlimited: "4 hrs", business: false, enterprise: false },
+      { name: "Chat Support", free: false, unlimited: false, business: "2 hrs", enterprise: "1 hr" },
       { name: "Comments and Mentions", free: false, unlimited: true, business: true, enterprise: true },
       { name: "Live Onboarding Training", free: false, unlimited: false, business: false, enterprise: true },
     ],
@@ -282,64 +165,69 @@ const renderFeatureValue = (value: boolean | string) => {
 function PricingCard({ plan }: { plan: PricingPlan }) {
   const [showAll, setShowAll] = useState(false);
   const price = plan.monthlyPrice;
-  const displayedFeatures = showAll ? plan.features : plan.features.slice(0, 6);
-  const hasMoreFeatures = plan.features.length > 6;
+  const displayedFeatures = showAll ? plan.features : plan.features.slice(0, 4);
+  const hasMoreFeatures = plan.features.length > 4;
 
   return (
     <div
       className={cn(
-        "relative p-6 md:p-8 rounded-2xl border-2 transition-all",
+        "relative rounded-3xl p-8 md:p-10 transition-all h-full flex flex-col",
         plan.popular
-          ? "border-primary bg-primary/5 shadow-lg"
-          : "border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900"
+          ? "bg-primary/10 border-2 border-primary/30"
+          : "bg-neutral-100 dark:bg-neutral-800"
       )}
     >
-      {/* Popular Badge */}
+      {/* Popular Icon */}
       {plan.popular && (
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white px-4 py-1 rounded-full text-xs font-bold">
-          POPULAR
+        <div className="absolute top-4 right-4">
+          <IconFlameFilled className="size-6 text-primary" />
         </div>
       )}
 
       {/* Plan Name */}
-      <h3 className="text-xl md:text-2xl font-bold font-display mb-3">{plan.name}</h3>
+      <h3 className="text-2xl md:text-3xl font-bold font-display mb-4">
+        {plan.name}
+      </h3>
 
       {/* Price */}
       <div className="mb-4">
         {price === null ? (
-          <div className="flex items-baseline gap-2">
-            <p className="text-3xl md:text-4xl font-bold font-display">Custom</p>
-          </div>
+          <p className="text-4xl md:text-5xl font-bold font-display">Custom</p>
         ) : price === 0 ? (
           <div className="flex items-baseline gap-2">
-            <p className="text-3xl md:text-4xl font-bold font-display">$0</p>
-            <span className="text-sm text-neutral-500 dark:text-neutral-400">/month</span>
+            <p className="text-4xl md:text-5xl font-bold font-display">$0</p>
+            <span className="text-base text-neutral-500 dark:text-neutral-400">
+              /month
+            </span>
           </div>
         ) : (
-          <div className="flex items-baseline gap-1">
-            <span className="text-3xl md:text-4xl font-bold font-display">${price}</span>
-            <span className="text-sm text-neutral-500 dark:text-neutral-400">/user/month</span>
+          <div className="flex items-baseline gap-2">
+            <span className="text-4xl md:text-5xl font-bold font-display">
+              ${price}
+            </span>
+            <span className="text-base text-neutral-500 dark:text-neutral-400">
+              /user/month
+            </span>
           </div>
         )}
       </div>
 
       {/* Description */}
-      <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-6">{plan.description}</p>
+      <p className="text-base text-neutral-600 dark:text-neutral-400 mb-8">
+        {plan.description}
+      </p>
 
       {/* CTA Button */}
-      <Button variant={plan.ctaVariant} className={cn("w-full mb-8", plan.popular && "shadow-brand")}>
+      <Button
+        size="lg"
+        variant={plan.ctaVariant}
+        className={cn("w-full mb-8", plan.popular && "shadow-brand")}
+      >
         {plan.cta}
       </Button>
 
-      {/* Features Category */}
-      {plan.featureCategory && (
-        <p className="text-xs font-bold uppercase text-neutral-500 dark:text-neutral-400 mb-4 tracking-wide">
-          {plan.featureCategory}
-        </p>
-      )}
-
       {/* Features List */}
-      <ul className="space-y-3">
+      <ul className="space-y-4 flex-grow">
         {displayedFeatures.map((feature, idx) => (
           <li key={idx} className="flex items-start gap-3">
             <IconCircleCheckFilled className="size-5 text-primary flex-shrink-0 mt-0.5" />
@@ -354,7 +242,7 @@ function PricingCard({ plan }: { plan: PricingPlan }) {
           onClick={() => setShowAll(!showAll)}
           className="mt-4 text-sm font-medium text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
         >
-          {showAll ? "Show less" : `Show more (${plan.features.length - 6} more)`}
+          {showAll ? "Show less" : `Show more (${plan.features.length - 4} more)`}
           <svg
             className={cn("size-4 transition-transform", showAll && "rotate-180")}
             fill="none"

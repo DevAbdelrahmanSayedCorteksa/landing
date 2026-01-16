@@ -10,13 +10,13 @@ export const Speed = () => {
     <section className="pt-10 md:pt-20 lg:pt-10 relative overflow-hidden">
       <Container>
         <Heading>
-          Built for Speed <br />
-          Designed for Scale
+          Work with clarity. <br />
+          Stay in control.
         </Heading>
 
         <Subheading className="py-8">
-          Deploy AI agents that plan, act through your tools, and report
-          outcomes—without changing how your teams work.
+          All your tasks, files, and workflows simplified in one place. See your
+          core features in action.
         </Subheading>
 
         <LandingImages

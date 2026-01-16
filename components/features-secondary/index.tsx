@@ -13,11 +13,11 @@ export const FeaturesSecondary = () => {
           <div>
             <CardContent>
               <h2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
-                Agent Studio
+                Corteksa Units
               </h2>
               <CardDescription>
-                Design, launch and customize AI agents for marketing, sales,
-                support and ops, built around your workflows.
+                Build the system you need. Create units that fit your business,
+                add details that matter, and connect everything effortlessly.
               </CardDescription>
             </CardContent>
             <CardSkeleton>
@@ -27,11 +27,11 @@ export const FeaturesSecondary = () => {
           <div>
             <CardContent>
               <h2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
-                Multi-Agent Orchestration
+                Kanban Boards
               </h2>
               <CardDescription>
-                Coordinate multiple agents across workflows using memory,
-                interrupts, and conditional logic.
+                Track projects your way. Design workflows with simple Kanban
+                boards to keep every project clear, visible, and on track.
               </CardDescription>
             </CardContent>
             <CardSkeleton className="mask-radial-from-50% mask-t-from-50%">
@@ -45,38 +45,39 @@ export const FeaturesSecondary = () => {
             <div className="flex items-center gap-2">
               <WorkflowIcon />
               <h3 className="font-bold text-lg text-neutral-600 dark:text-neutral-400">
-                Workflow Automation
+                Document Generation
               </h3>
             </div>
 
             <p className="text-neutral-500 text-base mt-2">
-              Automate campaigns, tickets and CRM updates without manual
-              handoffs.
+              Create documents in one click. Generate contracts, offers, or any
+              document instantly.
             </p>
           </div>
           <div>
             <div className="flex items-center gap-2">
               <IntegrationIcon />
               <h3 className="font-bold text-lg text-neutral-600 dark:text-neutral-400">
-                Integration Fabric
+                Custom Fields
               </h3>
             </div>
 
             <p className="text-neutral-500 text-base mt-2">
-              Connect CRMs, service desks, data warehouses and cloud apps
-              seamlessly.
+              Add the details that matter to you. Customize every unit with
+              fields that fit your workflow.
             </p>
           </div>
           <div>
             <div className="flex items-center gap-2">
               <HumanIcon />
               <h3 className="font-bold text-lg text-neutral-600 dark:text-neutral-400">
-                Human-in-the-Loop
+                Smart Dashboard
               </h3>
             </div>
 
             <p className="text-neutral-500 text-base mt-2">
-              Add reviews, approvals and escalations without slowing work.
+              See everything at a glance. Get insights and overview of your
+              projects and operations.
             </p>
           </div>
         </div>

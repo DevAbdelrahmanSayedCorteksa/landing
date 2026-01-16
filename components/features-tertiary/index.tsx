@@ -15,11 +15,11 @@ export const FeaturesTertiary = () => {
           <div className="md:border-r border-b border-neutral-200 dark:border-neutral-800">
             <CardContent>
               <h2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
-                Audit Trail
+                Task Management
               </h2>
               <CardDescription>
-                Tracks every agent action with full input-output visibility and
-                timestamps.
+                Organize and prioritize your work with powerful task tracking
+                and assignments.
               </CardDescription>
             </CardContent>
             <CardSkeleton>
@@ -29,11 +29,11 @@ export const FeaturesTertiary = () => {
           <div className="border-b border-neutral-200 dark:border-neutral-800">
             <CardContent>
               <h2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
-                Role-Based Access
+                Corteksa AI
               </h2>
               <CardDescription>
-                Controls who can launch, review, or manage agents based on
-                roles.
+                Smart automation to help you work faster, make better decisions,
+                and save time.
               </CardDescription>
             </CardContent>
             <CardSkeleton className="mask-radial-from-20% ">
@@ -43,11 +43,11 @@ export const FeaturesTertiary = () => {
           <div className="md:border-r border-neutral-200 dark:border-neutral-800">
             <CardContent>
               <h2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
-                Approval Queue
+                Omni Channel
               </h2>
               <CardDescription>
-                Sends agent-generated content to human reviewers before it's
-                published.
+                Connect with clients across all communication channels in one
+                unified inbox.
               </CardDescription>
             </CardContent>
             <CardSkeleton className="mask-radial-from-20%  mask-r-from-50%">
@@ -57,10 +57,11 @@ export const FeaturesTertiary = () => {
           <div className=" dark:border-neutral-800">
             <CardContent>
               <h2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
-                Guardrail Engine
+                Email Integration
               </h2>
               <CardDescription>
-                Applies brand, tone, and policy checks before output goes live.
+                Connect your email and manage all client communication directly
+                from Corteksa.
               </CardDescription>
             </CardContent>
             <CardSkeleton className="">

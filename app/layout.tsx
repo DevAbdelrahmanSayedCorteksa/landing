@@ -45,8 +45,8 @@ export default function RootLayout({
             visibleToasts={5}
           />
         </ThemeProvider>
-        <script src="https://www.wibbot.com/api/embed?wc=GOdmgkaI1cIF0T0JsH6A3N-WQ1r5-IT8" defer></script>
-      </body>
+        {/* <script src="https://www.wibbot.com/api/embed?wc=bJlBeyUiS9sWpHkFPR3-bHKU77PRBvhk" defer></script> */}
+             </body>
     </html>
   );
 }

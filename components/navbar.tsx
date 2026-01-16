@@ -16,12 +16,20 @@ const navlinks = [
     href: "/product",
   },
   {
+    title: "About",
+    href: "/about",
+  },
+  {
     title: "Blog",
     href: "/blog",
   },
   {
     title: "Pricing",
     href: "/pricing",
+  },
+  {
+    title: "Contact",
+    href: "/contact",
   },
 ];
 
