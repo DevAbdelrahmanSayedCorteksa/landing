@@ -1,7 +1,7 @@
 "use client";
 
 import Cookies from "js-cookie";
-import { AUTH, AUTH_TOKEN } from "./LocalKeys";
+import { AUTH, AUTH_TOKEN, WORKSPACE_SUBDOMAIN } from "./LocalKeys";
 import { LoginResponse } from "@/lib/types/authTypes";
 
 export const handleLogin = (response: LoginResponse) => {
@@ -47,4 +47,17 @@ export const updateAuth = (key: string, value: string | undefined) => {
     userData[key] = value;
     localStorage.setItem(AUTH, JSON.stringify(userData));
   }
+};
+
+// Workspace subdomain functions
+export const saveWorkspaceSubdomain = (subdomain: string) => {
+  Cookies.set(WORKSPACE_SUBDOMAIN, subdomain, { expires: 365 });
+};
+
+export const getWorkspaceSubdomain = () => {
+  return Cookies.get(WORKSPACE_SUBDOMAIN);
+};
+
+export const removeWorkspaceSubdomain = () => {
+  Cookies.remove(WORKSPACE_SUBDOMAIN);
 };

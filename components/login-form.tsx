@@ -12,7 +12,7 @@ import { IconBrandGoogle, IconEye, IconEyeOff } from "@tabler/icons-react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
 import { login } from "@/lib/auth/LoginService";
-import { handleLogin, handleOtpLogin } from "@/lib/services/AuthLocalService";
+import { handleLogin, handleOtpLogin, getWorkspaceSubdomain } from "@/lib/services/AuthLocalService";
 import { ApiResponse } from "@/lib/types/apiResponse";
 import { LoginResponse } from "@/lib/types/authTypes";
 import { OK, ACCEPTED, UNAUTHORIZED_ERROR } from "@/lib/services/statusCodes";
@@ -36,7 +36,14 @@ export function LoginForm() {
       if (res.status === OK) {
         handleLogin(res.data);
         toast.success("Login successful");
-        router.push("/multi-step-form");
+
+        // Check if user has a saved workspace subdomain
+        const savedSubdomain = getWorkspaceSubdomain();
+        if (savedSubdomain) {
+          window.location.href = `https://${savedSubdomain}.corteksa.net`;
+        } else {
+          router.push("/multi-step-form");
+        }
       } else if (res.status === ACCEPTED) {
         // OTP required
         handleOtpLogin(res.data.token);
