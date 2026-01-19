@@ -1,13 +1,37 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Heading } from "@/components/heading";
 import { Subheading } from "@/components/subheading";
 import { LoginForm } from "@/components/login-form";
 import { LandingImages } from "@/components/landing-images";
 import { Logo } from "@/components/logo";
 import { PageTransition } from "@/components/page-transition";
+import { getToken } from "@/lib/services/AuthLocalService";
 
 export function LoginClient() {
+  const router = useRouter();
+  const [isChecking, setIsChecking] = useState(true);
+
+  useEffect(() => {
+    const token = getToken();
+    if (token) {
+      router.replace("/");
+    } else {
+      setIsChecking(false);
+    }
+  }, [router]);
+
+  // Show nothing while checking auth
+  if (isChecking) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="h-8 w-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <PageTransition>
       <main className="min-h-screen grid lg:grid-cols-2 bg-background relative">

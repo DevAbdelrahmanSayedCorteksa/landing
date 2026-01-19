@@ -6,6 +6,10 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 import { IconLayoutSidebar, IconX } from "@tabler/icons-react";
 import { AnimatePresence, motion } from "motion/react";
+import { useAuth } from "@/hooks/useAuth";
+import { UserProfileDropdown } from "./user-profile-dropdown";
+import { MobileUserMenu } from "./mobile-user-menu";
+
 const navlinks = [
   {
     title: "Features",
@@ -44,6 +48,8 @@ export const Navbar = () => {
 
 export const MobileNavbar = () => {
   const [open, setOpen] = useState(false);
+  const { isAuthenticated, user, isLoading, logout } = useAuth();
+
   return (
     <div className="flex md:hidden px-4 py-2 justify-between relative">
       <Logo />
@@ -66,7 +72,7 @@ export const MobileNavbar = () => {
             transition={{
               duration: 0.2,
             }}
-            className="fixed inset-0 h-full w-full z-50 px-4 py-1.5 flex flex-col justify-between"
+            className="fixed inset-0 h-full w-full z-50 px-4 py-1.5 flex flex-col justify-between bg-background/95"
           >
             <div>
               <div className="flex justify-between">
@@ -96,6 +102,7 @@ export const MobileNavbar = () => {
                     <Link
                       key={index}
                       href={item.href}
+                      onClick={() => setOpen(false)}
                       className="text-2xl text-neutral-600 dark:text-neutral-400 font-medium"
                     >
                       {item.title}
@@ -104,18 +111,24 @@ export const MobileNavbar = () => {
                 ))}
               </div>
             </div>
-            <div>
-              <div className="flex items-center justify-end gap-4">
-                <Link
-                  href="/login"
-                  className="text-sm px-4 inline-block py-2 rounded-md text-neutral-600 dark:text-neutral-400 font-medium"
-                >
-                  Login
-                </Link>
-                <Button asChild>
-                  <Link href="/signup">Signup</Link>
-                </Button>
-              </div>
+            <div className="pb-4">
+              {isLoading ? (
+                <div className="h-24 bg-muted animate-pulse rounded-lg" />
+              ) : isAuthenticated && user ? (
+                <MobileUserMenu user={user} onLogout={logout} />
+              ) : (
+                <div className="flex items-center justify-end gap-4">
+                  <Link
+                    href="/login"
+                    className="text-sm px-4 inline-block py-2 rounded-md text-neutral-600 dark:text-neutral-400 font-medium"
+                  >
+                    Login
+                  </Link>
+                  <Button asChild>
+                    <Link href="/signup">Signup</Link>
+                  </Button>
+                </div>
+              )}
             </div>
           </motion.div>
         )}
@@ -125,6 +138,8 @@ export const MobileNavbar = () => {
 };
 
 export const DesktopNavbar = () => {
+  const { isAuthenticated, user, isLoading, logout } = useAuth();
+
   return (
     <Container className="py-4 items-center justify-between hidden lg:flex">
       <Logo />
@@ -140,15 +155,23 @@ export const DesktopNavbar = () => {
         ))}
       </div>
       <div className="flex items-center gap-4">
-        <Link
-          href="/login"
-          className="text-sm px-4 inline-block py-2 rounded-md text-neutral-600 dark:text-neutral-400 font-medium"
-        >
-          Login
-        </Link>
-        <Button asChild>
-          <Link href="/signup">Signup</Link>
-        </Button>
+        {isLoading ? (
+          <div className="h-9 w-40 bg-muted animate-pulse rounded-md" />
+        ) : isAuthenticated && user ? (
+          <UserProfileDropdown user={user} onLogout={logout} />
+        ) : (
+          <>
+            <Link
+              href="/login"
+              className="text-sm px-4 inline-block py-2 rounded-md text-neutral-600 dark:text-neutral-400 font-medium"
+            >
+              Login
+            </Link>
+            <Button asChild>
+              <Link href="/signup">Signup</Link>
+            </Button>
+          </>
+        )}
       </div>
     </Container>
   );
