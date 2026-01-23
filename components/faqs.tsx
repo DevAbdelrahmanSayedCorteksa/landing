@@ -1,45 +1,29 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Container } from "./container";
 import { UserChatIcon } from "@/illustrations/general";
 import { Heading } from "./heading";
 import { IconMinus, IconPlus } from "@tabler/icons-react";
-import { AnimatePresence, motion } from "motion/react";
+import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 
 export const FAQs = () => {
+  const t = useTranslations("faqs");
+
   const questions = [
-    {
-      question: "What is Corteksa?",
-      answer:
-        "Corteksa is a flexible workspace to manage projects, clients, and documents in one place. It's designed to be simple yet powerful, adapting to how you work.",
-    },
-    {
-      question: "Who is Corteksa built for?",
-      answer:
-        "Corteksa is built for businesses that need simplicity without sacrificing flexibility. Whether you're a small team or a growing company, Corteksa fits your workflow.",
-    },
-    {
-      question: "Is there a free plan?",
-      answer:
-        "Yes! Corteksa offers a free forever plan to get you started. You can upgrade anytime as your needs grow.",
-    },
-    {
-      question: "What languages are supported?",
-      answer:
-        "Corteksa supports both Arabic and English interfaces. You can seamlessly switch between languages to work in the one that feels most natural.",
-    },
-    {
-      question: "What kind of support do you provide?",
-      answer:
-        "We provide unlimited support because we see ourselves as your partner, not just a tool. Every step you take, we're here to help.",
-    },
+    { question: t("q1"), answer: t("a1") },
+    { question: t("q2"), answer: t("a2") },
+    { question: t("q3"), answer: t("a3") },
+    { question: t("q4"), answer: t("a4") },
+    { question: t("q5"), answer: t("a5") },
   ];
+
   return (
     <section className="py-10 md:py-20 lg:py-32 relative overflow-hidden">
       <Container>
         <UserChatIcon />
-        <Heading className="my-10 md:my-20">Frequently Asked Questions</Heading>
+        <Heading className="my-10 md:my-20">{t("title")}</Heading>
 
         <div className="flex flex-col gap-4">
           {questions.map((question, index) => (
@@ -70,10 +54,10 @@ const Question = ({
       className="w-full rounded-3xl overflow-hidden bg-neutral-100 dark:bg-neutral-800 p-4 md:p-8"
     >
       <div className="flex items-center justify-between ">
-        <h3 className="text-lg md:text-2xl font-bold font-display">
+        <h3 className="text-lg md:text-2xl font-bold font-display text-start">
           {question}
         </h3>
-        <div className="size-6 rounded-full relative bg-black dark:bg-white flex items-center justify-center">
+        <div className="size-6 rounded-full relative bg-black dark:bg-white flex items-center justify-center flex-shrink-0">
           <IconMinus
             className={cn(
               "size-6 text-white dark:text-black absolute inset-0 transition-all duration-200",
@@ -112,7 +96,7 @@ const Question = ({
           transition={{
             delay: 0.2,
           }}
-          className="text-left mt-4 text-neutral-600 dark:text-neutral-200"
+          className="text-start mt-4 text-neutral-600 dark:text-neutral-200"
         >
           {answer}
         </motion.p>

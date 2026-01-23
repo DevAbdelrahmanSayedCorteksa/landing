@@ -1,4 +1,8 @@
+"use client";
+
 import React from "react";
+import { useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 import { Container } from "@/components/container";
 import { cn } from "@/lib/utils";
 import { SkeletonOne } from "./skeletons/first";
@@ -6,20 +10,27 @@ import { SkeletonTwo } from "./skeletons/second";
 import { HumanIcon, IntegrationIcon, WorkflowIcon } from "@/icons";
 import { SkeletonThree } from "./skeletons/third";
 import { SkeletonFour } from "./skeletons/four";
+import { rtlLocales, Locale } from "@/i18n/routing";
 
 export const FeaturesTertiary = () => {
+  const t = useTranslations("featuresTertiary");
+  const locale = useLocale() as Locale;
+  const isRTL = rtlLocales.includes(locale);
+
   return (
     <section className="pt-10 md:pt-20 lg:py-32 relative overflow-hidden">
       <Container>
-        <div className="grid grid-cols-1 md:grid-cols-2 border-y border-neutral-200 dark:border-neutral-800  divide-neutral-200 dark:divide-neutral-800">
-          <div className="md:border-r border-b border-neutral-200 dark:border-neutral-800">
+        <div className="grid grid-cols-1 md:grid-cols-2 border-y border-neutral-200 dark:border-neutral-800 divide-neutral-200 dark:divide-neutral-800">
+          <div className={cn(
+            "border-b border-neutral-200 dark:border-neutral-800",
+            isRTL ? "md:border-l" : "md:border-r"
+          )}>
             <CardContent>
               <h2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
-                Task Management
+                {t("taskTitle")}
               </h2>
               <CardDescription>
-                Organize and prioritize your work with powerful task tracking
-                and assignments.
+                {t("taskDesc")}
               </CardDescription>
             </CardContent>
             <CardSkeleton>
@@ -29,42 +40,45 @@ export const FeaturesTertiary = () => {
           <div className="border-b border-neutral-200 dark:border-neutral-800">
             <CardContent>
               <h2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
-                Cortex AI
+                {t("aiTitle")}
               </h2>
               <CardDescription>
-                Smart automation to help you work faster, make better decisions,
-                and save time.
+                {t("aiDesc")}
               </CardDescription>
             </CardContent>
-            <CardSkeleton className="mask-radial-from-20% ">
+            <CardSkeleton className="mask-radial-from-20%">
               <SkeletonTwo />
             </CardSkeleton>
           </div>
-          <div className="md:border-r border-neutral-200 dark:border-neutral-800">
+          <div className={cn(
+            "border-neutral-200 dark:border-neutral-800",
+            isRTL ? "md:border-l" : "md:border-r"
+          )}>
             <CardContent>
               <h2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
-                Omni Channel
+                {t("omniTitle")}
               </h2>
               <CardDescription>
-                Connect with clients across all communication channels in one
-                unified inbox.
+                {t("omniDesc")}
               </CardDescription>
             </CardContent>
-            <CardSkeleton className="mask-radial-from-20%  mask-r-from-50%">
+            <CardSkeleton className={cn(
+              "mask-radial-from-20%",
+              isRTL ? "mask-l-from-50%" : "mask-r-from-50%"
+            )}>
               <SkeletonThree />
             </CardSkeleton>
           </div>
-          <div className=" dark:border-neutral-800">
+          <div className="dark:border-neutral-800">
             <CardContent>
               <h2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
-                Email Integration
+                {t("emailTitle")}
               </h2>
               <CardDescription>
-                Connect your email and manage all client communication directly
-                from Corteksa.
+                {t("emailDesc")}
               </CardDescription>
             </CardContent>
-            <CardSkeleton className="">
+            <CardSkeleton>
               <SkeletonFour />
             </CardSkeleton>
           </div>

@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { Link, useRouter } from "@/i18n/routing";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -12,7 +12,11 @@ import { IconBrandGoogle, IconEye, IconEyeOff } from "@tabler/icons-react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
 import { login } from "@/lib/auth/LoginService";
-import { handleLogin, handleOtpLogin, getWorkspaceSubdomain } from "@/lib/services/AuthLocalService";
+import {
+  handleLogin,
+  handleOtpLogin,
+  getWorkspaceSubdomain,
+} from "@/lib/services/AuthLocalService";
 import { ApiResponse } from "@/lib/types/apiResponse";
 import { LoginResponse } from "@/lib/types/authTypes";
 import { OK, ACCEPTED, UNAUTHORIZED_ERROR } from "@/lib/services/statusCodes";
@@ -24,6 +28,8 @@ export function LoginForm() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const t = useTranslations("login");
+  const tCommon = useTranslations("common");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -35,9 +41,8 @@ export function LoginForm() {
 
       if (res.status === OK) {
         handleLogin(res.data);
-        toast.success("Login successful");
+        toast.success(t("loginSuccess"));
 
-        // Check if user has a saved workspace subdomain
         const savedSubdomain = getWorkspaceSubdomain();
         if (savedSubdomain) {
           window.location.href = `https://${savedSubdomain}.corteksa.net`;
@@ -45,23 +50,21 @@ export function LoginForm() {
           router.push("/multi-step-form");
         }
       } else if (res.status === ACCEPTED) {
-        // OTP required
         handleOtpLogin(res.data.token);
         sessionStorage.setItem("verifyForLogin", "true");
-        toast.info(res.message || "Please verify OTP");
+        toast.info(res.message || t("verifyOtp"));
         router.push("/otp");
       } else {
-        toast.error("Login failed");
+        toast.error(t("loginFailed"));
       }
     } catch (error: any) {
       if (error.response?.status === UNAUTHORIZED_ERROR) {
-        // Email not verified - needs OTP
         handleOtpLogin(error.response.data.data.otpToken);
         sessionStorage.setItem("verifyRegister", "true");
         toast.error(error.response.data.message);
         router.push("/otp");
       } else {
-        toast.error(error.response?.data?.message || "Login failed");
+        toast.error(error.response?.data?.message || t("loginFailed"));
       }
     } finally {
       setIsLoading(false);
@@ -88,7 +91,7 @@ export function LoginForm() {
           className="w-full gap-2 justify-center"
         >
           <IconBrandGoogle className="size-4" />
-          Continue with Google
+          {t("continueWithGoogle")}
         </Button>
       </motion.div>
 
@@ -98,7 +101,7 @@ export function LoginForm() {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3, delay: 0.5 }}
       >
-        <Divider>Or</Divider>
+        <Divider>{tCommon("or")}</Divider>
       </motion.div>
 
       {/* Email Field */}
@@ -106,13 +109,12 @@ export function LoginForm() {
         initial={{ opacity: 0, x: -10 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.3, delay: 0.6 }}
-        className="space-y-2"
       >
-        <Label htmlFor="email">Email address</Label>
+        <Label htmlFor="email" className="block mb-3">{tCommon("email")}</Label>
         <Input
           id="email"
           type="email"
-          placeholder="you@example.com"
+          placeholder={tCommon("emailPlaceholder")}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -124,14 +126,13 @@ export function LoginForm() {
         initial={{ opacity: 0, x: -10 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.3, delay: 0.7 }}
-        className="space-y-2"
       >
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password" className="block mb-3">{tCommon("password")}</Label>
         <div className="relative">
           <Input
             id="password"
             type={showPassword ? "text" : "password"}
-            placeholder="••••••••"
+            placeholder={tCommon("passwordPlaceholder")}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -139,7 +140,7 @@ export function LoginForm() {
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+            className="absolute end-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
           >
             {showPassword ? (
               <IconEyeOff className="size-4" />
@@ -167,14 +168,14 @@ export function LoginForm() {
             htmlFor="remember"
             className="text-sm font-normal cursor-pointer"
           >
-            Remember me
+            {t("rememberMe")}
           </Label>
         </div>
         <Link
           href="/forgot-password"
           className="text-sm text-primary hover:underline"
         >
-          Forgot password?
+          {t("forgotPassword")}
         </Link>
       </motion.div>
 
@@ -185,7 +186,7 @@ export function LoginForm() {
         transition={{ duration: 0.3, delay: 0.9 }}
       >
         <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? "Signing in..." : "Sign in"}
+          {isLoading ? t("signingIn") : tCommon("signIn")}
         </Button>
       </motion.div>
 
@@ -196,9 +197,12 @@ export function LoginForm() {
         transition={{ duration: 0.3, delay: 1.0 }}
         className="text-center text-sm text-muted-foreground"
       >
-        Don't have an account?{" "}
-        <Link href="/signup" className="text-primary hover:underline font-medium">
-          Sign up
+        {t("noAccount")}{" "}
+        <Link
+          href="/signup"
+          className="text-primary hover:underline font-medium"
+        >
+          {tCommon("signup")}
         </Link>
       </motion.p>
     </motion.form>

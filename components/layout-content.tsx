@@ -4,14 +4,23 @@ import { usePathname } from "next/navigation";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 
+// Routes where navbar and footer should be hidden
+const authRoutes = [
+  "/login",
+  "/signup",
+  "/forgot-password",
+  "/otp",
+  "/multi-step-form",
+  "/reset-password",
+];
+
 export function LayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const hideNavAndFooter =
-    pathname === "/login" ||
-    pathname === "/signup" ||
-    pathname === "/forgot-password" ||
-    pathname === "/otp" ||
-    pathname === "/multi-step-form";
+
+  // Check if current path matches any auth route (with or without locale prefix)
+  const hideNavAndFooter = authRoutes.some(
+    (route) => pathname === route || pathname.endsWith(route)
+  );
 
   return (
     <>

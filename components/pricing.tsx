@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { Container } from "./container";
 import { Heading } from "./heading";
 import { Subheading } from "./subheading";
 import { Button } from "./ui/button";
 import { IconCircleCheckFilled, IconFlameFilled } from "@tabler/icons-react";
 import { Loader2 } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 import { PricingPlan, TimePeriod, TIME_PERIOD_LABELS } from "@/lib/types/pricing";
 import { PRICING_KEY, pricingService } from "@/lib/services/PricingService";
@@ -18,9 +19,10 @@ import { AnimatedPrice } from "./ui/animated-price";
 interface PricingCardProps {
   plan: PricingPlan;
   selectedTimePeriod: TimePeriod;
+  t: ReturnType<typeof useTranslations>;
 }
 
-function PricingCard({ plan, selectedTimePeriod }: PricingCardProps) {
+function PricingCard({ plan, selectedTimePeriod, t }: PricingCardProps) {
   const [showAll, setShowAll] = useState(false);
   const displayedFeatures = showAll ? plan.features : plan.features.slice(0, 4);
   const hasMoreFeatures = plan.features.length > 4;
@@ -42,7 +44,7 @@ function PricingCard({ plan, selectedTimePeriod }: PricingCardProps) {
     >
       {/* Popular Icon */}
       {plan.isPopular && (
-        <div className="absolute top-4 right-4">
+        <div className="absolute top-4 right-4 rtl:right-auto rtl:left-4">
           <IconFlameFilled className="size-6 text-primary" />
         </div>
       )}
@@ -55,7 +57,7 @@ function PricingCard({ plan, selectedTimePeriod }: PricingCardProps) {
       {/* Price with Animation */}
       <div className="mb-4">
         {price === null || price === undefined ? (
-          <p className="text-4xl md:text-5xl font-bold font-display">Custom</p>
+          <p className="text-4xl md:text-5xl font-bold font-display">{t("custom")}</p>
         ) : price === 0 ? (
           <div className="flex items-baseline gap-2">
             <p className="text-4xl md:text-5xl font-bold font-display">$0</p>
@@ -111,9 +113,9 @@ function PricingCard({ plan, selectedTimePeriod }: PricingCardProps) {
           onClick={() => setShowAll(!showAll)}
           className="mt-4 text-sm font-medium text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
         >
-          {showAll ? "Show less" : `Show more (${plan.features.length - 4} more)`}
+          {showAll ? t("showLess") : t("showMore", { count: plan.features.length - 4 })}
           <svg
-            className={cn("size-4 transition-transform", showAll && "rotate-180")}
+            className={cn("size-4 transition-transform rtl:rotate-180", showAll && "rotate-180 rtl:rotate-0")}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -127,6 +129,7 @@ function PricingCard({ plan, selectedTimePeriod }: PricingCardProps) {
 }
 
 export const Pricing = () => {
+  const t = useTranslations("pricing");
   const [selectedTimePeriod, setSelectedTimePeriod] = useState<TimePeriod>("sixMonths");
 
   const { data, isLoading } = useQuery({
@@ -142,12 +145,11 @@ export const Pricing = () => {
         {/* Header */}
         <div className="text-center mb-12 md:mb-20">
           <Heading>
-            Start free. <br />
-            Scale as you grow.
+            {t("title")} <br />
+            {t("title2")}
           </Heading>
           <Subheading className="mt-8 mx-auto">
-            Begin with our free plan and upgrade when you need more power. No
-            hidden fees, no surprises.
+            {t("subtitle")}
           </Subheading>
         </div>
 
@@ -169,6 +171,7 @@ export const Pricing = () => {
                 key={plan.slug}
                 plan={plan}
                 selectedTimePeriod={selectedTimePeriod}
+                t={t}
               />
             ))}
           </div>
@@ -177,10 +180,10 @@ export const Pricing = () => {
         {/* View Full Pricing Link */}
         <div className="text-center mt-12">
           <p className="text-neutral-500 dark:text-neutral-400 mb-4">
-            Need more options? View our complete pricing plans
+            {t("moreOptions")}
           </p>
           <Button asChild variant="outline" size="lg">
-            <Link href="/pricing">View all pricing plans</Link>
+            <Link href="/pricing">{t("viewAll")}</Link>
           </Button>
         </div>
       </Container>

@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter, Manrope } from "next/font/google";
-import "./globals.css";
+import { cookies } from "next/headers";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { QueryProvider } from "@/providers/query-provider";
-import { LayoutContent } from "@/components/layout-content";
 import { Toaster } from "sonner";
+import { Manrope, Inter, Cairo, Tajawal } from "next/font/google";
+import { rtlLocales, defaultLocale, Locale } from "@/i18n/routing";
+import "./globals.css";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -16,6 +17,20 @@ const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
+});
+
+// Cairo for Arabic/Persian headings
+const cairo = Cairo({
+  variable: "--font-cairo",
+  subsets: ["arabic", "latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+});
+
+// Tajawal for Arabic/Persian body text
+const tajawal = Tajawal({
+  variable: "--font-tajawal",
+  subsets: ["arabic", "latin"],
+  weight: ["400", "500", "700"],
 });
 
 export const metadata: Metadata = {
@@ -70,14 +85,20 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const locale = (cookieStore.get("CORTEKSA_LOCALE")?.value || defaultLocale) as Locale;
+  const isRTL = rtlLocales.includes(locale);
+
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${manrope.variable} ${inter.variable} antialiased  `}>
+    <html lang={locale} dir={isRTL ? "rtl" : "ltr"} suppressHydrationWarning>
+      <body
+        className={`${manrope.variable} ${inter.variable} ${cairo.variable} ${tajawal.variable} antialiased`}
+      >
         <QueryProvider>
           <ThemeProvider
             attribute="class"
@@ -85,7 +106,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <LayoutContent>{children}</LayoutContent>
+            {children}
             <Toaster
               position="bottom-right"
               richColors
@@ -94,8 +115,7 @@ export default function RootLayout({
             />
           </ThemeProvider>
         </QueryProvider>
-        {/* <script src="https://www.wibbot.com/api/embed?wc=bJlBeyUiS9sWpHkFPR3-bHKU77PRBvhk" defer></script> */}
-             </body>
+      </body>
     </html>
   );
 }

@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { Link, useRouter } from "@/i18n/routing";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -26,17 +26,19 @@ export function SignupForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const t = useTranslations("signup");
+  const tCommon = useTranslations("common");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      toast.error("Passwords do not match");
+      toast.error(t("passwordMismatch"));
       return;
     }
 
     if (!acceptTerms) {
-      toast.error("Please accept the terms and conditions");
+      toast.error(t("acceptTerms"));
       return;
     }
 
@@ -44,7 +46,7 @@ export function SignupForm() {
 
     try {
       const response = await register({
-        name: email.split("@")[0], // Extract name from email
+        name: email.split("@")[0],
         email,
         password,
       });
@@ -52,7 +54,7 @@ export function SignupForm() {
       const res = response as ApiResponse<LoginResponse>;
 
       if (res.status === CREATED) {
-        toast.success("Registration successful! Please verify your email.");
+        toast.success(t("registrationSuccess"));
         sessionStorage.setItem("verifyRegister", "true");
         handleOtpLogin(res.data.token);
         router.push("/otp");
@@ -61,10 +63,10 @@ export function SignupForm() {
       }
     } catch (error: any) {
       if (error.response?.status === BAD_REQUEST) {
-        const message = error.response.data?.message || "Registration failed";
+        const message = error.response.data?.message || t("registrationFailed");
         toast.error(message);
       } else {
-        toast.error("Registration failed. Please try again.");
+        toast.error(t("registrationFailed"));
       }
     } finally {
       setIsLoading(false);
@@ -85,9 +87,13 @@ export function SignupForm() {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.3, delay: 0.4 }}
       >
-        <Button type="button" variant="outline" className="w-full gap-2 justify-center">
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full gap-2 justify-center"
+        >
           <IconBrandGoogle className="size-4" />
-          Continue with Google
+          {t("continueWithGoogle")}
         </Button>
       </motion.div>
 
@@ -97,7 +103,7 @@ export function SignupForm() {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3, delay: 0.5 }}
       >
-        <Divider>Or</Divider>
+        <Divider>{tCommon("or")}</Divider>
       </motion.div>
 
       {/* Email */}
@@ -105,13 +111,12 @@ export function SignupForm() {
         initial={{ opacity: 0, x: -10 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.3, delay: 0.6 }}
-        className="space-y-2"
       >
-        <Label htmlFor="email">Email address</Label>
+        <Label htmlFor="email" className="block mb-3">{tCommon("email")}</Label>
         <Input
           id="email"
           type="email"
-          placeholder="you@example.com"
+          placeholder={tCommon("emailPlaceholder")}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -123,14 +128,13 @@ export function SignupForm() {
         initial={{ opacity: 0, x: -10 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.3, delay: 0.7 }}
-        className="space-y-2"
       >
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password" className="block mb-3">{tCommon("password")}</Label>
         <div className="relative">
           <Input
             id="password"
             type={showPassword ? "text" : "password"}
-            placeholder="••••••••"
+            placeholder={tCommon("passwordPlaceholder")}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -138,9 +142,13 @@ export function SignupForm() {
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+            className="absolute end-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
           >
-            {showPassword ? <IconEyeOff className="size-4" /> : <IconEye className="size-4" />}
+            {showPassword ? (
+              <IconEyeOff className="size-4" />
+            ) : (
+              <IconEye className="size-4" />
+            )}
           </button>
         </div>
       </motion.div>
@@ -150,14 +158,13 @@ export function SignupForm() {
         initial={{ opacity: 0, x: -10 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.3, delay: 0.8 }}
-        className="space-y-2"
       >
-        <Label htmlFor="confirmPassword">Confirm password</Label>
+        <Label htmlFor="confirmPassword" className="block mb-3">{tCommon("confirmPassword")}</Label>
         <div className="relative">
           <Input
             id="confirmPassword"
             type={showConfirmPassword ? "text" : "password"}
-            placeholder="••••••••"
+            placeholder={tCommon("passwordPlaceholder")}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
@@ -165,9 +172,13 @@ export function SignupForm() {
           <button
             type="button"
             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+            className="absolute end-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
           >
-            {showConfirmPassword ? <IconEyeOff className="size-4" /> : <IconEye className="size-4" />}
+            {showConfirmPassword ? (
+              <IconEyeOff className="size-4" />
+            ) : (
+              <IconEye className="size-4" />
+            )}
           </button>
         </div>
       </motion.div>
@@ -185,14 +196,17 @@ export function SignupForm() {
           onCheckedChange={(checked) => setAcceptTerms(checked as boolean)}
           required
         />
-        <Label htmlFor="terms" className="text-sm font-normal cursor-pointer leading-tight">
-          I agree to the{" "}
+        <Label
+          htmlFor="terms"
+          className="text-sm font-normal cursor-pointer leading-tight"
+        >
+          {t("termsAgree")}{" "}
           <Link href="/terms" className="text-primary hover:underline">
-            Terms of Service
+            {t("termsOfService")}
           </Link>{" "}
-          and{" "}
+          {t("and")}{" "}
           <Link href="/privacy" className="text-primary hover:underline">
-            Privacy Policy
+            {t("privacyPolicy")}
           </Link>
         </Label>
       </motion.div>
@@ -204,7 +218,7 @@ export function SignupForm() {
         transition={{ duration: 0.3, delay: 1.0 }}
       >
         <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? "Creating account..." : "Sign up"}
+          {isLoading ? t("creatingAccount") : tCommon("signup")}
         </Button>
       </motion.div>
 
@@ -215,9 +229,12 @@ export function SignupForm() {
         transition={{ duration: 0.3, delay: 1.1 }}
         className="text-center text-sm text-muted-foreground"
       >
-        Already have an account?{" "}
-        <Link href="/login" className="text-primary hover:underline font-medium">
-          Sign in
+        {t("haveAccount")}{" "}
+        <Link
+          href="/login"
+          className="text-primary hover:underline font-medium"
+        >
+          {tCommon("signIn")}
         </Link>
       </motion.p>
     </motion.form>

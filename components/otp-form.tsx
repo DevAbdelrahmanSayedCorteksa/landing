@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import Cookies from "js-cookie";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -20,6 +21,8 @@ export function OtpForm() {
   const [resendCountdown, setResendCountdown] = useState(0);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const router = useRouter();
+  const t = useTranslations("otp");
+  const tCommon = useTranslations("common");
 
   // Focus first input on mount
   useEffect(() => {
@@ -72,7 +75,7 @@ export function OtpForm() {
 
     // Validate 4-digit string
     if (!/^\d{4}$/.test(pastedData)) {
-      toast.error("Please paste a valid 4-digit code");
+      toast.error(t("invalidPaste"));
       return;
     }
 
@@ -85,7 +88,7 @@ export function OtpForm() {
     const otpString = otp.join("");
 
     if (otpString.length !== 4) {
-      toast.error("Please enter the complete 4-digit code");
+      toast.error(t("enterComplete"));
       return;
     }
 
@@ -96,7 +99,7 @@ export function OtpForm() {
       const res = response as ApiResponse<LoginResponse>;
 
       if (res.status === OK) {
-        toast.success("Email verified successfully!");
+        toast.success(t("verifySuccess"));
 
         // Determine redirect based on context
         const verifyRegister = sessionStorage.getItem("verifyRegister");
@@ -117,14 +120,14 @@ export function OtpForm() {
           router.push("/login");
         }
       } else if (res.status === BAD_REQUEST) {
-        toast.error(res.message || "Invalid OTP code");
+        toast.error(res.message || t("invalidOtp"));
       }
     } catch (error: any) {
       if (error.response?.status === BAD_REQUEST) {
-        const message = error.response.data?.message || "Invalid OTP code";
+        const message = error.response.data?.message || t("invalidOtp");
         toast.error(message);
       } else {
-        toast.error("Failed to verify OTP. Please try again.");
+        toast.error(t("verifyFailed"));
       }
     } finally {
       setIsLoading(false);
@@ -136,11 +139,11 @@ export function OtpForm() {
 
     try {
       await resendOtp();
-      toast.success("OTP resent successfully! Check your email.");
+      toast.success(t("resendSuccess"));
       setIsResendDisabled(true);
       setResendCountdown(30);
     } catch (error: any) {
-      const message = error.response?.data?.message || "Failed to resend OTP";
+      const message = error.response?.data?.message || t("resendFailed");
       toast.error(message);
     }
   };
@@ -159,12 +162,13 @@ export function OtpForm() {
       transition={{ duration: 0.5, delay: 0.3 }}
       className="space-y-6"
     >
-      {/* OTP Input Fields */}
+      {/* OTP Input Fields - Always LTR for numeric inputs */}
       <motion.div
         initial={{ opacity: 0, x: -10 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.3, delay: 0.4 }}
         className="flex gap-3 justify-center"
+        dir="ltr"
       >
         {otp.map((digit, index) => (
           <Input
@@ -180,7 +184,7 @@ export function OtpForm() {
             onKeyDown={(e) => handleKeyDown(index, e)}
             onPaste={handlePaste}
             className="w-14 h-14 text-center text-2xl font-semibold"
-            aria-label={`Digit ${index + 1}`}
+            aria-label={`${t("digit")} ${index + 1}`}
           />
         ))}
       </motion.div>
@@ -196,7 +200,7 @@ export function OtpForm() {
           className="w-full"
           disabled={!isOtpComplete || isLoading}
         >
-          {isLoading ? "Verifying..." : "Verify OTP"}
+          {isLoading ? t("verifying") : t("verify")}
         </Button>
       </motion.div>
 
@@ -208,7 +212,7 @@ export function OtpForm() {
         className="text-center text-sm"
       >
         <p className="text-muted-foreground mb-2">
-          Didn't receive the code?
+          {t("didntReceive")}
         </p>
         <button
           type="button"
@@ -217,8 +221,8 @@ export function OtpForm() {
           className="text-primary hover:underline font-medium disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isResendDisabled
-            ? `Resend in ${resendCountdown}s`
-            : "Resend OTP"}
+            ? t("resendIn", { seconds: resendCountdown })
+            : t("resendCode")}
         </button>
       </motion.div>
 
@@ -234,7 +238,7 @@ export function OtpForm() {
           className="w-full"
           onClick={handleCancel}
         >
-          Cancel
+          {tCommon("cancel")}
         </Button>
       </motion.div>
     </motion.div>

@@ -2,16 +2,21 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations, useLocale } from "next-intl";
 import { Heading } from "@/components/heading";
 import { Subheading } from "@/components/subheading";
-import { LoginForm } from "@/components/login-form";
+import { SignupForm } from "@/components/signup-form";
 import { LandingImages } from "@/components/landing-images";
 import { Logo } from "@/components/logo";
 import { PageTransition } from "@/components/page-transition";
 import { getToken } from "@/lib/services/AuthLocalService";
+import { rtlLocales, Locale } from "@/i18n/routing";
 
-export function LoginClient() {
+export function SignupClient() {
   const router = useRouter();
+  const locale = useLocale() as Locale;
+  const isRTL = rtlLocales.includes(locale);
+  const t = useTranslations("signup");
   const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
@@ -34,44 +39,39 @@ export function LoginClient() {
 
   return (
     <PageTransition>
-      <main className="min-h-screen grid lg:grid-cols-2 bg-background relative">
-        {/* Logo - Top Left */}
-        <div className="absolute top-6 left-6 z-50">
+      <main className="min-h-screen grid lg:grid-cols-2 bg-background relative" dir={isRTL ? "rtl" : "ltr"}>
+        {/* Logo - Top Corner */}
+        <div className="absolute top-6 start-6 z-50">
           <Logo />
         </div>
+
         {/* Left Section - Form */}
-        <div className="flex items-center justify-center p-8 md:p-12 lg:p-16 lg:border-r border-border">
+        <div className="flex items-center justify-center p-8 md:p-12 lg:p-16 lg:border-e border-border">
           <div className="w-full max-w-md space-y-8">
-            {/* Heading */}
             <div className="text-center">
               <Heading as="h1" className="text-2xl md:text-3xl lg:text-4xl mb-2">
-                Welcome back
+                {t("title")}
               </Heading>
               <Subheading className="text-base">
-                Sign in to your account to continue
+                {t("subtitle")}
               </Subheading>
             </div>
-
-            {/* Form - No Card Wrapper */}
-            <LoginForm />
+            <SignupForm />
           </div>
         </div>
 
         {/* Right Section - Images */}
         <section className="hidden lg:flex flex-col justify-start pt-8 md:pt-12 lg:pt-16 relative overflow-hidden min-h-screen">
           <div className="w-full px-8 md:px-12 lg:px-16 mb-16">
-            {/* Title and Description */}
-            <div className="text-left max-w-2xl">
+            <div className="text-start max-w-2xl">
               <Heading as="h2" className="text-2xl md:text-3xl lg:text-4xl mb-3">
-                The Brain behind your business
+                {t("sideTitle")}
               </Heading>
               <Subheading className="text-base">
-                Empower your team with AI agents that understand context, make
-                decisions, and execute tasks seamlessly.
+                {t("sideSubtitle")}
               </Subheading>
             </div>
           </div>
-
           <div className="w-full">
             <LandingImages />
           </div>

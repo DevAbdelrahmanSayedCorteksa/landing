@@ -23,9 +23,11 @@ import {
 } from "@tabler/icons-react";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { PricingPlan, TimePeriod, TIME_PERIOD_LABELS } from "@/lib/types/pricing";
 import { PRICING_KEY, pricingService } from "@/lib/services/PricingService";
+import { useLocale, useTranslations } from "next-intl";
+import { rtlLocales, Locale } from "@/i18n/routing";
 
 // Type Definitions
 interface MarketplaceItem {
@@ -165,9 +167,10 @@ const renderFeatureValue = (value: boolean | string) => {
 interface PricingCardProps {
   plan: PricingPlan;
   selectedTimePeriod: TimePeriod;
+  t: ReturnType<typeof useTranslations>;
 }
 
-function PricingCard({ plan, selectedTimePeriod }: PricingCardProps) {
+function PricingCard({ plan, selectedTimePeriod, t }: PricingCardProps) {
   const [showAll, setShowAll] = useState(false);
   const price = plan.timePeriodPricing[selectedTimePeriod];
   const periodLabel = TIME_PERIOD_LABELS[selectedTimePeriod];
@@ -188,7 +191,7 @@ function PricingCard({ plan, selectedTimePeriod }: PricingCardProps) {
     >
       {/* Popular Icon */}
       {plan.isPopular && (
-        <div className="absolute top-4 right-4">
+        <div className="absolute top-4 end-4">
           <IconFlameFilled className="size-6 text-primary" />
         </div>
       )}
@@ -201,7 +204,7 @@ function PricingCard({ plan, selectedTimePeriod }: PricingCardProps) {
       {/* Price with Animation */}
       <div className="mb-4">
         {price === null || price === undefined ? (
-          <p className="text-4xl md:text-5xl font-bold font-display">Custom</p>
+          <p className="text-4xl md:text-5xl font-bold font-display">{t("custom")}</p>
         ) : price === 0 ? (
           <div className="flex items-baseline gap-2">
             <p className="text-4xl md:text-5xl font-bold font-display">$0</p>
@@ -255,7 +258,7 @@ function PricingCard({ plan, selectedTimePeriod }: PricingCardProps) {
           onClick={() => setShowAll(!showAll)}
           className="mt-4 text-sm font-medium text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
         >
-          {showAll ? "Show less" : `Show more (${plan.features.length - 4} more)`}
+          {showAll ? t("showLess") : t("showMore", { count: plan.features.length - 4 })}
           <svg
             className={cn("size-4 transition-transform", showAll && "rotate-180")}
             fill="none"
@@ -271,7 +274,7 @@ function PricingCard({ plan, selectedTimePeriod }: PricingCardProps) {
 }
 
 // Marketplace Card Component
-function MarketplaceCard({ item }: { item: MarketplaceItem }) {
+function MarketplaceCard({ item, t }: { item: MarketplaceItem; t: ReturnType<typeof useTranslations> }) {
   return (
     <div className="p-6 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 hover:border-primary hover:shadow-lg transition-all">
       {/* Icon */}
@@ -292,13 +295,13 @@ function MarketplaceCard({ item }: { item: MarketplaceItem }) {
       <div className="flex items-baseline justify-between mb-4">
         <div>
           <span className="text-2xl font-bold font-display">${item.pricePerUser}</span>
-          <span className="text-sm text-neutral-500 dark:text-neutral-400">/user/month</span>
+          <span className="text-sm text-neutral-500 dark:text-neutral-400">{t("perUserMonth")}</span>
         </div>
       </div>
 
       {/* CTA */}
       <Button variant="outline" className="w-full">
-        Add to workspace
+        {t("addToWorkspace")}
       </Button>
     </div>
   );
@@ -306,6 +309,9 @@ function MarketplaceCard({ item }: { item: MarketplaceItem }) {
 
 // Main Pricing Page Client Component
 export function PricingPageClient() {
+  const locale = useLocale() as Locale;
+  const isRTL = rtlLocales.includes(locale);
+  const t = useTranslations("pricingPage");
   const [selectedTimePeriod, setSelectedTimePeriod] = useState<TimePeriod>("sixMonths");
 
   const { data, isLoading } = useQuery({
@@ -317,17 +323,17 @@ export function PricingPageClient() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background" dir={isRTL ? "rtl" : "ltr"}>
       {/* Hero Section */}
       <section className="pt-10 md:pt-20 lg:pt-32 relative overflow-hidden">
         <Container>
           <div className="text-center max-w-4xl mx-auto">
             <Heading as="h1">
-              The best work solution, <br className="hidden md:block" />
-              for the best price.
+              {t("heroTitle")} <br className="hidden md:block" />
+              {t("heroTitle2")}
             </Heading>
             <Subheading className="py-8 mx-auto">
-              Flexible pricing for teams of all sizes. Start free and scale as you grow.
+              {t("heroSubtitle")}
             </Subheading>
           </div>
         </Container>
@@ -346,7 +352,7 @@ export function PricingPageClient() {
             {/* Money-back Guarantee */}
             <div className="flex items-center justify-center gap-2 text-neutral-600 dark:text-neutral-400 mb-10">
               <IconCircleCheckFilled className="size-5 text-primary" />
-              <span className="text-sm font-medium">100% Money-back Guarantee</span>
+              <span className="text-sm font-medium">{t("moneyBackGuarantee")}</span>
             </div>
           </div>
         </Container>
@@ -366,6 +372,7 @@ export function PricingPageClient() {
                   key={plan.slug}
                   plan={plan}
                   selectedTimePeriod={selectedTimePeriod}
+                  t={t}
                 />
               ))}
             </div>
@@ -377,9 +384,9 @@ export function PricingPageClient() {
       <section className="py-8 md:py-12 lg:py-16 bg-neutral-50 dark:bg-neutral-900">
         <Container>
           <div className="text-center mb-6 md:mb-10">
-            <Heading className="mb-4">Complete features list</Heading>
+            <Heading className="mb-4">{t("featuresTitle")}</Heading>
             <Subheading className="mx-auto">
-              Compare all features across our plans to find the perfect fit
+              {t("featuresSubtitle")}
             </Subheading>
           </div>
 
@@ -387,11 +394,11 @@ export function PricingPageClient() {
             <table className="w-full border-collapse" aria-label="Feature comparison across pricing plans">
               <thead>
                 <tr className="border-b-2 border-neutral-200 dark:border-neutral-800">
-                  <th className="text-left p-4 font-display font-bold text-lg">Feature</th>
-                  <th className="text-center p-4 font-display font-bold text-lg">Free Forever</th>
-                  <th className="text-center p-4 font-display font-bold text-lg">Light</th>
-                  <th className="text-center p-4 font-display font-bold text-lg bg-primary/5">Advanced</th>
-                  <th className="text-center p-4 font-display font-bold text-lg">Enterprise</th>
+                  <th className="text-start p-4 font-display font-bold text-lg">{t("tableFeature")}</th>
+                  <th className="text-center p-4 font-display font-bold text-lg">{t("tableFree")}</th>
+                  <th className="text-center p-4 font-display font-bold text-lg">{t("tableLight")}</th>
+                  <th className="text-center p-4 font-display font-bold text-lg bg-primary/5">{t("tableAdvanced")}</th>
+                  <th className="text-center p-4 font-display font-bold text-lg">{t("tableEnterprise")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -432,15 +439,15 @@ export function PricingPageClient() {
       <section className="py-8 md:py-12 lg:py-16">
         <Container>
           <div className="text-center mb-6 md:mb-10">
-            <Heading className="mb-4">Marketplace Add-ons</Heading>
+            <Heading className="mb-4">{t("marketplaceTitle")}</Heading>
             <Subheading className="mx-auto">
-              Extend your workspace with powerful integrations and tools
+              {t("marketplaceSubtitle")}
             </Subheading>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {marketplaceItems.map((item) => (
-              <MarketplaceCard key={item.id} item={item} />
+              <MarketplaceCard key={item.id} item={item} t={t} />
             ))}
           </div>
         </Container>

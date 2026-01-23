@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { motion } from "motion/react";
 import { Container } from "@/components/container";
@@ -11,6 +11,8 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { BlogService } from "@/lib/services/BlogService";
 import { BlogPost, BlogCategory } from "@/lib/types/blogTypes";
+import { useLocale } from "next-intl";
+import { rtlLocales, Locale } from "@/i18n/routing";
 
 // Format date helper
 const formatDate = (dateString: string): string => {
@@ -144,6 +146,8 @@ function LoadingSkeleton() {
 
 // Main Blog Page Client Component
 export function BlogPageClient() {
+  const locale = useLocale() as Locale;
+  const isRTL = rtlLocales.includes(locale);
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [categories, setCategories] = useState<BlogCategory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -170,7 +174,7 @@ export function BlogPageClient() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background" dir={isRTL ? "rtl" : "ltr"}>
         {/* Hero Section */}
         <section className="pt-10 md:pt-20 lg:pt-32 pb-10 md:pb-16">
         <Container>

@@ -170,3 +170,24 @@
     border-radius: 0.5rem;
   }
 }
+
+/* RTL Support */
+[dir="rtl"] .blog-content .prose {
+  text-align: right;
+}
+
+[dir="rtl"] .blog-content .prose ul {
+  padding-right: 1.5rem;
+  padding-left: 0;
+}
+
+[dir="rtl"] .blog-content .prose ul li {
+  padding-right: 0.5rem;
+  padding-left: 0;
+}
+
+[dir="rtl"] .blog-content .prose blockquote {
+  border-left: none;
+  border-right: 4px solid #7c3aed;
+  border-radius: 0.75rem 0 0 0.75rem;
+}

@@ -1,49 +1,20 @@
 "use client";
 import React, { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Logo } from "./logo";
 import { Container } from "./container";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { Button } from "./ui/button";
 import { IconLayoutSidebar, IconX } from "@tabler/icons-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useAuth } from "@/hooks/useAuth";
 import { UserProfileDropdown } from "./user-profile-dropdown";
 import { MobileUserMenu } from "./mobile-user-menu";
-
-const navlinks = [
-  {
-    title: "Features",
-    href: "/features",
-  },
-  {
-    title: "Product",
-    href: "/product",
-  },
-  {
-    title: "About",
-    href: "/about",
-  },
-  {
-    title: "Blog",
-    href: "/blog",
-  },
-  {
-    title: "Pricing",
-    href: "/pricing",
-  },
-  {
-    title: "Contact",
-    href: "/contact",
-  },
-  {
-    title: "Request Form",
-    href: "/form",
-  },
-];
+import { LanguageSwitcher } from "./language-switcher";
 
 export const Navbar = () => {
   return (
-    <div className="border-b border-neutral-200 dark:border-neutral-800">
+    <div className="border-b border-neutral-200 dark:border-neutral-800" dir="ltr">
       <DesktopNavbar />
       <MobileNavbar />
     </div>
@@ -53,6 +24,18 @@ export const Navbar = () => {
 export const MobileNavbar = () => {
   const [open, setOpen] = useState(false);
   const { isAuthenticated, user, isLoading, logout } = useAuth();
+  const t = useTranslations("nav");
+  const tCommon = useTranslations("common");
+
+  const navlinks = [
+    { title: t("features"), href: "/features" },
+    { title: t("product"), href: "/product" },
+    { title: t("about"), href: "/about" },
+    { title: t("blog"), href: "/blog" },
+    { title: t("pricing"), href: "/pricing" },
+    { title: t("contact"), href: "/contact" },
+    { title: t("requestForm"), href: "/form" },
+  ];
 
   return (
     <div className="flex md:hidden px-4 py-2 justify-between relative">
@@ -77,6 +60,7 @@ export const MobileNavbar = () => {
               duration: 0.2,
             }}
             className="fixed inset-0 h-full w-full z-50 px-4 py-1.5 flex flex-col justify-between bg-background/95"
+            dir="ltr"
           >
             <div>
               <div className="flex justify-between">
@@ -115,7 +99,8 @@ export const MobileNavbar = () => {
                 ))}
               </div>
             </div>
-            <div className="pb-4">
+            <div className="pb-4 space-y-4">
+              <LanguageSwitcher />
               {isLoading ? (
                 <div className="h-24 bg-muted animate-pulse rounded-lg" />
               ) : isAuthenticated && user ? (
@@ -126,10 +111,10 @@ export const MobileNavbar = () => {
                     href="/login"
                     className="text-sm px-4 inline-block py-2 rounded-md text-neutral-600 dark:text-neutral-400 font-medium"
                   >
-                    Login
+                    {tCommon("login")}
                   </Link>
                   <Button asChild>
-                    <Link href="/signup">Signup</Link>
+                    <Link href="/signup">{tCommon("signup")}</Link>
                   </Button>
                 </div>
               )}
@@ -143,6 +128,18 @@ export const MobileNavbar = () => {
 
 export const DesktopNavbar = () => {
   const { isAuthenticated, user, isLoading, logout } = useAuth();
+  const t = useTranslations("nav");
+  const tCommon = useTranslations("common");
+
+  const navlinks = [
+    { title: t("features"), href: "/features" },
+    { title: t("product"), href: "/product" },
+    { title: t("about"), href: "/about" },
+    { title: t("blog"), href: "/blog" },
+    { title: t("pricing"), href: "/pricing" },
+    { title: t("contact"), href: "/contact" },
+    { title: t("requestForm"), href: "/form" },
+  ];
 
   return (
     <Container className="py-4 items-center justify-between hidden lg:flex">
@@ -159,6 +156,7 @@ export const DesktopNavbar = () => {
         ))}
       </div>
       <div className="flex items-center gap-4">
+        <LanguageSwitcher />
         {isLoading ? (
           <div className="h-9 w-40 bg-muted animate-pulse rounded-md" />
         ) : isAuthenticated && user ? (
@@ -169,10 +167,10 @@ export const DesktopNavbar = () => {
               href="/login"
               className="text-sm px-4 inline-block py-2 rounded-md text-neutral-600 dark:text-neutral-400 font-medium"
             >
-              Login
+              {tCommon("login")}
             </Link>
             <Button asChild>
-              <Link href="/signup">Signup</Link>
+              <Link href="/signup">{tCommon("signup")}</Link>
             </Button>
           </>
         )}

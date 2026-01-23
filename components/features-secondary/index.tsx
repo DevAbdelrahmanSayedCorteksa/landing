@@ -1,4 +1,7 @@
+"use client";
+
 import React from "react";
+import { useTranslations } from "next-intl";
 import { Container } from "@/components/container";
 import { cn } from "@/lib/utils";
 import { SkeletonOne } from "./skeletons/first";
@@ -6,19 +9,18 @@ import { SkeletonTwo } from "./skeletons/second";
 import { HumanIcon, IntegrationIcon, WorkflowIcon } from "@/icons";
 
 export const FeaturesSecondary = () => {
+  const t = useTranslations("featuresSecondary");
+
   return (
     <section className="pt-10 md:pt-20 lg:py-32 relative overflow-hidden">
       <Container>
-        <div className="grid grid-cols-1 md:grid-cols-2 border-y border-neutral-200 dark:border-neutral-800 divide-y md:divide-y-0 md:divide-x divide-neutral-200 dark:divide-neutral-800">
+        <div className="grid grid-cols-1 md:grid-cols-2 border-y border-neutral-200 dark:border-neutral-800 divide-y md:divide-y-0 md:divide-x rtl:md:divide-x-reverse divide-neutral-200 dark:divide-neutral-800">
           <div>
             <CardContent>
               <h2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
-                Corteksa Units
+                {t("unitsTitle")}
               </h2>
-              <CardDescription>
-                Build the system you need. Create units that fit your business,
-                add details that matter, and connect everything effortlessly.
-              </CardDescription>
+              <CardDescription>{t("unitsDesc")}</CardDescription>
             </CardContent>
             <CardSkeleton>
               <SkeletonOne />
@@ -27,12 +29,9 @@ export const FeaturesSecondary = () => {
           <div>
             <CardContent>
               <h2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
-                Kanban Boards
+                {t("kanbanTitle")}
               </h2>
-              <CardDescription>
-                Track projects your way. Design workflows with simple Kanban
-                boards to keep every project clear, visible, and on track.
-              </CardDescription>
+              <CardDescription>{t("kanbanDesc")}</CardDescription>
             </CardContent>
             <CardSkeleton className="mask-radial-from-50% mask-t-from-50%">
               <SkeletonTwo />
@@ -45,39 +44,34 @@ export const FeaturesSecondary = () => {
             <div className="flex items-center gap-2">
               <WorkflowIcon />
               <h3 className="font-bold text-lg text-neutral-600 dark:text-neutral-400">
-                Document Generation
+                {t("docGenTitle")}
               </h3>
             </div>
 
-            <p className="text-neutral-500 text-base mt-2">
-              Create documents in one click. Generate contracts, offers, or any
-              document instantly.
-            </p>
+            <p className="text-neutral-500 text-base mt-2">{t("docGenDesc")}</p>
           </div>
           <div>
             <div className="flex items-center gap-2">
               <IntegrationIcon />
               <h3 className="font-bold text-lg text-neutral-600 dark:text-neutral-400">
-                Custom Fields
+                {t("customFieldsTitle")}
               </h3>
             </div>
 
             <p className="text-neutral-500 text-base mt-2">
-              Add the details that matter to you. Customize every unit with
-              fields that fit your workflow.
+              {t("customFieldsDesc")}
             </p>
           </div>
           <div>
             <div className="flex items-center gap-2">
               <HumanIcon />
               <h3 className="font-bold text-lg text-neutral-600 dark:text-neutral-400">
-                Smart Dashboard
+                {t("dashboardTitle")}
               </h3>
             </div>
 
             <p className="text-neutral-500 text-base mt-2">
-              See everything at a glance. Get insights and overview of your
-              projects and operations.
+              {t("dashboardDesc")}
             </p>
           </div>
         </div>

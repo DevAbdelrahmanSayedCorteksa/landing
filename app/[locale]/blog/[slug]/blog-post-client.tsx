@@ -1,19 +1,22 @@
 "use client";
 
 import { useState, useEffect, useLayoutEffect } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
 import { Container } from "@/components/container";
 import { Button } from "@/components/ui/button";
 import {
   IconArrowLeft,
+  IconArrowRight,
   IconArrowUp,
   IconChevronDown,
   IconCheck,
 } from "@tabler/icons-react";
 import { BlogPost } from "@/lib/types/blogTypes";
 import { cn } from "@/lib/utils";
+import { useLocale } from "next-intl";
+import { rtlLocales, Locale } from "@/i18n/routing";
 import "./blog-content.css";
 
 interface BlogPostClientProps {
@@ -135,6 +138,8 @@ function RelatedPostCard({ post }: { post: BlogPost }) {
 }
 
 export function BlogPostClient({ post, relatedPosts }: BlogPostClientProps) {
+  const locale = useLocale() as Locale;
+  const isRTL = rtlLocales.includes(locale);
   const [isVisible, setIsVisible] = useState(false);
   const [tocOpen, setTocOpen] = useState(true);
 
@@ -152,7 +157,7 @@ export function BlogPostClient({ post, relatedPosts }: BlogPostClientProps) {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" dir={isRTL ? "rtl" : "ltr"}>
       {/* Hero Section - 2 Column Layout */}
       <section className="pt-10 md:pt-20 lg:pt-32 pb-10 md:pb-16">
         <Container>
@@ -168,7 +173,11 @@ export function BlogPostClient({ post, relatedPosts }: BlogPostClientProps) {
                 href="/blog"
                 className="inline-flex items-center gap-2 text-sm text-neutral-500 hover:text-primary transition-colors mb-6"
               >
-                <IconArrowLeft className="size-4" />
+                {isRTL ? (
+                  <IconArrowRight className="size-4" />
+                ) : (
+                  <IconArrowLeft className="size-4" />
+                )}
                 Back to Blog
               </Link>
 

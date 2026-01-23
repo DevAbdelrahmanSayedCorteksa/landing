@@ -1,9 +1,11 @@
 "use client";
 import Image from "next/image";
 import React from "react";
-
+import { useTranslations } from "next-intl";
 import { motion } from "motion/react";
+
 export const LogoCloud = () => {
+  const t = useTranslations("logoCloud");
   const logos = [
     {
       title: "Open AI",
@@ -33,11 +35,11 @@ export const LogoCloud = () => {
   return (
     <section className="pb-10 md:pb-10">
       <h2 className="text-neutral-600 font-medium dark:text-neutral-400 text-lg text-center max-w-xl mx-auto">
-        Trusted by modern operators across industries.{" "}
+        {t("title")}{" "}
         <br className="hidden md:block" />{" "}
         <span className="text-neutral-400">
           {" "}
-          From pilot to scale without chaos.
+          {t("subtitle")}
         </span>
       </h2>
       <div className="grid grid-cols-2 md:grid-cols-3 max-w-3xl mx-auto mt-10">

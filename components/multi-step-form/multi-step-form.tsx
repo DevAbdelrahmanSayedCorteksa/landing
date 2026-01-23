@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,6 +43,7 @@ export function MultiStepForm({ selectedPlan, period }: MultiStepFormProps) {
   const [isSuccess, setIsSuccess] = useState(false);
   const [createdSubdomain, setCreatedSubdomain] = useState("");
   const router = useRouter();
+  const t = useTranslations("multiStepForm");
 
   // Fetch pricing plans from API
   const { data: pricingData, isLoading: isPricingLoading } = useQuery({
@@ -102,7 +104,7 @@ export function MultiStepForm({ selectedPlan, period }: MultiStepFormProps) {
       case 1:
         // Step 1: Workspace Name
         if (!formData.workspace_name) {
-          toast.error("Please enter a workspace name");
+          toast.error(t("enterWorkspaceName"));
           return false;
         }
         return true;
@@ -110,7 +112,7 @@ export function MultiStepForm({ selectedPlan, period }: MultiStepFormProps) {
       case 2:
         // Step 2: Pricing Selection
         if (!formData.pricing_plan_slug) {
-          toast.error("Please select a pricing plan");
+          toast.error(t("selectPricingPlan"));
           return false;
         }
         return true;
@@ -118,15 +120,15 @@ export function MultiStepForm({ selectedPlan, period }: MultiStepFormProps) {
       case 3:
         // Step 3: Subdomain (only for paid plans)
         if (!formData.subdomain) {
-          toast.error("Please enter a subdomain");
+          toast.error(t("enterSubdomain"));
           return false;
         }
         if (formData.subdomain.length < 3) {
-          toast.error("Subdomain must be at least 3 characters");
+          toast.error(t("subdomainMin3"));
           return false;
         }
         if (!/^[a-z0-9]+$/.test(formData.subdomain)) {
-          toast.error("Subdomain can only contain lowercase letters and numbers");
+          toast.error(t("subdomainOnlyLowercase"));
           return false;
         }
         return true;
@@ -166,7 +168,7 @@ export function MultiStepForm({ selectedPlan, period }: MultiStepFormProps) {
       const response = await steperService(payload) as any;
 
       if (response.status === OK || response.status === 201) {
-        toast.success("Workspace created successfully!");
+        toast.success(t("workspaceCreated"));
 
         if (isFreePlan) {
           // Free plan: redirect to login directly
@@ -182,11 +184,11 @@ export function MultiStepForm({ selectedPlan, period }: MultiStepFormProps) {
       }
     } catch (error: any) {
       if (error.response?.status === 409) {
-        toast.error("Subdomain already taken. Please choose another.");
+        toast.error(t("subdomainTaken"));
       } else if (error.response?.status === 400) {
-        toast.error(error.response.data?.message || "Validation error. Please check your inputs.");
+        toast.error(error.response.data?.message || t("validationError"));
       } else {
-        toast.error("Failed to create workspace. Please try again.");
+        toast.error(t("createFailed"));
       }
     } finally {
       setIsLoading(false);
@@ -220,9 +222,9 @@ export function MultiStepForm({ selectedPlan, period }: MultiStepFormProps) {
 
   // Button text logic
   const getButtonText = () => {
-    if (isLoading) return "Creating workspace...";
-    if (currentStep === totalSteps) return "Complete Setup";
-    return "Continue";
+    if (isLoading) return t("creatingWorkspace");
+    if (currentStep === totalSteps) return t("completeSetup");
+    return t("continue");
   };
 
   return (
@@ -245,8 +247,8 @@ export function MultiStepForm({ selectedPlan, period }: MultiStepFormProps) {
         <div className="flex gap-4">
           {currentStep > 1 && (
             <Button type="button" variant="outline" onClick={handleBack} className="flex-1" disabled={isLoading}>
-              <IconArrowLeft className="size-4 mr-2" />
-              Back
+              <IconArrowLeft className="size-4 me-2" />
+              {t("back")}
             </Button>
           )}
           <Button
@@ -271,23 +273,25 @@ function Step1WorkspaceName({
   formData: FormData;
   updateFormData: (data: Partial<FormData>) => void;
 }) {
+  const t = useTranslations("multiStepForm");
+
   return (
     <div className="space-y-8">
       <div>
         <h2 className="text-3xl mb-2 tracking-tight font-display font-bold">
-          Your workspace awaits
+          {t("step1Title")}
         </h2>
         <p className="text-sm text-neutral-500 dark:text-neutral-400">
-          Set up your team and start collaborating
+          {t("step1Subtitle")}
         </p>
       </div>
 
       {/* Workspace Name */}
       <div>
-        <Label htmlFor="workspace-name" className="text-base font-medium block mb-3">Workspace Name *</Label>
+        <Label htmlFor="workspace-name" className="text-base font-medium block mb-3">{t("workspaceName")} *</Label>
         <Input
           id="workspace-name"
-          placeholder="My Awesome Company"
+          placeholder={t("workspaceNamePlaceholder")}
           value={formData.workspace_name}
           onChange={(e) => updateFormData({ workspace_name: e.target.value })}
         />
@@ -304,6 +308,7 @@ function Step3Subdomain({
   formData: FormData;
   updateFormData: (data: Partial<FormData>) => void;
 }) {
+  const t = useTranslations("multiStepForm");
   const [isChecking, setIsChecking] = useState(false);
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
   const [statusMessage, setStatusMessage] = useState("");
@@ -331,7 +336,7 @@ function Step3Subdomain({
     // Validate format first
     if (!/^[a-z0-9]+$/.test(formData.subdomain)) {
       setIsAvailable(false);
-      setStatusMessage("Only lowercase letters and numbers allowed");
+      setStatusMessage(t("onlyLowercaseAllowed"));
       return;
     }
 
@@ -342,9 +347,9 @@ function Step3Subdomain({
       try {
         const response = await checkSubdomainAvailability(formData.subdomain);
         setIsAvailable(response.data.available);
-        setStatusMessage(response.data.available ? "Available" : "Already taken");
+        setStatusMessage(response.data.available ? t("available") : t("alreadyTaken"));
       } catch {
-        setStatusMessage("Could not check availability");
+        setStatusMessage(t("couldNotCheck"));
         setIsAvailable(null);
       } finally {
         setIsChecking(false);
@@ -352,31 +357,32 @@ function Step3Subdomain({
     }, 500);
 
     return () => clearTimeout(timeoutId);
-  }, [formData.subdomain]);
+  }, [formData.subdomain, t]);
 
   return (
     <div className="space-y-8">
       <div>
         <h2 className="text-3xl mb-2 tracking-tight font-display font-bold">
-          Choose your subdomain
+          {t("step3Title")}
         </h2>
         <p className="text-sm text-neutral-500 dark:text-neutral-400">
-          This will be your workspace URL
+          {t("step3Subtitle")}
         </p>
       </div>
 
-      {/* Subdomain Input */}
+      {/* Subdomain Input - Always LTR for domain input */}
       <div>
-        <Label htmlFor="subdomain" className="text-base font-medium block mb-3">Subdomain *</Label>
-        <div className="relative flex items-center">
+        <Label htmlFor="subdomain" className="text-base font-medium block mb-3">{t("subdomain")} *</Label>
+        <div className="relative flex items-center" dir="ltr">
           <Input
             id="subdomain"
-            placeholder="mycompany"
+            placeholder={t("subdomainPlaceholder")}
             value={formData.subdomain}
             onChange={(e) => updateFormData({ subdomain: e.target.value.toLowerCase().replace(/[^a-z0-9]/g, '') })}
-            className="pr-28"
+            className="pe-28"
+            dir="ltr"
           />
-          <span className="absolute right-3 text-muted-foreground text-sm pointer-events-none">.corteksa.net</span>
+          <span className="absolute end-3 text-muted-foreground text-sm pointer-events-none">.corteksa.net</span>
         </div>
 
         {/* Availability Status */}
@@ -385,7 +391,7 @@ function Step3Subdomain({
             {isChecking ? (
               <>
                 <Loader2 className="size-4 animate-spin text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">Checking availability...</span>
+                <span className="text-sm text-muted-foreground">{t("checkingAvailability")}</span>
               </>
             ) : isAvailable === true ? (
               <>
@@ -404,7 +410,7 @@ function Step3Subdomain({
         {/* Helper text */}
         {(!formData.subdomain || formData.subdomain.length < 3) && (
           <p className="text-xs text-muted-foreground mt-2">
-            Only lowercase letters and numbers allowed (min 3 characters)
+            {t("subdomainMinChars")}
           </p>
         )}
       </div>
@@ -425,6 +431,7 @@ function Step2PricingSelection({
   plans: PricingPlan[];
   isLoading: boolean;
 }) {
+  const t = useTranslations("multiStepForm");
   const [selectedTimePeriod, setSelectedTimePeriod] = useState<TimePeriod>(
     formData.pricing_plan_period
   );
@@ -446,10 +453,10 @@ function Step2PricingSelection({
       <div className="space-y-8">
         <div>
           <h2 className="text-3xl mb-2 tracking-tight font-display font-bold">
-            Choose your plan
+            {t("step2Title")}
           </h2>
           <p className="text-sm text-neutral-500 dark:text-neutral-400">
-            Flexible pricing for teams of all sizes
+            {t("step2Subtitle")}
           </p>
         </div>
         <div className="flex justify-center py-12">
@@ -463,10 +470,10 @@ function Step2PricingSelection({
     <div className="space-y-8">
       <div>
         <h2 className="text-3xl mb-2 tracking-tight font-display font-bold">
-          Choose your plan
+          {t("step2Title")}
         </h2>
         <p className="text-sm text-neutral-500 dark:text-neutral-400">
-          Flexible pricing for teams of all sizes
+          {t("step2Subtitle")}
         </p>
       </div>
 
@@ -509,6 +516,7 @@ function PricingCardCompact({
   isSelected,
   onSelect,
 }: PricingCardCompactProps) {
+  const t = useTranslations("multiStepForm");
   const price = plan.timePeriodPricing[selectedTimePeriod];
   const periodLabel = TIME_PERIOD_LABELS[selectedTimePeriod];
 
@@ -524,8 +532,8 @@ function PricingCardCompact({
     >
       {/* Popular Badge */}
       {plan.isPopular && (
-        <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 text-[10px] px-3 py-1 rounded-full bg-primary text-primary-foreground font-semibold uppercase tracking-wide">
-          Popular
+        <span className="absolute -top-2.5 start-1/2 -translate-x-1/2 rtl:translate-x-1/2 text-[10px] px-3 py-1 rounded-full bg-primary text-primary-foreground font-semibold uppercase tracking-wide">
+          {t("popular")}
         </span>
       )}
 
@@ -543,9 +551,9 @@ function PricingCardCompact({
           <span className={cn(
             "text-3xl font-bold",
             isSelected ? "text-primary" : "text-foreground"
-          )}>Custom</span>
+          )}>{t("custom")}</span>
         ) : (
-          <div className="flex items-baseline justify-center gap-1">
+          <div className="flex items-baseline justify-center gap-1" dir="ltr">
             <span className={cn(
               "text-3xl font-bold",
               isSelected ? "text-primary" : "text-foreground"
@@ -565,6 +573,7 @@ function PricingCardCompact({
 
 // Success Screen Component
 function SuccessScreen({ subdomain }: { subdomain: string }) {
+  const t = useTranslations("multiStepForm");
   const workspaceUrl = `https://${subdomain}.corteksa.net`;
   const [copied, setCopied] = useState(false);
   const [countdown, setCountdown] = useState(5);
@@ -572,7 +581,7 @@ function SuccessScreen({ subdomain }: { subdomain: string }) {
   const handleCopy = () => {
     navigator.clipboard.writeText(workspaceUrl);
     setCopied(true);
-    toast.success("Copied to clipboard!");
+    toast.success(t("copiedToClipboard"));
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -609,11 +618,11 @@ function SuccessScreen({ subdomain }: { subdomain: string }) {
 
       {/* Heading */}
       <Heading as="h2" className="text-2xl md:text-3xl lg:text-4xl">
-        You&apos;re all set!
+        {t("successTitle")}
       </Heading>
 
       <Subheading className="mt-4 mx-auto">
-        Your workspace is ready. Start building something amazing.
+        {t("successSubtitle")}
       </Subheading>
 
       {/* URL Card */}
@@ -624,9 +633,9 @@ function SuccessScreen({ subdomain }: { subdomain: string }) {
         className="mt-8 p-5 rounded-lg bg-neutral-50 dark:bg-neutral-800"
       >
         <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-3 uppercase tracking-wider font-medium">
-          Your workspace URL
+          {t("yourWorkspaceUrl")}
         </p>
-        <div className="flex items-center justify-center gap-3">
+        <div className="flex items-center justify-center gap-3" dir="ltr">
           <code className="text-sm md:text-base font-mono text-primary">
             {workspaceUrl}
           </code>
@@ -654,14 +663,14 @@ function SuccessScreen({ subdomain }: { subdomain: string }) {
           onClick={() => window.open(workspaceUrl, "_blank")}
           className="shadow-brand"
         >
-          Go to Workspace ({countdown}s)
-          <ExternalLink className="size-4 ml-2" />
+          {t("goToWorkspace")} ({countdown}s)
+          <ExternalLink className="size-4 ms-2" />
         </Button>
         <Button
           variant="outline"
           onClick={() => window.location.href = "/"}
         >
-          Back to Home
+          {t("backToHome")}
         </Button>
       </motion.div>
 
@@ -672,7 +681,7 @@ function SuccessScreen({ subdomain }: { subdomain: string }) {
         transition={{ delay: 0.4 }}
         className="mt-6 text-sm text-neutral-500 dark:text-neutral-400"
       >
-        Redirecting automatically in {countdown} seconds...
+        {t("redirectingIn", { seconds: countdown })}
       </motion.p>
     </motion.div>
   );

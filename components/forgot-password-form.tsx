@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { Link, useRouter } from "@/i18n/routing";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -100,9 +99,8 @@ export function ForgotPasswordForm() {
         initial={{ opacity: 0, x: -10 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.3, delay: 0.4 }}
-        className="space-y-2"
       >
-        <Label htmlFor="email">Email address</Label>
+        <Label htmlFor="email" className="block mb-3">Email address</Label>
         <Input
           id="email"
           type="email"

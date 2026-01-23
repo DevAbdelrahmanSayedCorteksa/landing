@@ -1,9 +1,12 @@
+"use client";
+
 import React from "react";
+import { useTranslations } from "next-intl";
 import { Logo } from "./logo";
 import { Container } from "./container";
 import { Subheading } from "./subheading";
 import { Button } from "./ui/button";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import {
   IconBrandInstagram,
   IconBrandLinkedin,
@@ -14,54 +17,23 @@ import { cn } from "@/lib/utils";
 import { ModeToggle } from "./mode-toggle";
 
 export const Footer = () => {
+  const t = useTranslations("footer");
+
   const product = [
-    {
-      title: "Agent Simulator",
-      href: "#",
-    },
-    {
-      title: "AI Workflows",
-      href: "#",
-    },
-    {
-      title: "Agent Builder",
-      href: "#",
-    },
-    {
-      title: "Analytics Dashboard",
-      href: "#",
-    },
-    {
-      title: "API Integration",
-      href: "#",
-    },
-    {
-      title: "Enterprise Solutions",
-      href: "#",
-    },
+    { title: t("agentSimulator"), href: "#" },
+    { title: t("aiWorkflows"), href: "#" },
+    { title: t("agentBuilder"), href: "#" },
+    { title: t("analyticsDashboard"), href: "#" },
+    { title: t("apiIntegration"), href: "#" },
+    { title: t("enterpriseSolutions"), href: "#" },
   ];
 
   const company = [
-    {
-      title: "About Us",
-      href: "#",
-    },
-    {
-      title: "Careers",
-      href: "#",
-    },
-    {
-      title: "Press",
-      href: "#",
-    },
-    {
-      title: "Contact",
-      href: "#",
-    },
-    {
-      title: "Blog",
-      href: "#",
-    },
+    { title: t("aboutUs"), href: "#" },
+    { title: t("careers"), href: "#" },
+    { title: t("press"), href: "#" },
+    { title: t("contact"), href: "#" },
+    { title: t("blog"), href: "#" },
   ];
 
   return (
@@ -69,13 +41,15 @@ export const Footer = () => {
       <Container className="grid grid-cols-1 lg:grid-cols-5 gap-10 relative z-20">
         <div className="lg:col-span-2 flex flex-col gap-4 items-start">
           <Logo />
-          <Subheading>Safe, observable, outcome-driven AI</Subheading>
-          <Button className="shadow-brand">Start a 30-day trial</Button>
+          <Subheading>{t("tagline")}</Subheading>
+          <Button className="shadow-brand">{t("startTrial")}</Button>
         </div>
         <div className="flex flex-col gap-4">
-          <h4 className="text-base font-medium text-neutral-400">Product</h4>
+          <h4 className="text-base font-medium text-neutral-400">
+            {t("product")}
+          </h4>
           <ul className="list-none flex flex-col gap-2">
-            {product.map((item, index) => (
+            {product.map((item) => (
               <li key={item.title}>
                 <Link
                   href={item.href}
@@ -88,9 +62,11 @@ export const Footer = () => {
           </ul>
         </div>
         <div className="flex flex-col gap-4">
-          <h4 className="text-base font-medium text-neutral-400">Company</h4>
+          <h4 className="text-base font-medium text-neutral-400">
+            {t("company")}
+          </h4>
           <ul className="list-none flex flex-col gap-2">
-            {company.map((item, index) => (
+            {company.map((item) => (
               <li key={item.title}>
                 <Link
                   href={item.href}
@@ -103,33 +79,35 @@ export const Footer = () => {
           </ul>
         </div>
         <div className="flex flex-col gap-4">
-          <h4 className="text-base font-medium text-neutral-400">Newsletter</h4>
-          <div className="border relative border-neutral-200  flex items-center justify-center bg-neutral-100 dark:bg-neutral-800 dark:border-neutral-700 rounded-md">
+          <h4 className="text-base font-medium text-neutral-400">
+            {t("newsletter")}
+          </h4>
+          <div className="border relative border-neutral-200 flex items-center justify-center bg-neutral-100 dark:bg-neutral-800 dark:border-neutral-700 rounded-md">
             <input
               className="bg-transparent outline-none py-2 pl-2 pr-12 placeholder-neutral-400 text-neutral-600 text-sm"
               type="email"
-              placeholder="Your email"
+              placeholder={t("emailPlaceholder")}
             />
             <button className="cursor-pointer px-4 py-2 rounded-[7px] bg-black inset-y-0 right-0 absolute">
               <IconSend className="text-white size-4" />
             </button>
           </div>
           <Subheading className="text-sm md:text-sm lg:text-sm">
-            Get the latest product news and behind the scenes updates.
+            {t("newsletterSubtitle")}
           </Subheading>
         </div>
       </Container>
 
       <Container className="flex flex-col sm:flex-row justify-between mt-10 relative z-20 gap-4 md:gap-0">
         <p className="text-sm text-neutral-500">
-          &copy; {new Date().getFullYear()} Agenforce AI. All rights reserved.
+          &copy; {new Date().getFullYear()} {t("copyright")}
         </p>
 
         <div className="flex md:items-end items-start flex-col gap-4">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-4 *:text-sm *:text-neutral-500">
-              <Link href="/privacy">Privacy Policy</Link>
-              <Link href="/terms">Terms of Service</Link>
+              <Link href="/privacy">{t("privacyPolicy")}</Link>
+              <Link href="/terms">{t("termsOfService")}</Link>
             </div>
           </div>
           <div className="flex items-center gap-4">
