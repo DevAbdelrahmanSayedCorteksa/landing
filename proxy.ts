@@ -5,7 +5,52 @@ import { routing } from "./i18n/routing";
 
 const intlMiddleware = createIntlMiddleware(routing);
 
-export function proxy(request: NextRequest) {
+// Map country codes to locales
+const countryToLocale: Record<string, string> = {
+  // Turkish
+  TR: "tr",
+  // Arabic-speaking countries
+  SA: "ar", // Saudi Arabia
+  AE: "ar", // UAE
+  EG: "ar", // Egypt
+  KW: "ar", // Kuwait
+  QA: "ar", // Qatar
+  BH: "ar", // Bahrain
+  OM: "ar", // Oman
+  JO: "ar", // Jordan
+  LB: "ar", // Lebanon
+  SY: "ar", // Syria
+  IQ: "ar", // Iraq
+  YE: "ar", // Yemen
+  LY: "ar", // Libya
+  SD: "ar", // Sudan
+  // Persian-speaking countries
+  IR: "fa", // Iran
+  AF: "fa", // Afghanistan (Dari)
+  // Russian-speaking countries
+  RU: "ru", // Russia
+  BY: "ru", // Belarus
+  KZ: "ru", // Kazakhstan
+  KG: "ru", // Kyrgyzstan
+  // French-speaking countries
+  FR: "fr", // France
+  BE: "fr", // Belgium
+  CH: "fr", // Switzerland
+  CA: "fr", // Canada (could be en too)
+  MA: "fr", // Morocco (also ar)
+  TN: "fr", // Tunisia (also ar)
+  DZ: "fr", // Algeria (also ar)
+  SN: "fr", // Senegal
+  CI: "fr", // Ivory Coast
+};
+
+// Get locale from country code
+function getLocaleFromCountry(countryCode: string | null): string | null {
+  if (!countryCode) return null;
+  return countryToLocale[countryCode.toUpperCase()] || null;
+}
+
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Skip static files and API routes
@@ -17,12 +62,57 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Run intl middleware first to handle locale
+  // Check if URL has a locale prefix
+  const localePattern = new RegExp(`^/(${routing.locales.join("|")})(/|$)`);
+  const hasLocalePrefix = localePattern.test(pathname);
+
+  // If no locale prefix, detect locale and redirect
+  if (!hasLocalePrefix) {
+    // Check for existing locale cookie first
+    const localeCookie = request.cookies.get("CORTEKSA_LOCALE")?.value;
+    if (localeCookie && routing.locales.includes(localeCookie as any)) {
+      // User has a saved preference, redirect to that locale
+      const url = request.nextUrl.clone();
+      url.pathname = `/${localeCookie}${pathname}`;
+      return NextResponse.redirect(url);
+    }
+
+    // Try to get country from Vercel's geo headers (works in production)
+    let country = request.headers.get("x-vercel-ip-country");
+
+    // For local development, try to get country from IP
+    // You can also use request.geo?.country on Vercel
+    if (!country && process.env.NODE_ENV === "development") {
+      // In development, you can test by setting this manually
+      // or use a geolocation API
+      country = null; // Will fall back to Accept-Language
+    }
+
+    // Get locale from country
+    const countryLocale = getLocaleFromCountry(country);
+
+    if (countryLocale) {
+      // Redirect to country-based locale
+      const url = request.nextUrl.clone();
+      url.pathname = `/${countryLocale}${pathname}`;
+      const response = NextResponse.redirect(url);
+      // Set cookie to remember this
+      response.cookies.set("CORTEKSA_LOCALE", countryLocale, {
+        maxAge: 60 * 60 * 24 * 365, // 1 year
+      });
+      return response;
+    }
+
+    // Fall back to Accept-Language header detection via next-intl
+    return intlMiddleware(request);
+  }
+
+  // From here, we have a locale prefix in the URL
+  // Run intl middleware to handle locale routing
   const intlResponse = intlMiddleware(request);
 
   // Extract the actual path without locale prefix for route checks
-  const localePattern = new RegExp(`^/(${routing.locales.join("|")})`);
-  const pathWithoutLocale = pathname.replace(localePattern, "") || "/";
+  const pathWithoutLocale = pathname.replace(localePattern, "/").replace(/^\/$/, "/") || "/";
 
   // Get auth token and OTP flag from cookies
   const token = request.cookies.get("corteksa_auth_token")?.value;
@@ -53,7 +143,7 @@ export function proxy(request: NextRequest) {
   const otpRoute = "/otp";
 
   // Allow public routes for everyone
-  if (publicRoutes.includes(pathWithoutLocale)) {
+  if (publicRoutes.includes(pathWithoutLocale) || pathWithoutLocale.startsWith("/blog/")) {
     // If user has token and no OTP pending, redirect away from auth pages
     if (token && !isOtp && authRoutes.includes(pathWithoutLocale)) {
       return NextResponse.redirect(new URL(`/${currentLocale}/multi-step-form`, request.url));
@@ -91,13 +181,6 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public files (public directory)
-     */
     "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

@@ -19,8 +19,10 @@ export const routing = defineRouting({
   locales,
   defaultLocale,
   localePrefix: "always",
+  localeDetection: true,
   localeCookie: {
     name: "CORTEKSA_LOCALE",
+    maxAge: 60 * 60 * 24 * 365, // 1 year
   },
 });
 

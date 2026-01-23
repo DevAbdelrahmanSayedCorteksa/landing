@@ -28,7 +28,6 @@ export const MobileNavbar = () => {
   const tCommon = useTranslations("common");
 
   const navlinks = [
-    { title: t("features"), href: "/features" },
     { title: t("product"), href: "/product" },
     { title: t("about"), href: "/about" },
     { title: t("blog"), href: "/blog" },
@@ -132,7 +131,6 @@ export const DesktopNavbar = () => {
   const tCommon = useTranslations("common");
 
   const navlinks = [
-    { title: t("features"), href: "/features" },
     { title: t("product"), href: "/product" },
     { title: t("about"), href: "/about" },
     { title: t("blog"), href: "/blog" },

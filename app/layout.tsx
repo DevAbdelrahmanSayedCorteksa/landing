@@ -3,7 +3,8 @@ import { cookies } from "next/headers";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { QueryProvider } from "@/providers/query-provider";
 import { Toaster } from "sonner";
-import { Manrope, Inter, Cairo, Tajawal } from "next/font/google";
+import { Manrope, Inter, IBM_Plex_Sans_Arabic } from "next/font/google";
+import localFont from "next/font/local";
 import { rtlLocales, defaultLocale, Locale } from "@/i18n/routing";
 import "./globals.css";
 
@@ -19,18 +20,59 @@ const inter = Inter({
   weight: ["400", "500", "600", "700"],
 });
 
-// Cairo for Arabic/Persian headings
-const cairo = Cairo({
-  variable: "--font-cairo",
+// IBM Plex Sans Arabic for Arabic/Persian body text
+const ibmPlexArabic = IBM_Plex_Sans_Arabic({
+  variable: "--font-ibm-plex-arabic",
   subsets: ["arabic", "latin"],
-  weight: ["400", "500", "600", "700", "800", "900"],
+  weight: ["400", "500", "600", "700"],
 });
 
-// Tajawal for Arabic/Persian body text
-const tajawal = Tajawal({
-  variable: "--font-tajawal",
-  subsets: ["arabic", "latin"],
-  weight: ["400", "500", "700"],
+// PingAR+LT for Arabic/Persian headings (local font)
+const pingAR = localFont({
+  src: [
+    {
+      path: "../public/font-ar/PingAR+LT-Thin.otf",
+      weight: "100",
+      style: "normal",
+    },
+    {
+      path: "../public/font-ar/PingAR+LT-ExtraLight.otf",
+      weight: "200",
+      style: "normal",
+    },
+    {
+      path: "../public/font-ar/PingAR+LT-Light.otf",
+      weight: "300",
+      style: "normal",
+    },
+    {
+      path: "../public/font-ar/PingAR+LT-Regular.otf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../public/font-ar/PingAR+LT-Medium.otf",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "../public/font-ar/PingAR+LT-Bold.otf",
+      weight: "700",
+      style: "normal",
+    },
+    {
+      path: "../public/font-ar/PingAR+LT-Heavy.otf",
+      weight: "800",
+      style: "normal",
+    },
+    {
+      path: "../public/font-ar/PingAR+LT-Black.otf",
+      weight: "900",
+      style: "normal",
+    },
+  ],
+  variable: "--font-ping-ar",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -97,7 +139,7 @@ export default async function RootLayout({
   return (
     <html lang={locale} dir={isRTL ? "rtl" : "ltr"} suppressHydrationWarning>
       <body
-        className={`${manrope.variable} ${inter.variable} ${cairo.variable} ${tajawal.variable} antialiased`}
+        className={`${manrope.variable} ${inter.variable} ${pingAR.variable} ${ibmPlexArabic.variable} antialiased`}
       >
         <QueryProvider>
           <ThemeProvider
