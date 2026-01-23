@@ -35,6 +35,10 @@ const navlinks = [
     title: "Contact",
     href: "/contact",
   },
+  {
+    title: "Request Form",
+    href: "/form",
+  },
 ];
 
 export const Navbar = () => {
