@@ -63,7 +63,10 @@ export const removeWorkspaceSubdomain = () => {
 };
 
 // SSO Configuration
-const CRM_DOMAIN = "corteksa.org";
+// NEXT_PUBLIC_CRM_URL: Full URL for local development (e.g., http://localhost:3001)
+// NEXT_PUBLIC_CRM_DOMAIN: Domain for production (e.g., corteksa.org)
+const CRM_BASE_URL = process.env.NEXT_PUBLIC_CRM_URL || "";
+const CRM_DOMAIN = process.env.NEXT_PUBLIC_CRM_DOMAIN || "corteksa.org";
 const SSO_CALLBACK_PATH = "/sso/callback";
 
 /**
@@ -90,10 +93,19 @@ export const buildSSORedirectUrl = (
   refreshToken: string,
   isSystemAdmin: boolean
 ): string => {
-  // Determine base URL based on admin status
-  const baseUrl = isSystemAdmin
-    ? `https://${CRM_DOMAIN}`
-    : `https://${subdomain}.${CRM_DOMAIN}`;
+  // Check if using local development URL (NEXT_PUBLIC_CRM_URL is set)
+  const isLocalDev = CRM_BASE_URL && CRM_BASE_URL.length > 0;
+
+  let baseUrl: string;
+  if (isLocalDev) {
+    // For local development, always use the CRM_BASE_URL directly
+    baseUrl = CRM_BASE_URL;
+  } else {
+    // For production, use subdomain-based URLs from NEXT_PUBLIC_CRM_DOMAIN
+    baseUrl = isSystemAdmin
+      ? `https://${CRM_DOMAIN}`
+      : `https://${subdomain}.${CRM_DOMAIN}`;
+  }
 
   const url = new URL(SSO_CALLBACK_PATH, baseUrl);
   url.searchParams.set("token", encodeBase64Url(token));

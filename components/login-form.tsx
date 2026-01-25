@@ -44,21 +44,31 @@ export function LoginForm() {
         toast.success(t("loginSuccess"));
         const loginData = res.data;
 
-        // Check if user has workspaces - redirect to CRM with SSO token
-        if (loginData.workspaces && loginData.workspaces.length > 0) {
+        // System admin - always redirect to CRM (no subdomain needed)
+        if (loginData.isSystemAdmin) {
+          const ssoUrl = buildSSORedirectUrl(
+            null,
+            loginData.token,
+            loginData.refresh_token || "",
+            true
+          );
+          window.location.href = ssoUrl;
+        }
+        // Regular user with workspaces - redirect to subdomain CRM
+        else if (loginData.workspaces && loginData.workspaces.length > 0) {
           const subdomain = loginData.workspaces[0].subdomain;
           saveWorkspaceSubdomain(subdomain);
 
-          // Build SSO redirect URL based on isSystemAdmin flag
           const ssoUrl = buildSSORedirectUrl(
             subdomain,
             loginData.token,
             loginData.refresh_token || "",
-            loginData.isSystemAdmin || false
+            false
           );
           window.location.href = ssoUrl;
-        } else {
-          // No workspaces - store token locally and redirect to multi-step form
+        }
+        // No workspaces and not admin - redirect to multi-step form
+        else {
           handleLogin(loginData);
           router.push("/multi-step-form");
         }
