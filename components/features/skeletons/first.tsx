@@ -36,6 +36,7 @@ export const SkeletonOne = () => {
   );
 };
 
+
 const SkeletonCard = ({
   icon,
   title,
