@@ -61,3 +61,44 @@ export const getWorkspaceSubdomain = () => {
 export const removeWorkspaceSubdomain = () => {
   Cookies.remove(WORKSPACE_SUBDOMAIN);
 };
+
+// SSO Configuration
+const CRM_DOMAIN = "corteksa.org";
+const SSO_CALLBACK_PATH = "/sso/callback";
+
+/**
+ * Encode a string to base64url format (URL-safe base64)
+ */
+const encodeBase64Url = (str: string): string => {
+  return btoa(str)
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+};
+
+/**
+ * Build SSO redirect URL with encoded tokens
+ * @param subdomain - The workspace subdomain (used when isSystemAdmin is false)
+ * @param token - The access token from login response
+ * @param refreshToken - The refresh token from login response
+ * @param isSystemAdmin - Whether the user is a system admin
+ * @returns The full SSO redirect URL
+ */
+export const buildSSORedirectUrl = (
+  subdomain: string | null,
+  token: string,
+  refreshToken: string,
+  isSystemAdmin: boolean
+): string => {
+  // Determine base URL based on admin status
+  const baseUrl = isSystemAdmin
+    ? `https://${CRM_DOMAIN}`
+    : `https://${subdomain}.${CRM_DOMAIN}`;
+
+  const url = new URL(SSO_CALLBACK_PATH, baseUrl);
+  url.searchParams.set("token", encodeBase64Url(token));
+  url.searchParams.set("refresh_token", encodeBase64Url(refreshToken));
+  url.searchParams.set("ts", Date.now().toString());
+
+  return url.toString();
+};

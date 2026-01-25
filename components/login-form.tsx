@@ -15,7 +15,8 @@ import { login } from "@/lib/auth/LoginService";
 import {
   handleLogin,
   handleOtpLogin,
-  getWorkspaceSubdomain,
+  saveWorkspaceSubdomain,
+  buildSSORedirectUrl,
 } from "@/lib/services/AuthLocalService";
 import { ApiResponse } from "@/lib/types/apiResponse";
 import { LoginResponse } from "@/lib/types/authTypes";
@@ -40,13 +41,25 @@ export function LoginForm() {
       const res = response as ApiResponse<LoginResponse>;
 
       if (res.status === OK) {
-        handleLogin(res.data);
         toast.success(t("loginSuccess"));
+        const loginData = res.data;
 
-        const savedSubdomain = getWorkspaceSubdomain();
-        if (savedSubdomain) {
-          window.location.href = `https://${savedSubdomain}.corteksa.net`;
+        // Check if user has workspaces - redirect to CRM with SSO token
+        if (loginData.workspaces && loginData.workspaces.length > 0) {
+          const subdomain = loginData.workspaces[0].subdomain;
+          saveWorkspaceSubdomain(subdomain);
+
+          // Build SSO redirect URL based on isSystemAdmin flag
+          const ssoUrl = buildSSORedirectUrl(
+            subdomain,
+            loginData.token,
+            loginData.refresh_token || "",
+            loginData.isSystemAdmin || false
+          );
+          window.location.href = ssoUrl;
         } else {
+          // No workspaces - store token locally and redirect to multi-step form
+          handleLogin(loginData);
           router.push("/multi-step-form");
         }
       } else if (res.status === ACCEPTED) {

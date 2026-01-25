@@ -1,10 +1,16 @@
 export interface LoginResponse {
   token: string;
+  refresh_token?: string;
   user?: {
     id: number;
     email: string;
     name?: string;
   };
+  workspaces?: {
+    subdomain: string;
+    name: string;
+  }[];
+  isSystemAdmin?: boolean;
 }
 
 export interface RegisterData {
