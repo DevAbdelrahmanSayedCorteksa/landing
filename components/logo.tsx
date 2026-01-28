@@ -18,13 +18,12 @@ export const Logo = ({ className }: { className?: string }) => {
 
 export const LogoIcon = (props: React.HTMLAttributes<HTMLDivElement>) => {
   return (
-    <div {...props} className={cn("relative", props.className)}>
+    <div {...props} className={cn("relative w-7 h-7", props.className)}>
       <Image
         src="/Corteksa.svg"
         alt="Corteksa Logo"
-        width={28}
-        height={28}
-        className="w-7 h-7"
+        fill
+        className="object-contain"
       />
     </div>
   );

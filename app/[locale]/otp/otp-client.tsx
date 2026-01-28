@@ -5,7 +5,8 @@ import { Heading } from "@/components/heading";
 import { Subheading } from "@/components/subheading";
 import { OtpForm } from "@/components/otp-form";
 import { LandingImages } from "@/components/landing-images";
-import { Logo } from "@/components/logo";
+import { LogoIcon } from "@/components/logo";
+import { Link } from "@/i18n/routing";
 import { rtlLocales, Locale } from "@/i18n/routing";
 
 export function OtpClient() {
@@ -14,11 +15,21 @@ export function OtpClient() {
   const t = useTranslations("otp");
 
   return (
-    <main className="min-h-screen grid lg:grid-cols-2 bg-background relative" dir={isRTL ? "rtl" : "ltr"}>
+    <main className="min-h-screen grid lg:grid-cols-2 bg-background relative overflow-hidden" dir={isRTL ? "rtl" : "ltr"}>
+      {/* Background Glow - Top Corner */}
+      <div
+        className="absolute top-0 w-[300px] h-[300px] bg-primary/35 rounded-full blur-[100px] pointer-events-none"
+        style={{
+          left: isRTL ? "auto" : 0,
+          right: isRTL ? 0 : "auto",
+          transform: `translate(${isRTL ? "25%" : "-25%"}, -50%)`,
+        }}
+      />
+
       {/* Logo - Top Corner */}
-      <div className="absolute top-6 start-6 z-50">
-        <Logo />
-      </div>
+      <Link href="/" className="absolute top-6 start-6 z-50">
+        <LogoIcon className="w-12 h-12" />
+      </Link>
       {/* Left Section - Form */}
       <div className="flex items-center justify-center p-8 md:p-12 lg:p-16 lg:border-e border-border">
         <div className="w-full max-w-md space-y-8">
