@@ -76,6 +76,7 @@ const pingAR = localFont({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://corteksa.com"),
   title: {
     default: "Corteksa - The Brain Behind Your Business",
     template: "%s | Corteksa",

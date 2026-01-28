@@ -79,7 +79,7 @@ const Item = ({
                 src={src}
                 height={120}
                 width={120}
-                alt="item"
+                alt="Team member avatar - Corteksa collaborative workspace"
                 className="object-cover aspect-square rounded-[12px] relative z-20"
               />
             )}

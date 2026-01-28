@@ -44,7 +44,7 @@ export const LandingImages = ({
         >
           <Image
             src={firstImageSrc}
-            alt="Demo screenshot"
+            alt="Corteksa CRM dashboard interface showing project management features"
             height={1080}
             width={1920}
             draggable={false}
@@ -86,7 +86,7 @@ export const LandingImages = ({
         >
           <Image
             src={secondImageSrc}
-            alt="Demo screenshot"
+            alt="Corteksa workspace view with client management and document generation tools"
             height={1080}
             width={1920}
             draggable={false}

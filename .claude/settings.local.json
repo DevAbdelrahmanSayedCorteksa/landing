@@ -3,7 +3,11 @@
     "allow": [
       "Bash(npm install:*)",
       "Bash(dir:*)",
-      "Bash(findstr:*)"
+      "Bash(findstr:*)",
+      "Bash(find:*)",
+      "Read(//c/Users/yousi/Desktop/corteksa-landing/**)",
+      "Bash(done)",
+      "Bash(move:*)"
     ]
   }
 }

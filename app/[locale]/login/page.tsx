@@ -5,6 +5,10 @@ export const metadata: Metadata = {
   title: "Login",
   description:
     "Sign in to your Corteksa account to access your workspace and manage your projects, clients, and documents.",
+  robots: {
+    index: false,
+    follow: false,
+  },
   openGraph: {
     title: "Login | Corteksa",
     description: "Sign in to your Corteksa account to continue.",

@@ -20,20 +20,19 @@ export const Footer = () => {
   const t = useTranslations("footer");
 
   const product = [
-    { title: t("agentSimulator"), href: "#" },
-    { title: t("aiWorkflows"), href: "#" },
-    { title: t("agentBuilder"), href: "#" },
-    { title: t("analyticsDashboard"), href: "#" },
-    { title: t("apiIntegration"), href: "#" },
-    { title: t("enterpriseSolutions"), href: "#" },
+    { title: t("agentSimulator"), href: "/product" },
+    { title: t("aiWorkflows"), href: "/product" },
+    { title: t("agentBuilder"), href: "/product" },
+    { title: t("analyticsDashboard"), href: "/product" },
+    { title: t("apiIntegration"), href: "/product" },
+    { title: t("enterpriseSolutions"), href: "/product" },
   ];
 
   const company = [
-    { title: t("aboutUs"), href: "#" },
-    { title: t("careers"), href: "#" },
-    { title: t("press"), href: "#" },
-    { title: t("contact"), href: "#" },
-    { title: t("blog"), href: "#" },
+    { title: t("aboutUs"), href: "/about" },
+    { title: t("contact"), href: "/contact" },
+    { title: t("blog"), href: "/blog" },
+    { title: t("pricing"), href: "/pricing" },
   ];
 
   return (
@@ -107,7 +106,6 @@ export const Footer = () => {
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-4 *:text-sm *:text-neutral-500">
               <Link href="/privacy">{t("privacyPolicy")}</Link>
-              <Link href="/terms">{t("termsOfService")}</Link>
             </div>
           </div>
           <div className="flex items-center gap-4">

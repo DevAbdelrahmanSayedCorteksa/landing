@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Heading } from "@/components/heading";
 import { Subheading } from "@/components/subheading";
@@ -5,6 +6,15 @@ import { Logo } from "@/components/logo";
 import { LandingImages } from "@/components/landing-images";
 import { MultiStepForm } from "@/components/multi-step-form/multi-step-form";
 import { TimePeriod } from "@/lib/types/pricing";
+
+export const metadata: Metadata = {
+  title: "Get Started | Corteksa",
+  description: "Complete your Corteksa setup and get started.",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 interface MultiStepFormPageProps {
   searchParams: Promise<{ plan?: string; period?: string }>;
