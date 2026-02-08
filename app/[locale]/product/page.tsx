@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: "Products & Features - Corteksa CRM",
     description:
-      "Discover Corteksa's powerful features: customizable units, document management, team collaboration, and more — all in one platform",
+      "Hundreds of powerful tools in one platform. Explore Corteksa's features: customizable units, Cortex AI, document management, team collaboration, Kanban boards, and more.",
     alternates,
     openGraph: {
       title: "Products & Features - Corteksa CRM",

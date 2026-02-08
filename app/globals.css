@@ -127,7 +127,15 @@
 
   --shadow-brand: var(--shadow-brand-var);
 
+  --animate-border-beam: border-beam calc(var(--duration)*1s) infinite linear;
+
   --animate-orbit: orbit var(--orbit-duration) linear infinite;
+
+  @keyframes border-beam {
+    100% {
+      offset-distance: 100%;
+    }
+  }
 
   @keyframes orbit {
     0% {
