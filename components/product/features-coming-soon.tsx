@@ -75,10 +75,6 @@ export function FeaturesComingSoon() {
 
 function CardContent({ description }: { description: string }) {
   return (
-    <div className="bg-neutral-50 dark:bg-neutral-800 p-6 md:p-8 rounded-xl">
-      <p className="text-neutral-600 dark:text-neutral-400 text-sm md:text-base leading-relaxed">
-        {description}
-      </p>
-    </div>
+    <p className="text-sm leading-relaxed">{description}</p>
   );
 }

@@ -1,16 +1,11 @@
 "use client";
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  createContext,
-  useContext,
-} from "react";
-import { IconX } from "@tabler/icons-react";
+import React, { useEffect } from "react";
+import {
+  IconArrowNarrowLeft,
+  IconArrowNarrowRight,
+} from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
-import { AnimatePresence, motion } from "motion/react";
-import Image, { ImageProps } from "next/image";
-import { useOutsideClick } from "@/hooks/use-outside-click";
+import { motion } from "motion/react";
 
 interface CarouselProps {
   items: React.ReactElement[];
@@ -24,28 +19,50 @@ type Card = {
   content: React.ReactNode;
 };
 
-export const CarouselContext = createContext<{
-  onCardClose: (index: number) => void;
-  currentIndex: number;
-}>({
-  onCardClose: () => {},
-  currentIndex: 0,
-});
-
 export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const carouselRef = React.useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = React.useState(false);
+  const [canScrollRight, setCanScrollRight] = React.useState(true);
 
-  const handleCardClose = (index: number) => {
-    setCurrentIndex(index);
+  useEffect(() => {
+    if (carouselRef.current) {
+      carouselRef.current.scrollLeft = initialScroll;
+      checkScrollability();
+    }
+  }, [initialScroll]);
+
+  const checkScrollability = () => {
+    if (carouselRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
+      setCanScrollLeft(scrollLeft > 0);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth);
+    }
+  };
+
+  const scrollLeft = () => {
+    if (carouselRef.current) {
+      carouselRef.current.scrollBy({ left: -300, behavior: "smooth" });
+    }
+  };
+
+  const scrollRight = () => {
+    if (carouselRef.current) {
+      carouselRef.current.scrollBy({ left: 300, behavior: "smooth" });
+    }
   };
 
   return (
-    <CarouselContext.Provider
-      value={{ onCardClose: handleCardClose, currentIndex }}
-    >
-      <div className="relative w-full">
+    <div className="relative w-full">
+      <div
+        className="flex w-full overflow-x-scroll overscroll-x-auto scroll-smooth py-6 [scrollbar-width:none] md:py-10"
+        ref={carouselRef}
+        onScroll={checkScrollability}
+      >
         <div
-          className="flex w-full flex-wrap items-center justify-center gap-4 py-6 md:gap-6 md:py-10"
+          className={cn(
+            "flex flex-row justify-start gap-4 pl-4",
+            "mx-auto max-w-7xl",
+          )}
         >
           {items.map((item, index) => (
             <motion.div
@@ -63,14 +80,30 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
                 },
               }}
               key={"card" + index}
-              className="rounded-2xl"
+              className="shrink-0 rounded-2xl last:pr-[5%] md:last:pr-[33%]"
             >
               {item}
             </motion.div>
           ))}
         </div>
       </div>
-    </CarouselContext.Provider>
+      <div className="mx-auto flex max-w-7xl justify-end gap-2 px-4">
+        <button
+          className="relative z-40 flex h-9 w-9 items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800 disabled:opacity-50"
+          onClick={scrollLeft}
+          disabled={!canScrollLeft}
+        >
+          <IconArrowNarrowLeft className="h-5 w-5 text-neutral-500 dark:text-neutral-400" />
+        </button>
+        <button
+          className="relative z-40 flex h-9 w-9 items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800 disabled:opacity-50"
+          onClick={scrollRight}
+          disabled={!canScrollRight}
+        >
+          <IconArrowNarrowRight className="h-5 w-5 text-neutral-500 dark:text-neutral-400" />
+        </button>
+      </div>
+    </div>
   );
 };
 
@@ -83,136 +116,44 @@ export const Card = ({
   index: number;
   layout?: boolean;
 }) => {
-  const [open, setOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { onCardClose, currentIndex } = useContext(CarouselContext);
-
-  useEffect(() => {
-    function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        handleClose();
-      }
-    }
-
-    if (open) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [open]);
-
-  useOutsideClick(containerRef, () => handleClose());
-
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    onCardClose(index);
-  };
-
   return (
-    <>
-      <AnimatePresence>
-        {open && (
-          <div className="fixed inset-0 z-50 h-screen overflow-auto">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 h-full w-full bg-black/80 backdrop-blur-lg"
-            />
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              ref={containerRef}
-              layoutId={layout ? `card-${card.title}` : undefined}
-              className="relative z-[60] mx-auto my-10 h-fit max-w-2xl rounded-2xl bg-white p-4 font-sans md:p-8 dark:bg-neutral-900"
-            >
-              <button
-                className="sticky top-4 right-0 ml-auto flex h-8 w-8 items-center justify-center rounded-full bg-black dark:bg-white"
-                onClick={handleClose}
-              >
-                <IconX className="h-6 w-6 text-neutral-100 dark:text-neutral-900" />
-              </button>
-              <motion.p
-                layoutId={layout ? `category-${card.title}` : undefined}
-                className="text-sm font-medium text-primary"
-              >
-                {card.category}
-              </motion.p>
-              <motion.p
-                layoutId={layout ? `title-${card.title}` : undefined}
-                className="mt-2 text-xl font-semibold text-neutral-800 md:text-2xl dark:text-white"
-              >
-                {card.title}
-              </motion.p>
-              <div className="py-10">{card.content}</div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-      <motion.button
-        layoutId={layout ? `card-${card.title}` : undefined}
-        onClick={handleOpen}
-        className="relative z-10 flex h-72 w-44 flex-col items-start justify-start overflow-hidden rounded-2xl bg-neutral-100 md:h-96 md:w-64 dark:bg-neutral-900"
-      >
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-30 h-full bg-gradient-to-b from-black/50 via-transparent to-transparent" />
-        <div className="relative z-40 p-5 md:p-6">
-          <motion.p
-            layoutId={layout ? `category-${card.category}` : undefined}
-            className="text-left font-sans text-xs font-medium text-white/80 md:text-sm"
-          >
-            {card.category}
-          </motion.p>
-          <motion.p
-            layoutId={layout ? `title-${card.title}` : undefined}
-            className="mt-1.5 max-w-xs text-left font-sans text-base font-semibold text-balance text-white md:text-lg"
-          >
-            {card.title}
-          </motion.p>
-        </div>
-        <BlurImage
+    <div
+      className="group/card relative h-72 w-48 overflow-hidden rounded-2xl transition-[width] duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] md:h-80 md:w-60 hover:w-[28rem] md:hover:w-[38rem]"
+    >
+      {/* Primary background — always present, behind everything */}
+      <div className="absolute inset-0 bg-primary" />
+
+      {/* Image — fixed size, never changes */}
+      <div className="absolute inset-y-0 left-0 z-10 w-48 shrink-0 md:w-60">
+        <img
           src={card.src}
           alt={card.title}
-          fill
-          className="absolute inset-0 z-10 object-cover"
+          className="h-full w-full object-cover"
+          loading="lazy"
+          decoding="async"
         />
-      </motion.button>
-    </>
+        {/* Bottom gradient for title readability */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/60 to-transparent transition-opacity duration-200 group-hover/card:opacity-0" />
+      </div>
+
+      {/* Title over image — fades out on hover */}
+      <p className="pointer-events-none absolute bottom-0 left-0 z-20 w-48 p-3 text-center text-sm font-semibold text-white transition-opacity duration-200 md:w-60 md:text-base group-hover/card:opacity-0">
+        {card.title}
+      </p>
+
+      {/* Content — FIXED width so text never reflows. Card overflow-hidden reveals it like a curtain */}
+      <div className="pointer-events-none absolute inset-y-0 left-48 z-10 flex w-[16rem] flex-col justify-center p-5 md:left-60 md:w-[23rem] md:p-8">
+        <span className="mb-2 inline-block w-fit rounded-full bg-white/20 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-white/90 uppercase">
+          {card.category}
+        </span>
+        <h3 className="text-base font-bold text-white md:text-lg">
+          {card.title}
+        </h3>
+        <div className="mt-3 text-[13px] leading-relaxed text-white/80 md:text-sm">
+          {card.content}
+        </div>
+      </div>
+    </div>
   );
 };
 
-export const BlurImage = ({
-  height,
-  width,
-  src,
-  className,
-  alt,
-  ...rest
-}: ImageProps) => {
-  const [isLoading, setLoading] = useState(true);
-  return (
-    <img
-      className={cn(
-        "h-full w-full transition duration-300",
-        isLoading ? "blur-sm" : "blur-0",
-        className,
-      )}
-      onLoad={() => setLoading(false)}
-      src={src as string}
-      width={width}
-      height={height}
-      loading="lazy"
-      decoding="async"
-      blurDataURL={typeof src === "string" ? src : undefined}
-      alt={alt ? alt : "Background of a beautiful view"}
-      {...rest}
-    />
-  );
-};
