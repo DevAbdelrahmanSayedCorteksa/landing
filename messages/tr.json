@@ -518,6 +518,20 @@
     "marketplaceSubtitle": "Corteksa Marketplace, araçlarınızın bir araya geldiği yerdir",
     "comingSoon": "Yakında",
     "marketplaceName": "Corteksa Marketplace",
-    "marketplaceDesc": "Sevdiğiniz araçları bağlayın. Muhasebe yazılımından iletişim uygulamalarına, büyüyen marketplace'imiz her şeyi tek bir birleşik merkezde bir araya getirecek."
+    "marketplaceDesc": "Sevdiğiniz araçları bağlayın. Muhasebe yazılımından iletişim uygulamalarına, büyüyen marketplace'imiz her şeyi tek bir birleşik merkezde bir araya getirecek.",
+    "comingSoonTitle": "Sırada ne var",
+    "comingSoonSubtitle": "Çalışmanın geleceğini inşa ediyoruz. İşte yolda olanların bir önizlemesi.",
+    "comingMarketplaceTitle": "Pazar yeri ve entegrasyonlar",
+    "comingMarketplaceDesc": "Sevdiğiniz araçları bağlayın. Pazarımız muhasebe yazılımı, iletişim uygulamaları ve üçüncü taraf hizmetleri entegre etmenizi sağlayacak — hepsi Corteksa içinde birleşik.",
+    "comingAnalyticsTitle": "Gelişmiş analizler",
+    "comingAnalyticsDesc": "Gösterge panellerinin ötesine geçin. Özel raporlar, trend tahminleri ve performans kıyaslamalarıyla derinlemesine analizler.",
+    "comingMobileAppTitle": "Mobil uygulama",
+    "comingMobileAppDesc": "Çalışma alanınızı yanınızda taşıyın. Projelerinizi yönetmek için iOS ve Android'de yerel bir deneyim.",
+    "comingAutomationTitle": "Otomasyon oluşturucu",
+    "comingAutomationDesc": "Kodsuz güçlü iş akışları oluşturun. Tekrarlayan görevleri otomatikleştirmek için tetikleyiciler, koşullar ve eylemler belirleyin.",
+    "comingTimeTrackingTitle": "Zaman takibi",
+    "comingTimeTrackingDesc": "Önemli olan her dakikayı takip edin. Saatleri kaydetmek için yerleşik zamanlayıcılar, zaman çizelgeleri ve raporlar.",
+    "comingApiIntegrationsTitle": "Genel API",
+    "comingApiIntegrationsDesc": "Corteksa üzerine inşa edin. Corteksa'yı kendi sistemlerinize entegre etmek için webhook'lar ve SDK'lar ile geliştirici dostu bir REST API."
   }
 }

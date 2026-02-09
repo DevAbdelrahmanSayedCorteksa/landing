@@ -518,6 +518,20 @@
     "marketplaceSubtitle": "La Marketplace Corteksa est là où vos outils se rejoignent",
     "comingSoon": "Bientôt disponible",
     "marketplaceName": "La Marketplace Corteksa",
-    "marketplaceDesc": "Connectez les outils que vous aimez. Des logiciels de comptabilité aux applications de communication, notre marketplace en croissance réunira tout dans un hub unifié."
+    "marketplaceDesc": "Connectez les outils que vous aimez. Des logiciels de comptabilité aux applications de communication, notre marketplace en croissance réunira tout dans un hub unifié.",
+    "comingSoonTitle": "Ce qui arrive ensuite",
+    "comingSoonSubtitle": "Nous construisons l'avenir du travail. Voici un aperçu de ce qui est en route.",
+    "comingMarketplaceTitle": "Marketplace et intégrations",
+    "comingMarketplaceDesc": "Connectez les outils que vous aimez déjà. Notre marketplace vous permettra d'intégrer logiciels de comptabilité, applications de communication et services tiers — le tout unifié dans Corteksa.",
+    "comingAnalyticsTitle": "Analyses avancées",
+    "comingAnalyticsDesc": "Allez au-delà des tableaux de bord. Des analyses approfondies avec des rapports personnalisés, des prévisions de tendances et des benchmarks de performance.",
+    "comingMobileAppTitle": "Application mobile",
+    "comingMobileAppDesc": "Emportez votre espace de travail partout. Une expérience native pour iOS et Android pour gérer vos projets où que vous soyez.",
+    "comingAutomationTitle": "Constructeur d'automatisation",
+    "comingAutomationDesc": "Créez des workflows puissants sans code. Définissez des déclencheurs, des conditions et des actions pour automatiser les tâches répétitives.",
+    "comingTimeTrackingTitle": "Suivi du temps",
+    "comingTimeTrackingDesc": "Suivez chaque minute qui compte. Des minuteurs intégrés, des feuilles de temps et des rapports pour enregistrer les heures avec précision.",
+    "comingApiIntegrationsTitle": "API publique",
+    "comingApiIntegrationsDesc": "Construisez sur Corteksa. Une API REST conviviale pour les développeurs avec webhooks et SDKs pour intégrer Corteksa dans vos systèmes."
   }
 }

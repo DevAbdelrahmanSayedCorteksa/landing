@@ -530,6 +530,21 @@
     "marketplaceSubtitle": "The Corteksa Marketplace is where your tools come together",
     "comingSoon": "Coming Soon",
     "marketplaceName": "The Corteksa Marketplace",
-    "marketplaceDesc": "Connect the tools you love. From accounting software to communication apps, our growing marketplace will bring everything together in one unified hub."
+    "marketplaceDesc": "Connect the tools you love. From accounting software to communication apps, our growing marketplace will bring everything together in one unified hub.",
+
+    "comingSoonTitle": "What's coming next",
+    "comingSoonSubtitle": "We're building the future of work. Here's a preview of what's on the way.",
+    "comingMarketplaceTitle": "Marketplace & Integrations",
+    "comingMarketplaceDesc": "Connect the tools you already love. Our marketplace will let you plug in accounting software, communication apps, and third-party services — all unified inside Corteksa without switching tabs.",
+    "comingAnalyticsTitle": "Advanced Analytics",
+    "comingAnalyticsDesc": "Go beyond dashboards. Deep analytics with custom reports, trend forecasting, and performance benchmarks will give you the clarity to make smarter decisions faster.",
+    "comingMobileAppTitle": "Mobile App",
+    "comingMobileAppDesc": "Take your workspace everywhere. A native mobile experience for iOS and Android so you can manage projects, respond to clients, and stay on top of your workflow — wherever you are.",
+    "comingAutomationTitle": "Automation Builder",
+    "comingAutomationDesc": "Build powerful workflows without code. Set triggers, conditions, and actions to automate repetitive tasks — from sending notifications to updating statuses and assigning work.",
+    "comingTimeTrackingTitle": "Time Tracking",
+    "comingTimeTrackingDesc": "Track every minute that matters. Built-in timers, timesheets, and reports so your team can log hours, bill accurately, and understand where time really goes.",
+    "comingApiIntegrationsTitle": "Public API",
+    "comingApiIntegrationsDesc": "Build on top of Corteksa. A developer-friendly REST API with webhooks, SDKs, and detailed docs so you can integrate Corteksa into your own systems and workflows."
   }
 }
