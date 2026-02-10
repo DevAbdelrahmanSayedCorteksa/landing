@@ -9,7 +9,17 @@
       "Bash(done)",
       "Bash(move:*)",
       "Bash(git commit -m \"$\\(cat <<''EOF''\nAdd comprehensive SEO optimization and error handling\n\n- Add JSON-LD schemas \\(Organization, WebSite, Article, FAQ, Breadcrumb, Product\\)\n- Create dynamic sitemap.xml and robots.txt\n- Add OpenGraph and Twitter cards to all pages\n- Add hreflang alternates for multilingual SEO\n- Add BreadcrumbSchema to main pages\n- Create custom 404 and 500 error pages\n- Add PWA manifest\n- Add security headers \\(HSTS, X-Frame-Options, etc.\\)\n- Improve image alt texts for accessibility\n- Add metadataBase for proper OG image resolution\n- Fix footer navigation links\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
-      "Bash(git push)"
+      "Bash(git push)",
+      "WebFetch(domain:clickup.com)",
+      "WebFetch(domain:cdn.21st.dev)",
+      "Bash(npx next build:*)",
+      "Bash(git restore:*)",
+      "Bash(npx shadcn@latest add @aceternity/apple-cards-carousel)",
+      "Bash(python:*)",
+      "Bash(del \"components\\\\product\\\\features-all.tsx\")",
+      "Bash(del \"components\\\\product\\\\features-intelligence.tsx\")",
+      "Bash(del:*)",
+      "Bash(del \"components\\\\product\\\\features-workspace.tsx\")"
     ]
   }
 }

@@ -7,38 +7,17 @@ import { Heading } from "@/components/heading";
 import { Subheading } from "@/components/subheading";
 import { cn } from "@/lib/utils";
 import { rtlLocales, Locale } from "@/i18n/routing";
-import { motion } from "motion/react";
+import { IconLink, IconForms } from "@tabler/icons-react";
 import { SectionWrapper } from "./section-wrapper";
-import { CardSkeleton } from "./skeletons";
+import { CardContent, CardDescription, CardSkeleton } from "./skeletons";
 import { UnitsSkeletonVisual } from "./skeletons/units";
-import { AssistantSkeletonVisual } from "./skeletons/ai-assistant";
-import { CollaborationSkeletonVisual } from "./skeletons/collaboration";
+import { KanbanSkeletonVisual } from "./skeletons/kanban";
+import { FeatureIconItem } from "./feature-icon-item";
 
 export function FeaturesOverview() {
   const t = useTranslations("product");
   const locale = useLocale() as Locale;
   const isRTL = rtlLocales.includes(locale);
-
-  const cards = [
-    {
-      title: t("overviewCard1Title"),
-      desc: t("overviewCard1Desc"),
-      skeleton: <UnitsSkeletonVisual isRTL={isRTL} />,
-      featured: false,
-    },
-    {
-      title: t("overviewCard2Title"),
-      desc: t("overviewCard2Desc"),
-      skeleton: <AssistantSkeletonVisual isRTL={isRTL} />,
-      featured: true,
-    },
-    {
-      title: t("overviewCard3Title"),
-      desc: t("overviewCard3Desc"),
-      skeleton: <CollaborationSkeletonVisual isRTL={isRTL} />,
-      featured: false,
-    },
-  ];
 
   return (
     <SectionWrapper id="overview">
@@ -52,35 +31,49 @@ export function FeaturesOverview() {
           </Subheading>
         </div>
 
-        <div className={cn(
-          "grid grid-cols-1 md:grid-cols-3 gap-6",
-          isRTL && "direction-rtl"
-        )}>
-          {cards.map((card, idx) => (
-            <motion.div
-              key={idx}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: idx * 0.1 }}
-              viewport={{ once: true }}
-              className={cn(
-                "rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-lg",
-                card.featured && "shadow-brand md:-translate-y-2"
-              )}
-            >
-              <CardSkeleton>
-                {card.skeleton}
-              </CardSkeleton>
-              <div className={cn("p-6", isRTL && "text-right")} dir={isRTL ? "rtl" : "ltr"}>
-                <h3 className="text-lg font-bold text-neutral-800 dark:text-neutral-200 mb-2">
-                  {card.title}
-                </h3>
-                <p className="text-neutral-600 dark:text-neutral-400 text-sm">
-                  {card.desc}
-                </p>
-              </div>
-            </motion.div>
-          ))}
+        {/* Two-column feature grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 border-y border-neutral-200 dark:border-neutral-800">
+          <div className={cn(
+            "border-b md:border-b-0 border-neutral-200 dark:border-neutral-800",
+            isRTL ? "md:border-l" : "md:border-r"
+          )}>
+            <CardContent isRTL={isRTL}>
+              <h2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
+                {t("unitsTitle")}
+              </h2>
+              <CardDescription>{t("unitsDesc")}</CardDescription>
+            </CardContent>
+            <CardSkeleton>
+              <UnitsSkeletonVisual isRTL={isRTL} />
+            </CardSkeleton>
+          </div>
+          <div>
+            <CardContent isRTL={isRTL}>
+              <h2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
+                {t("viewsTitle")}
+              </h2>
+              <CardDescription>{t("viewsDesc")}</CardDescription>
+            </CardContent>
+            <CardSkeleton className="h-72 sm:h-64 md:h-72">
+              <KanbanSkeletonVisual isRTL={isRTL} />
+            </CardSkeleton>
+          </div>
+        </div>
+
+        {/* Icon features below */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 mt-10 md:mt-16">
+          <FeatureIconItem
+            icon={<IconForms className="size-5 text-primary" />}
+            title={t("fieldsTitle")}
+            description={t("fieldsDesc")}
+            isRTL={isRTL}
+          />
+          <FeatureIconItem
+            icon={<IconLink className="size-5 text-primary" />}
+            title={t("relationsTitle")}
+            description={t("relationsDesc")}
+            isRTL={isRTL}
+          />
         </div>
       </Container>
     </SectionWrapper>

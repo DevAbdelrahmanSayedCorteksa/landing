@@ -9,12 +9,10 @@ import { useScrollSync, TAB_IDS, type TabId } from "./scroll-sync-provider";
 
 const TAB_LABELS: Record<TabId, string> = {
   overview: "tabOverview",
-  workspace: "tabWorkspace",
-  intelligence: "tabIntelligence",
   documents: "tabDocuments",
   collaboration: "tabCollaboration",
-  support: "tabSupport",
-  "all-features": "tabAllFeatures",
+  "best-fit": "tabBestFit",
+  assistant: "tabAssistant",
 };
 
 export function FeaturesTabsNav() {

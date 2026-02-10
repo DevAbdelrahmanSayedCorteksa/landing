@@ -4,12 +4,10 @@ import React, { createContext, useContext, useState, useEffect, useRef, useCallb
 
 export const TAB_IDS = [
   "overview",
-  "workspace",
-  "intelligence",
   "documents",
   "collaboration",
-  "support",
-  "all-features",
+  "best-fit",
+  "assistant",
 ] as const;
 
 export type TabId = (typeof TAB_IDS)[number];

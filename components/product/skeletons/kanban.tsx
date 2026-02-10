@@ -1,73 +1,159 @@
 "use client";
 
-import React from "react";
+import React, { useState, useCallback, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
+import { IconGripVertical } from "@tabler/icons-react";
+
+type Card = { id: string; label: string };
+type ColumnKey = "todo" | "progress" | "done";
 
 export const KanbanSkeletonVisual = ({ isRTL }: { isRTL: boolean }) => {
   const t = useTranslations("product");
 
-  const columns = [
-    {
-      title: t("kanbanTodo"),
-      color: "bg-blue-500",
-      cards: [
-        { w: "w-full", h: "h-8" },
-        { w: "w-3/4", h: "h-6" },
-      ],
-    },
-    {
-      title: t("kanbanInProgress"),
-      color: "bg-yellow-500",
-      cards: [
-        { w: "w-full", h: "h-6" },
-        { w: "w-5/6", h: "h-8" },
-        { w: "w-2/3", h: "h-6" },
-      ],
-    },
-    {
-      title: t("kanbanDone"),
-      color: "bg-green-500",
-      cards: [
-        { w: "w-full", h: "h-6" },
-      ],
-    },
+  const [columns, setColumns] = useState<Record<ColumnKey, Card[]>>({
+    todo: [
+      { id: "t1", label: t("kanbanCard1") },
+      { id: "t2", label: t("kanbanCard2") },
+    ],
+    progress: [
+      { id: "p1", label: t("kanbanCard3") },
+      { id: "p2", label: t("kanbanCard4") },
+    ],
+    done: [
+      { id: "d1", label: t("kanbanCard5") },
+    ],
+  });
+
+  const dragData = useRef<{ card: Card; from: ColumnKey } | null>(null);
+  const [dropTarget, setDropTarget] = useState<ColumnKey | null>(null);
+  const [draggingId, setDraggingId] = useState<string | null>(null);
+
+  const moveCard = useCallback((card: Card, from: ColumnKey, to: ColumnKey) => {
+    if (from === to) return;
+    setColumns((prev) => ({
+      ...prev,
+      [from]: prev[from].filter((c) => c.id !== card.id),
+      [to]: [...prev[to], card],
+    }));
+  }, []);
+
+  const columnMeta: { key: ColumnKey; title: string }[] = [
+    { key: "todo", title: t("kanbanTodo") },
+    { key: "progress", title: t("kanbanInProgress") },
+    { key: "done", title: t("kanbanDone") },
   ];
 
   return (
-    <div className={cn(
-      "perspective-distant scale-105 h-full w-full mask-radial-from-50%",
-      isRTL ? "rotate-z-10 -rotate-y-15 rotate-x-25" : "rotate-z-10 rotate-y-15 rotate-x-25"
-    )}>
-      <div className="absolute inset-6 flex gap-2 justify-center items-start pt-4">
-        {columns.map((col, colIdx) => (
+    <div className="h-full w-full p-4 md:p-5 flex items-stretch justify-center">
+      <div className="flex gap-3 w-full">
+        {columnMeta.map((col, colIdx) => (
           <motion.div
-            key={col.title}
-            initial={{ opacity: 0, y: 20 }}
+            key={col.key}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: colIdx * 0.15 }}
-            className="flex-1 bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-700 shadow-lg p-2 max-w-[120px]"
+            transition={{ duration: 0.35, delay: colIdx * 0.1 }}
+            className={cn(
+              "flex-1 rounded-2xl border bg-neutral-50 dark:bg-neutral-800/30 flex flex-col transition-all duration-150",
+              dropTarget === col.key
+                ? "border-primary/50 bg-primary/5"
+                : "border-neutral-200 dark:border-neutral-700"
+            )}
+            onDragOver={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
+              setDropTarget(col.key);
+            }}
+            onDragLeave={(e) => {
+              if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                setDropTarget(null);
+              }
+            }}
+            onDrop={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setDropTarget(null);
+              setDraggingId(null);
+              if (dragData.current) {
+                moveCard(dragData.current.card, dragData.current.from, col.key);
+                dragData.current = null;
+              }
+            }}
           >
-            <div className="flex items-center gap-1.5 mb-2 px-1">
-              <div className={cn("size-2 rounded-full", col.color)} />
-              <span className="text-[9px] font-bold text-neutral-700 dark:text-neutral-300 truncate">
-                {col.title}
+            {/* Column header */}
+            <div className="flex items-center justify-between px-3 py-2.5 border-b border-neutral-200 dark:border-neutral-700">
+              <div className="flex items-center gap-2">
+                <div className={cn(
+                  "size-2 rounded-full",
+                  col.key === "done" ? "bg-primary" : "bg-primary/40"
+                )} />
+                <span className="text-[11px] font-bold text-neutral-700 dark:text-neutral-300">
+                  {col.title}
+                </span>
+              </div>
+              <span className="text-[9px] font-semibold text-neutral-400 bg-neutral-200/60 dark:bg-neutral-700/60 px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
+                {columns[col.key].length}
               </span>
             </div>
-            <div className="space-y-1.5">
-              {col.cards.map((card, cardIdx) => (
+
+            {/* Cards area */}
+            <div className="p-2 space-y-2 flex-1">
+              <AnimatePresence mode="popLayout">
+                {columns[col.key].map((card) => (
+                  <motion.div
+                    key={card.id}
+                    layout
+                    initial={{ opacity: 0, scale: 0.92 }}
+                    animate={{ opacity: draggingId === card.id ? 0.4 : 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.92 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <div
+                      draggable="true"
+                      onDragStart={(e) => {
+                        e.stopPropagation();
+                        dragData.current = { card, from: col.key };
+                        setDraggingId(card.id);
+                        e.dataTransfer.effectAllowed = "move";
+                        e.dataTransfer.setData("text/plain", card.id);
+                      }}
+                      onDragEnd={() => {
+                        dragData.current = null;
+                        setDraggingId(null);
+                        setDropTarget(null);
+                      }}
+                      className={cn(
+                        "rounded-xl border px-3 py-2.5 cursor-grab active:cursor-grabbing transition-all duration-150 select-none",
+                        "border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 hover:border-primary/30 hover:shadow-sm"
+                      )}
+                    >
+                      <div className={cn("flex items-start gap-2", isRTL && "flex-row-reverse")}>
+                        <IconGripVertical className="size-3.5 text-neutral-300 dark:text-neutral-600 shrink-0 mt-0.5" />
+                        <p className="text-[11px] font-medium text-neutral-700 dark:text-neutral-300 leading-snug flex-1">
+                          {card.label}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2 mt-2">
+                        <div className="size-4 rounded-full bg-primary/15 shrink-0" />
+                        <div className="h-1.5 flex-1 rounded-full bg-neutral-100 dark:bg-neutral-700" />
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+
+              {/* Drop hint */}
+              {dropTarget === col.key && dragData.current && dragData.current.from !== col.key && (
                 <motion.div
-                  key={cardIdx}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3, delay: colIdx * 0.15 + cardIdx * 0.1 }}
-                  className={cn(
-                    "rounded-lg bg-neutral-50 dark:bg-neutral-800 border border-neutral-100 dark:border-neutral-700",
-                    card.h
-                  )}
-                />
-              ))}
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 36 }}
+                  className="rounded-xl border-2 border-dashed border-primary/30 flex items-center justify-center"
+                >
+                  <span className="text-xs text-primary/60 font-medium">+</span>
+                </motion.div>
+              )}
             </div>
           </motion.div>
         ))}

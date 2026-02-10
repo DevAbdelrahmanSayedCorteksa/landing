@@ -9,7 +9,6 @@ import { cn } from "@/lib/utils";
 import { rtlLocales, Locale } from "@/i18n/routing";
 import { SectionWrapper } from "./section-wrapper";
 import { CardContent, CardDescription, CardSkeleton } from "./skeletons";
-import { DocumentsSkeletonVisual } from "./skeletons/documents";
 import { DocumentsGenerationSkeletonVisual } from "./skeletons/doc-gen";
 import { StorageSkeletonVisual } from "./skeletons/storage";
 
@@ -38,17 +37,6 @@ export function FeaturesDocuments() {
           )}>
             <CardContent isRTL={isRTL}>
               <h2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
-                {t("documentsCardTitle")}
-              </h2>
-              <CardDescription>{t("documentsDesc")}</CardDescription>
-            </CardContent>
-            <CardSkeleton>
-              <DocumentsSkeletonVisual isRTL={isRTL} />
-            </CardSkeleton>
-          </div>
-          <div>
-            <CardContent isRTL={isRTL}>
-              <h2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
                 {t("docGenTitle")}
               </h2>
               <CardDescription>{t("docGenDesc")}</CardDescription>
@@ -57,11 +45,7 @@ export function FeaturesDocuments() {
               <DocumentsGenerationSkeletonVisual isRTL={isRTL} />
             </CardSkeleton>
           </div>
-        </div>
-
-        {/* Storage sub-feature */}
-        <div className="mt-6 border border-neutral-200 dark:border-neutral-800 rounded-2xl overflow-hidden bg-white dark:bg-neutral-900">
-          <div className={cn("grid grid-cols-1 md:grid-cols-2", isRTL && "md:direction-rtl")}>
+          <div>
             <CardContent isRTL={isRTL}>
               <h2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
                 {t("storageTitle")}

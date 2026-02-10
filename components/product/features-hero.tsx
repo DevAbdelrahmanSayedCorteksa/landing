@@ -17,9 +17,9 @@ export function FeaturesHero() {
     <section className="relative pt-24 md:pt-32 lg:pt-40 pb-8 overflow-hidden">
       {/* Subtle background lines */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute left-[15%] top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-neutral-200/50 dark:via-neutral-800/50 to-transparent" />
-        <div className="absolute right-[15%] top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-neutral-200/50 dark:via-neutral-800/50 to-transparent" />
-        <div className="absolute left-0 right-0 top-[60%] h-px bg-gradient-to-r from-transparent via-neutral-200/50 dark:via-neutral-800/50 to-transparent" />
+        <div className="absolute left-[15%] top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-neutral-200/80 dark:via-neutral-800/80 to-transparent" />
+        <div className="absolute right-[15%] top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-neutral-200/80 dark:via-neutral-800/80 to-transparent" />
+        <div className="absolute left-0 right-0 top-[60%] h-px bg-gradient-to-r from-transparent via-neutral-200/80 dark:via-neutral-800/80 to-transparent" />
       </div>
 
       <Container className="relative z-10">

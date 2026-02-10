@@ -118,13 +118,13 @@ export const Card = ({
 }) => {
   return (
     <div
-      className="group/card relative h-72 w-48 overflow-hidden rounded-2xl transition-[width] duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] md:h-80 md:w-60 hover:w-[28rem] md:hover:w-[38rem]"
+      className="group/card relative h-80 w-52 overflow-hidden rounded-2xl transition-[width] duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] md:h-96 md:w-64 hover:w-[30rem] md:hover:w-[40rem]"
     >
       {/* Primary background — always present, behind everything */}
       <div className="absolute inset-0 bg-primary" />
 
       {/* Image — fixed size, never changes */}
-      <div className="absolute inset-y-0 left-0 z-10 w-48 shrink-0 md:w-60">
+      <div className="absolute inset-y-0 left-0 z-10 w-52 shrink-0 md:w-64">
         <img
           src={card.src}
           alt={card.title}
@@ -137,12 +137,12 @@ export const Card = ({
       </div>
 
       {/* Title over image — fades out on hover */}
-      <p className="pointer-events-none absolute bottom-0 left-0 z-20 w-48 p-3 text-center text-sm font-semibold text-white transition-opacity duration-200 md:w-60 md:text-base group-hover/card:opacity-0">
+      <p className="pointer-events-none absolute bottom-0 left-0 z-20 w-52 p-3 text-center text-sm font-semibold text-white transition-opacity duration-200 md:w-64 md:text-base group-hover/card:opacity-0">
         {card.title}
       </p>
 
       {/* Content — FIXED width so text never reflows. Card overflow-hidden reveals it like a curtain */}
-      <div className="pointer-events-none absolute inset-y-0 left-48 z-10 flex w-[16rem] flex-col justify-center p-5 md:left-60 md:w-[23rem] md:p-8">
+      <div className="pointer-events-none absolute inset-y-0 left-52 z-10 flex w-[17rem] flex-col justify-center p-5 md:left-64 md:w-[24rem] md:p-8">
         <span className="mb-2 inline-block w-fit rounded-full bg-white/20 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-white/90 uppercase">
           {card.category}
         </span>
