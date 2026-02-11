@@ -28,8 +28,8 @@ export function ProductsPageClient() {
           <FeaturesCollaboration />
           <FeaturesBestFit />
           <FeaturesAssistant />
+          <FeaturesAll />
         </ScrollSyncProvider>
-        <FeaturesAll />
         <FeaturesComingSoon />
         <FeaturesMarketplace />
       </div>

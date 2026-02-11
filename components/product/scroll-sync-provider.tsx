@@ -8,6 +8,7 @@ export const TAB_IDS = [
   "collaboration",
   "best-fit",
   "assistant",
+  "all-features",
 ] as const;
 
 export type TabId = (typeof TAB_IDS)[number];

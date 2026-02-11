@@ -13,6 +13,7 @@ const TAB_LABELS: Record<TabId, string> = {
   collaboration: "tabCollaboration",
   "best-fit": "tabBestFit",
   assistant: "tabAssistant",
+  "all-features": "tabAllFeatures",
 };
 
 export function FeaturesTabsNav() {

@@ -5,6 +5,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { Container } from "@/components/container";
 import { Heading } from "@/components/heading";
 import { Subheading } from "@/components/subheading";
+import { SectionWrapper } from "./section-wrapper";
 import { rtlLocales, Locale } from "@/i18n/routing";
 import {
   IconDatabase,
@@ -20,7 +21,6 @@ import {
   IconClock,
   IconUsers,
 } from "@tabler/icons-react";
-import { motion } from "motion/react";
 import RadialOrbitalTimeline, {
   type TimelineItem,
 } from "@/components/ui/radial-orbital-timeline";
@@ -158,13 +158,8 @@ export function FeaturesAll() {
   const timelineData = useFeatureData();
 
   return (
-    <section className="py-16 md:py-24 lg:py-32" dir={isRTL ? "rtl" : "ltr"}>
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-        viewport={{ once: true, margin: "-100px" }}
-      >
+    <SectionWrapper id="all-features">
+      <div dir={isRTL ? "rtl" : "ltr"}>
         <Container>
           <div className="text-center mb-4 md:mb-8">
             <Heading>{t("allFeaturesTitle")}</Heading>
@@ -175,7 +170,7 @@ export function FeaturesAll() {
         </Container>
 
         <RadialOrbitalTimeline timelineData={timelineData} />
-      </motion.div>
-    </section>
+      </div>
+    </SectionWrapper>
   );
 }
