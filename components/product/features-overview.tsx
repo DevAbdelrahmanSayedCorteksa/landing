@@ -8,7 +8,7 @@ import { Subheading } from "@/components/subheading";
 import { cn } from "@/lib/utils";
 import { rtlLocales, Locale } from "@/i18n/routing";
 import { IconLink, IconForms } from "@tabler/icons-react";
-import { SectionWrapper } from "./section-wrapper";
+import { motion } from "motion/react";
 import { CardContent, CardDescription, CardSkeleton } from "./skeletons";
 import { UnitsSkeletonVisual } from "./skeletons/units";
 import { KanbanSkeletonVisual } from "./skeletons/kanban";
@@ -20,7 +20,13 @@ export function FeaturesOverview() {
   const isRTL = rtlLocales.includes(locale);
 
   return (
-    <SectionWrapper id="overview">
+    <section className="py-16 md:py-24 lg:py-32">
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+        viewport={{ once: true, margin: "-100px" }}
+      >
       <Container>
         <div className="text-center mb-12 md:mb-16">
           <Heading>
@@ -76,6 +82,7 @@ export function FeaturesOverview() {
           />
         </div>
       </Container>
-    </SectionWrapper>
+      </motion.div>
+    </section>
   );
 }

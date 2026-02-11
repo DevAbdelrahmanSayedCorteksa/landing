@@ -19,7 +19,10 @@
       "Bash(del \"components\\\\product\\\\features-all.tsx\")",
       "Bash(del \"components\\\\product\\\\features-intelligence.tsx\")",
       "Bash(del:*)",
-      "Bash(del \"components\\\\product\\\\features-workspace.tsx\")"
+      "Bash(del \"components\\\\product\\\\features-workspace.tsx\")",
+      "Bash(cd:*)",
+      "Bash(git show:*)",
+      "Bash(git ls-tree:*)"
     ]
   }
 }

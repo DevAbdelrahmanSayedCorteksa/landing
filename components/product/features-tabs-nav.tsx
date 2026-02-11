@@ -8,7 +8,7 @@ import { Container } from "@/components/container";
 import { useScrollSync, TAB_IDS, type TabId } from "./scroll-sync-provider";
 
 const TAB_LABELS: Record<TabId, string> = {
-  overview: "tabOverview",
+  "the-system": "tabTheSystem",
   documents: "tabDocuments",
   collaboration: "tabCollaboration",
   "best-fit": "tabBestFit",

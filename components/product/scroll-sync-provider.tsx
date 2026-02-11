@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from "react";
 
 export const TAB_IDS = [
-  "overview",
+  "the-system",
   "documents",
   "collaboration",
   "best-fit",
@@ -29,7 +29,7 @@ export function useScrollSync() {
 }
 
 export function ScrollSyncProvider({ children }: { children: React.ReactNode }) {
-  const [activeTab, setActiveTab] = useState<TabId>("overview");
+  const [activeTab, setActiveTab] = useState<TabId>("the-system");
   const sectionsRef = useRef<Map<TabId, HTMLElement>>(new Map());
   const isScrollingRef = useRef(false);
 
