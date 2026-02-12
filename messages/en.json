@@ -333,7 +333,21 @@
     "noCreditCardBadge": "Zero commitment",
     "noCreditCardTitle": "Start free. No credit card needed.",
     "noCreditCardDescription": "Jump right in with our Free Forever plan. No payment info, no hidden fees, no strings attached. Upgrade only when you're ready.",
-    "noCreditCardOverlay": "Not required"
+    "noCreditCardOverlay": "Not required",
+    "costCalcTitle": "Cut Costs with Corteksa",
+    "costCalcSubtitle": "Cost savings are based on average monthly price per user for each app.",
+    "costCalcWhichApps": "Which apps do you use?",
+    "costCalcTeamSize": "How many people work at your company?",
+    "costCalcUsers": "users",
+    "costCalcAppsToReplace": "Apps to replace",
+    "costCalcForUsers": "for {users} users",
+    "costCalcTotal": "TOTAL",
+    "costCalcPerUser": "/user",
+    "costCalcYear": "/year",
+    "costCalcCorteksaFor": "Corteksa for {users} users",
+    "costCalcSave": "Your savings",
+    "costCalcSaveDescription": "Corteksa can save a {users} person company {savings} per year compared to the non-enterprise price of your apps.",
+    "costCalcCta": "Start saving with Corteksa today"
   },
   "multiStepForm": {
     "sideTitle": "Welcome to Your Workspace",

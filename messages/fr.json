@@ -332,7 +332,21 @@
     "noCreditCardBadge": "Sans engagement",
     "noCreditCardTitle": "Commencez gratuitement. Sans carte de crédit.",
     "noCreditCardDescription": "Lancez-vous avec notre plan Gratuit pour Toujours. Pas d'informations de paiement, pas de frais cachés, pas de conditions. Passez à la version supérieure uniquement quand vous êtes prêt.",
-    "noCreditCardOverlay": "Non requise"
+    "noCreditCardOverlay": "Non requise",
+    "costCalcTitle": "Réduisez vos coûts avec Corteksa",
+    "costCalcSubtitle": "Les économies sont basées sur le prix mensuel moyen par utilisateur pour chaque application.",
+    "costCalcWhichApps": "Quelles applications utilisez-vous ?",
+    "costCalcTeamSize": "Combien de personnes travaillent dans votre entreprise ?",
+    "costCalcUsers": "utilisateurs",
+    "costCalcAppsToReplace": "Applications à remplacer",
+    "costCalcForUsers": "pour {users} utilisateurs",
+    "costCalcTotal": "TOTAL",
+    "costCalcPerUser": "/utilisateur",
+    "costCalcYear": "/an",
+    "costCalcCorteksaFor": "Corteksa pour {users} utilisateurs",
+    "costCalcSave": "Vos économies",
+    "costCalcSaveDescription": "Corteksa peut faire économiser à une entreprise de {users} personnes {savings} par an par rapport au prix de vos applications actuelles.",
+    "costCalcCta": "Commencez à économiser avec Corteksa"
   },
   "multiStepForm": {
     "sideTitle": "Bienvenue dans votre espace de travail",

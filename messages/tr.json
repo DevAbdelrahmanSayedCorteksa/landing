@@ -332,7 +332,21 @@
     "noCreditCardBadge": "Taahhüt yok",
     "noCreditCardTitle": "Ücretsiz başlayın. Kredi kartı gerekmez.",
     "noCreditCardDescription": "Sonsuza Kadar Ücretsiz planımızla hemen başlayın. Ödeme bilgisi yok, gizli ücret yok, koşul yok. Sadece hazır olduğunuzda yükseltin.",
-    "noCreditCardOverlay": "Gerekli değil"
+    "noCreditCardOverlay": "Gerekli değil",
+    "costCalcTitle": "Corteksa ile Maliyetleri Düşürün",
+    "costCalcSubtitle": "Tasarruflar, her uygulama için kullanıcı başına ortalama aylık fiyata göre hesaplanmıştır.",
+    "costCalcWhichApps": "Hangi uygulamaları kullanıyorsunuz?",
+    "costCalcTeamSize": "Şirketinizde kaç kişi çalışıyor?",
+    "costCalcUsers": "kullanıcı",
+    "costCalcAppsToReplace": "Değiştirilecek uygulamalar",
+    "costCalcForUsers": "{users} kullanıcı için",
+    "costCalcTotal": "TOPLAM",
+    "costCalcPerUser": "/kullanıcı",
+    "costCalcYear": "/yıl",
+    "costCalcCorteksaFor": "{users} kullanıcı için Corteksa",
+    "costCalcSave": "Tasarrufunuz",
+    "costCalcSaveDescription": "Corteksa, {users} kişilik bir şirkete mevcut uygulamalarının fiyatına kıyasla yılda {savings} tasarruf sağlayabilir.",
+    "costCalcCta": "Corteksa ile tasarruf etmeye başlayın"
   },
   "multiStepForm": {
     "sideTitle": "Çalışma Alanınıza Hoş Geldiniz",

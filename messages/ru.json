@@ -332,7 +332,21 @@
     "noCreditCardBadge": "Без обязательств",
     "noCreditCardTitle": "Начните бесплатно. Без кредитной карты.",
     "noCreditCardDescription": "Начните прямо сейчас с нашего бесплатного плана. Без платёжных данных, скрытых комиссий и условий. Обновите только когда будете готовы.",
-    "noCreditCardOverlay": "Не требуется"
+    "noCreditCardOverlay": "Не требуется",
+    "costCalcTitle": "Сократите расходы с Corteksa",
+    "costCalcSubtitle": "Экономия рассчитана на основе средней ежемесячной стоимости на пользователя для каждого приложения.",
+    "costCalcWhichApps": "Какие приложения вы используете?",
+    "costCalcTeamSize": "Сколько человек работает в вашей компании?",
+    "costCalcUsers": "пользователей",
+    "costCalcAppsToReplace": "Приложения для замены",
+    "costCalcForUsers": "для {users} пользователей",
+    "costCalcTotal": "ИТОГО",
+    "costCalcPerUser": "/пользователь",
+    "costCalcYear": "/год",
+    "costCalcCorteksaFor": "Corteksa для {users} пользователей",
+    "costCalcSave": "Ваша экономия",
+    "costCalcSaveDescription": "Corteksa может сэкономить компании из {users} человек {savings} в год по сравнению со стоимостью ваших текущих приложений.",
+    "costCalcCta": "Начните экономить с Corteksa сегодня"
   },
   "multiStepForm": {
     "sideTitle": "Добро пожаловать в ваше рабочее пространство",

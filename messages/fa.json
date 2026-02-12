@@ -332,7 +332,21 @@
     "noCreditCardBadge": "بدون تعهد",
     "noCreditCardTitle": "رایگان شروع کنید. بدون کارت اعتباری.",
     "noCreditCardDescription": "همین الان با پلن رایگان همیشگی ما شروع کنید. بدون اطلاعات پرداخت، بدون هزینه پنهان، بدون شرط. فقط زمانی که آماده بودید ارتقا دهید.",
-    "noCreditCardOverlay": "نیازی نیست"
+    "noCreditCardOverlay": "نیازی نیست",
+    "costCalcTitle": "با Corteksa هزینه‌ها را کاهش دهید",
+    "costCalcSubtitle": "صرفه‌جویی بر اساس میانگین قیمت ماهانه هر کاربر برای هر اپلیکیشن محاسبه شده است.",
+    "costCalcWhichApps": "از کدام اپلیکیشن‌ها استفاده می‌کنید؟",
+    "costCalcTeamSize": "چند نفر در شرکت شما کار می‌کنند؟",
+    "costCalcUsers": "کاربر",
+    "costCalcAppsToReplace": "اپلیکیشن‌های جایگزین",
+    "costCalcForUsers": "برای {users} کاربر",
+    "costCalcTotal": "مجموع",
+    "costCalcPerUser": "/کاربر",
+    "costCalcYear": "/سال",
+    "costCalcCorteksaFor": "Corteksa برای {users} کاربر",
+    "costCalcSave": "صرفه‌جویی شما",
+    "costCalcSaveDescription": "Corteksa می‌تواند برای یک شرکت {users} نفره سالانه {savings} در مقایسه با قیمت اپلیکیشن‌های فعلی شما صرفه‌جویی کند.",
+    "costCalcCta": "همین امروز با Corteksa صرفه‌جویی کنید"
   },
   "multiStepForm": {
     "sideTitle": "به فضای کار خود خوش آمدید",

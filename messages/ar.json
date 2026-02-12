@@ -332,7 +332,21 @@
     "noCreditCardBadge": "بدون التزام",
     "noCreditCardTitle": "ابدأ مجانًا. بدون بطاقة ائتمان.",
     "noCreditCardDescription": "انطلق فورًا مع الباقة المجانية للأبد. بدون بيانات دفع، بدون رسوم خفية، بدون قيود. قم بالترقية فقط عندما تكون جاهزًا.",
-    "noCreditCardOverlay": "غير مطلوبة"
+    "noCreditCardOverlay": "غير مطلوبة",
+    "costCalcTitle": "وفّر التكاليف مع Corteksa",
+    "costCalcSubtitle": "التوفير محسوب على متوسط السعر الشهري لكل مستخدم لكل تطبيق.",
+    "costCalcWhichApps": "ما التطبيقات التي تستخدمها؟",
+    "costCalcTeamSize": "كم عدد الموظفين في شركتك؟",
+    "costCalcUsers": "مستخدم",
+    "costCalcAppsToReplace": "التطبيقات المراد استبدالها",
+    "costCalcForUsers": "لـ {users} مستخدم",
+    "costCalcTotal": "الإجمالي",
+    "costCalcPerUser": "/مستخدم",
+    "costCalcYear": "/سنة",
+    "costCalcCorteksaFor": "Corteksa لـ {users} مستخدم",
+    "costCalcSave": "توفيرك",
+    "costCalcSaveDescription": "يمكن لـ Corteksa توفير {savings} سنويًا لشركة من {users} شخص مقارنة بأسعار تطبيقاتك الحالية.",
+    "costCalcCta": "ابدأ التوفير مع Corteksa اليوم"
   },
   "multiStepForm": {
     "sideTitle": "مرحباً بك في مساحة عملك",
