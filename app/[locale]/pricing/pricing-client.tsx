@@ -1,7 +1,7 @@
 "use client";
 
-import { Fragment, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { Fragment, useEffect, useRef, useState } from "react";
+
 import { Container } from "@/components/container";
 import { Heading } from "@/components/heading";
 import { Subheading } from "@/components/subheading";
@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { PageTransition } from "@/components/page-transition";
 import { PeriodTabs } from "@/components/ui/period-tabs";
 import { AnimatedPrice } from "@/components/ui/animated-price";
+import * as PricingCardUI from "@/components/pricing-card";
+
 import {
   IconCircleCheckFilled,
   IconCheck,
@@ -20,14 +22,22 @@ import {
   IconClock,
   IconSparkles,
   IconFlameFilled,
+  IconMinus,
+  IconPlus,
+  IconArrowRight,
+  IconArrowDown,
 } from "@tabler/icons-react";
-import { Loader2 } from "lucide-react";
+
+import CreditCard from "@/components/credit-card-1";
 import { cn } from "@/lib/utils";
 import { Link } from "@/i18n/routing";
 import { PricingPlan, TimePeriod, TIME_PERIOD_LABELS } from "@/lib/types/pricing";
 import { PRICING_KEY, pricingService } from "@/lib/services/PricingService";
 import { useLocale, useTranslations } from "next-intl";
 import { rtlLocales, Locale } from "@/i18n/routing";
+import { motion } from "motion/react";
+
+const EASE = [0.25, 0.46, 0.45, 0.94] as const;
 
 // Type Definitions
 interface MarketplaceItem {
@@ -55,46 +65,64 @@ interface FeatureCategory {
 // Feature Comparison Data
 const featureComparison: FeatureCategory[] = [
   {
+    name: "Team & Permissions",
+    features: [
+      { name: "Recommended team size", free: "Individuals & small teams", unlimited: "Up to 5 members", business: "Up to 12 members", enterprise: "Large teams" },
+      { name: "User roles", free: "1 admin + 3 members", unlimited: "Up to 3 custom roles", business: "Unlimited custom roles", enterprise: "Unlimited custom roles" },
+      { name: "Member permissions", free: "Edit assigned only", unlimited: "Role-based", business: "Fully customizable", enterprise: "Fully customizable" },
+      { name: "View-only users", free: "Unlimited", unlimited: "Unlimited", business: "Unlimited", enterprise: "Unlimited" },
+    ],
+  },
+  {
     name: "Core Features",
     features: [
-      { name: "Corteksa Units", free: "Up to X", unlimited: "Up to X", business: "Unlimited", enterprise: "Unlimited" },
-      { name: "Custom Fields", free: "Up to X", unlimited: true, business: "Unlimited", enterprise: "Unlimited" },
-      { name: "Cortex AI", free: "Up to X", unlimited: "Unlimited", business: "Unlimited", enterprise: "Unlimited" },
-      { name: "Tasks Management", free: true, unlimited: true, business: "Unlimited", enterprise: "Unlimited" },
-      { name: "Kanban Boards", free: "Up to X", unlimited: true, business: "Unlimited", enterprise: "Unlimited" },
-      { name: "Team Members", free: "Up to 3", unlimited: "Up to X", business: "Unlimited", enterprise: "Unlimited" },
-      { name: "Data Storage", free: "100MB", unlimited: "100MB", business: "Unlimited", enterprise: "Unlimited" },
+      { name: "Corteksa Units", free: "Up to 3", unlimited: "Up to 10", business: "Unlimited", enterprise: "Unlimited" },
+      { name: "Tasks", free: "Limited (TBD)", unlimited: "Limited (TBD)", business: "Unlimited", enterprise: "Unlimited" },
+      { name: "Custom fields", free: "15", unlimited: "35", business: "Unlimited", enterprise: "Unlimited" },
+      { name: "Comments & mentions", free: true, unlimited: true, business: true, enterprise: true },
     ],
   },
   {
-    name: "Support & Communication",
+    name: "AI & Documents",
     features: [
-      { name: "Email Support", free: "24 hrs", unlimited: "4 hrs", business: false, enterprise: false },
-      { name: "Chat Support", free: false, unlimited: false, business: "2 hrs", enterprise: "1 hr" },
-      { name: "Comments and Mentions", free: false, unlimited: true, business: true, enterprise: true },
-      { name: "Live Onboarding Training", free: false, unlimited: false, business: false, enterprise: true },
+      { name: "WhatsApp / Corteksa Assistant", free: "100 tasks", unlimited: "Unlimited", business: "Unlimited", enterprise: "Unlimited" },
+      { name: "Document generation", free: "30 documents", unlimited: "Unlimited", business: "Unlimited", enterprise: "Unlimited" },
+      { name: "Document templates", free: "2 templates", unlimited: "5 templates", business: "Unlimited", enterprise: "Unlimited" },
+      { name: "Watermark on documents", free: "Yes", unlimited: "No", business: "No", enterprise: "No" },
     ],
   },
   {
-    name: "Integration & Data",
+    name: "Storage & Data",
     features: [
-      { name: "Marketplace Access", free: false, unlimited: true, business: true, enterprise: true },
-      { name: "Email Integrations", free: false, unlimited: true, business: true, enterprise: true },
-      { name: "Data Import and Export", free: false, unlimited: true, business: true, enterprise: true },
-      { name: "Multi-language Support", free: false, unlimited: true, business: true, enterprise: true },
+      { name: "Data storage", free: "100 MB", unlimited: "1 GB", business: "10 GB", enterprise: "Custom" },
+      { name: "Data import & export", free: false, unlimited: true, business: true, enterprise: true },
+      { name: "Marketplace access", free: false, unlimited: true, business: true, enterprise: true },
+      { name: "API integrations", free: false, unlimited: false, business: "Unlimited", enterprise: "Unlimited" },
     ],
   },
   {
     name: "Advanced Features",
     features: [
-      { name: "Smart Dashboard", free: false, unlimited: true, business: true, enterprise: true },
-      { name: "Document Generation", free: false, unlimited: false, business: true, enterprise: true },
-      { name: "Workflow Automation", free: false, unlimited: false, business: true, enterprise: true },
-      { name: "Advanced Permissions", free: false, unlimited: false, business: true, enterprise: true },
-      { name: "Audit Logging", free: false, unlimited: false, business: true, enterprise: true },
-      { name: "Daily Backup", free: false, unlimited: false, business: false, enterprise: true },
-      { name: "White Label", free: false, unlimited: false, business: false, enterprise: true },
-      { name: "System Customization", free: false, unlimited: false, business: false, enterprise: true },
+      { name: "Audit logs", free: false, unlimited: false, business: true, enterprise: true },
+      { name: "Daily backups", free: false, unlimited: false, business: false, enterprise: true },
+      { name: "Smart dashboard", free: "—", unlimited: "—", business: "Coming soon", enterprise: "Coming soon" },
+      { name: "White-labeling", free: false, unlimited: false, business: false, enterprise: true },
+      { name: "System customization", free: false, unlimited: false, business: false, enterprise: true },
+    ],
+  },
+  {
+    name: "Security & Compliance",
+    features: [
+      { name: "Local data residency", free: false, unlimited: false, business: false, enterprise: true },
+      { name: "SSO (SAML-based)", free: false, unlimited: false, business: false, enterprise: true },
+      { name: "2FA enforcement", free: false, unlimited: false, business: false, enterprise: true },
+    ],
+  },
+  {
+    name: "Support & Training",
+    features: [
+      { name: "Support", free: "Email (48 hrs)", unlimited: "Email + AI chat (24 hrs)", business: "Chat (90 min SLA)", enterprise: "Chat (45 min SLA)" },
+      { name: "Live onboarding & training", free: false, unlimited: false, business: false, enterprise: true },
     ],
   },
 ];
@@ -151,134 +179,267 @@ const marketplaceItems: MarketplaceItem[] = [
   },
 ];
 
+// Static Pricing Plans
+interface StaticPlan {
+  slug: string;
+  name: string;
+  description: string;
+  isPopular: boolean;
+  buttonVariant: "outline" | "contained";
+  pricing: Record<TimePeriod, number | null>;
+  features: string[];
+}
+
+const STATIC_PLANS: StaticPlan[] = [
+  {
+    slug: "free",
+    name: "Free Forever",
+    description: "For individuals & small teams",
+    isPopular: false,
+    buttonVariant: "outline",
+    pricing: { sixMonths: 0, nineMonths: 0, twelveMonths: 0 },
+    features: [
+      "1 admin + 3 members",
+      "Unlimited viewers",
+      "Up to 3 Corteksa Units",
+      "100 AI assistant tasks",
+      "30 documents, 2 templates",
+      "15 custom fields",
+      "100 MB storage",
+      "Email support (48h)",
+    ],
+  },
+  {
+    slug: "basic",
+    name: "Basic",
+    description: "For growing teams up to 5 members",
+    isPopular: false,
+    buttonVariant: "outline",
+    pricing: { sixMonths: 12, nineMonths: 10, twelveMonths: 8 },
+    features: [
+      "5 members, 3 custom roles",
+      "Up to 10 Corteksa Units",
+      "Unlimited AI & documents",
+      "5 templates, no watermark",
+      "35 custom fields",
+      "1 GB storage",
+      "Import & export",
+      "Marketplace access",
+    ],
+  },
+  {
+    slug: "advanced",
+    name: "Advanced",
+    description: "For teams up to 12 members",
+    isPopular: true,
+    buttonVariant: "contained",
+    pricing: { sixMonths: 29, nineMonths: 24, twelveMonths: 19 },
+    features: [
+      "Unlimited roles, units & tasks",
+      "Unlimited docs & templates",
+      "Full custom permissions",
+      "API integrations & audit logs",
+      "10 GB storage",
+      "Marketplace access",
+      "Audit logs included",
+      "Chat support (90 min SLA)",
+    ],
+  },
+  {
+    slug: "enterprise",
+    name: "Enterprise",
+    description: "For large organizations",
+    isPopular: false,
+    buttonVariant: "outline",
+    pricing: { sixMonths: null, nineMonths: null, twelveMonths: null },
+    features: [
+      "Everything in Advanced",
+      "White-label & customization",
+      "SSO, 2FA & data residency",
+      "Daily backups",
+      "Onboarding & training",
+      "Unlimited API access",
+      "Smart dashboard (soon)",
+      "Chat support (45 min SLA)",
+    ],
+  },
+];
+
+// Pricing Hero — matches product page hero style
+function PricingHero({ t }: { t: ReturnType<typeof useTranslations> }) {
+  return (
+    <section className="relative pt-24 md:pt-32 lg:pt-40 pb-8">
+      {/* Subtle background lines */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute left-[15%] top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-neutral-200/80 dark:via-neutral-800/80 to-transparent" />
+        <div className="absolute right-[15%] top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-neutral-200/80 dark:via-neutral-800/80 to-transparent" />
+
+      </div>
+
+      <Container className="relative z-10">
+        <div className="text-center max-w-3xl mx-auto">
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: EASE }}
+            className="text-3xl sm:text-4xl md:text-5xl tracking-tight font-display font-bold leading-relaxed"
+          >
+            {t("heroTagline1")}
+            <span className="mx-2 text-primary">·</span>
+            {t("heroTagline2")}
+            <span className="mx-2 text-primary">·</span>
+            {t("heroTagline3")}
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.15, ease: EASE }}
+            className="mt-6 text-base md:text-lg text-neutral-500 dark:text-neutral-400 max-w-2xl mx-auto font-inter"
+          >
+            {t("heroSubtitle")}
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3, ease: EASE }}
+            className="mt-8 flex items-center justify-center gap-3"
+          >
+            <Button size="lg" className="shadow-brand" asChild>
+              <Link href="/signup">{t("heroCta")}</Link>
+            </Button>
+            <Button size="lg" variant="outline" asChild>
+              <Link href="/contact" className="gap-2">
+                {t("contactSales")}
+                <IconArrowRight className="size-4 rtl:rotate-180" />
+              </Link>
+            </Button>
+          </motion.div>
+        </div>
+      </Container>
+    </section>
+  );
+}
+
 // Helper Function: Render Feature Value
 const renderFeatureValue = (value: boolean | string) => {
   if (typeof value === "boolean") {
     return value ? (
-      <IconCheck className="size-5 text-primary mx-auto" />
+      <div className="size-7 rounded-lg bg-primary/10 flex items-center justify-center mx-auto">
+        <IconCheck className="size-4 text-primary" />
+      </div>
     ) : (
       <IconX className="size-5 text-neutral-300 dark:text-neutral-600 mx-auto" />
     );
   }
-  return <span className="text-sm font-medium">{value}</span>;
+  return (
+    <span className="text-sm text-neutral-700 dark:text-neutral-300">
+      {value}
+    </span>
+  );
 };
 
 // Pricing Card Component
-interface PricingCardProps {
-  plan: PricingPlan;
+function PricingCard({ plan, selectedTimePeriod, t }: {
+  plan: StaticPlan;
   selectedTimePeriod: TimePeriod;
   t: ReturnType<typeof useTranslations>;
-}
-
-function PricingCard({ plan, selectedTimePeriod, t }: PricingCardProps) {
-  const [showAll, setShowAll] = useState(false);
-  const price = plan.timePeriodPricing[selectedTimePeriod];
+}) {
+  const price = plan.pricing[selectedTimePeriod];
   const periodLabel = TIME_PERIOD_LABELS[selectedTimePeriod];
-  const displayedFeatures = showAll ? plan.features : plan.features.slice(0, 4);
-  const hasMoreFeatures = plan.features.length > 4;
-
-  // Build the CTA link with URL params
   const ctaHref = `/multi-step-form?plan=${plan.slug}&period=${selectedTimePeriod}`;
 
   return (
-    <div
-      className={cn(
-        "relative rounded-3xl p-8 md:p-10 transition-all h-full flex flex-col",
-        plan.isPopular
-          ? "bg-primary/10 border-2 border-primary/30"
-          : "bg-neutral-100 dark:bg-neutral-800"
-      )}
-    >
-      {/* Popular Icon */}
-      {plan.isPopular && (
-        <div className="absolute top-4 end-4">
-          <IconFlameFilled className="size-6 text-primary" />
-        </div>
-      )}
+    <PricingCardUI.Card className={cn(
+      "max-w-none h-full flex flex-col",
+      plan.isPopular
+        ? "border-primary/40 dark:border-primary/30 shadow-[0_0_30px_-5px] shadow-primary/20 dark:shadow-primary/10"
+        : ""
+    )}>
+      <PricingCardUI.Header className={cn(
+        "flex flex-col justify-between min-h-[11rem]",
+        plan.isPopular && "bg-primary/5 dark:bg-primary/10 border-primary/15 dark:border-primary/20"
+      )}>
+        <PricingCardUI.Plan>
+          <PricingCardUI.PlanName>
+            {plan.isPopular && <IconFlameFilled className="size-4 text-primary" />}
+            {plan.name}
+          </PricingCardUI.PlanName>
+          {plan.isPopular && <PricingCardUI.Badge>{t("popular")}</PricingCardUI.Badge>}
+        </PricingCardUI.Plan>
 
-      {/* Plan Name */}
-      <h3 className="text-2xl md:text-3xl font-bold font-display mb-4">
-        {plan.name}
-      </h3>
+        <PricingCardUI.Price>
+          {price === null ? (
+            <>
+              <PricingCardUI.MainPrice>{t("custom")}</PricingCardUI.MainPrice>
+              <PricingCardUI.Period className="invisible">/{periodLabel}</PricingCardUI.Period>
+            </>
+          ) : price === 0 ? (
+            <>
+              <AnimatedPrice
+                value={0}
+                className="text-4xl font-bold font-display tracking-tight"
+              />
+              <PricingCardUI.Period>/{periodLabel}</PricingCardUI.Period>
+            </>
+          ) : (
+            <>
+              <AnimatedPrice
+                value={price}
+                className="text-4xl font-bold font-display tracking-tight"
+              />
+              <PricingCardUI.Period>/{periodLabel}</PricingCardUI.Period>
+            </>
+          )}
+        </PricingCardUI.Price>
 
-      {/* Price with Animation */}
-      <div className="mb-4">
-        {price === null || price === undefined ? (
-          <p className="text-4xl md:text-5xl font-bold font-display">{t("custom")}</p>
-        ) : price === 0 ? (
-          <div className="flex items-baseline gap-2">
-            <p className="text-4xl md:text-5xl font-bold font-display">$0</p>
-            <span className="text-base text-neutral-500 dark:text-neutral-400">
-              /{periodLabel}
-            </span>
-          </div>
-        ) : (
-          <div className="flex items-baseline gap-2">
-            <AnimatedPrice
-              value={price}
-              className="text-4xl md:text-5xl font-bold font-display"
-            />
-            <span className="text-base text-neutral-500 dark:text-neutral-400">
-              /{periodLabel}
-            </span>
-          </div>
-        )}
-      </div>
+        <PricingCardUI.Description>{plan.description}</PricingCardUI.Description>
+      </PricingCardUI.Header>
 
-      {/* Description - wrapper with fixed height for button alignment */}
-      <div className="h-[72px] overflow-hidden mb-6">
-        <p className="text-base text-neutral-600 dark:text-neutral-400">
-          {plan.description}
-        </p>
-      </div>
-
-      {/* CTA Button */}
-      <Button
-        asChild
-        size="lg"
-        variant={plan.buttonVariant === "contained" ? "default" : "outline"}
-        className={cn("w-full mb-8", plan.isPopular && "shadow-brand")}
-      >
-        <Link href={ctaHref}>{plan.buttonText}</Link>
-      </Button>
-
-      {/* Features List */}
-      <ul className="space-y-4 flex-grow">
-        {displayedFeatures.map((feature, idx) => (
-          <li key={idx} className="flex items-start gap-3">
-            <IconCircleCheckFilled className="size-5 text-primary flex-shrink-0 mt-0.5" />
-            <span className="text-sm text-neutral-700 dark:text-neutral-300">{feature}</span>
-          </li>
-        ))}
-      </ul>
-
-      {/* Show More Button */}
-      {hasMoreFeatures && (
-        <button
-          onClick={() => setShowAll(!showAll)}
-          className="mt-4 text-sm font-medium text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
+      <PricingCardUI.Body className="flex-grow flex flex-col">
+        <Button
+          asChild
+          size="lg"
+          variant={plan.isPopular ? "default" : "secondary"}
+          className={cn(
+            "w-full",
+            plan.isPopular && "shadow-brand",
+            price === 0 && "bg-primary/10 text-primary hover:bg-primary/20"
+          )}
         >
-          {showAll ? t("showLess") : t("showMore", { count: plan.features.length - 4 })}
-          <svg
-            className={cn("size-4 transition-transform", showAll && "rotate-180")}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
-      )}
-    </div>
+          <Link href={ctaHref}>
+            {price === null ? t("contactSales") : price === 0 ? t("heroCta") : t("getStarted")}
+          </Link>
+        </Button>
+
+        <PricingCardUI.List className="flex-grow">
+          {plan.features.map((feature, idx) => (
+            <PricingCardUI.ListItem key={idx}>
+              <IconCircleCheckFilled className="size-4 text-primary flex-shrink-0 mt-0.5" />
+              {feature}
+            </PricingCardUI.ListItem>
+          ))}
+        </PricingCardUI.List>
+      </PricingCardUI.Body>
+    </PricingCardUI.Card>
   );
 }
 
 // Marketplace Card Component
-function MarketplaceCard({ item, t }: { item: MarketplaceItem; t: ReturnType<typeof useTranslations> }) {
+function MarketplaceCard({ item, t, index }: { item: MarketplaceItem; t: ReturnType<typeof useTranslations>; index: number }) {
   return (
-    <div className="p-6 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 hover:border-primary hover:shadow-lg transition-all">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: index * 0.08, ease: EASE }}
+      viewport={{ once: true, margin: "-50px" }}
+      className="p-5 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 hover:border-primary/30 hover:shadow-md transition-all duration-200"
+    >
       {/* Icon */}
-      <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">{item.icon}</div>
+      <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+        {item.icon}
+      </div>
 
       {/* Category Badge */}
       <span className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 mb-3">
@@ -286,26 +447,86 @@ function MarketplaceCard({ item, t }: { item: MarketplaceItem; t: ReturnType<typ
       </span>
 
       {/* Name */}
-      <h3 className="text-lg md:text-xl font-bold font-display mb-2">{item.name}</h3>
+      <h3 className="text-lg font-bold font-display text-neutral-800 dark:text-neutral-200 mb-2">{item.name}</h3>
 
       {/* Description */}
-      <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-4">{item.description}</p>
+      <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-4 leading-relaxed">{item.description}</p>
 
       {/* Price */}
-      <div className="flex items-baseline justify-between mb-4">
-        <div>
-          <span className="text-2xl font-bold font-display">${item.pricePerUser}</span>
-          <span className="text-sm text-neutral-500 dark:text-neutral-400">{t("perUserMonth")}</span>
-        </div>
+      <div className="flex items-baseline gap-1 mb-4">
+        <span className="text-2xl font-bold font-display">${item.pricePerUser}</span>
+        <span className="text-sm text-neutral-500 dark:text-neutral-400">{t("perUserMonth")}</span>
       </div>
 
       {/* CTA */}
-      <Button variant="outline" className="w-full">
+      <Button variant="outline" className="w-full hover:border-primary/30">
         {t("addToWorkspace")}
       </Button>
-    </div>
+    </motion.div>
   );
 }
+
+// FAQ Question Component
+function FAQQuestion({ question, answer }: { question: string; answer: string }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <button
+      onClick={() => setOpen(!open)}
+      className={cn(
+        "w-full rounded-2xl overflow-hidden border p-4 md:p-6 transition-all duration-200 text-start",
+        open
+          ? "border-primary/30 bg-white dark:bg-neutral-800/80 shadow-sm"
+          : "border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 hover:border-neutral-300 dark:hover:border-neutral-700"
+      )}
+    >
+      <div className="flex items-center justify-between gap-4">
+        <h3 className="text-base md:text-lg font-bold font-display text-neutral-800 dark:text-neutral-200">
+          {question}
+        </h3>
+        <div className={cn(
+          "size-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors duration-200",
+          open ? "bg-primary/10 text-primary" : "bg-neutral-100 dark:bg-neutral-800 text-neutral-400"
+        )}>
+          <IconMinus
+            className={cn(
+              "size-4 absolute transition-all duration-200",
+              open ? "scale-100 rotate-0" : "scale-0 rotate-90"
+            )}
+          />
+          <IconPlus
+            className={cn(
+              "size-4 absolute transition-all duration-200",
+              open ? "scale-0 -rotate-90" : "scale-100 rotate-0"
+            )}
+          />
+        </div>
+      </div>
+      <motion.div
+        initial={false}
+        animate={{
+          height: open ? "auto" : 0,
+          opacity: open ? 1 : 0,
+        }}
+        transition={{ duration: 0.2 }}
+        className="overflow-hidden"
+      >
+        <motion.p
+          key={String(open)}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="mt-3 text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed"
+        >
+          {answer}
+        </motion.p>
+      </motion.div>
+    </button>
+  );
+}
+
+// FAQ keys
+const FAQ_KEYS = Array.from({ length: 11 }, (_, i) => i + 1);
 
 // Main Pricing Page Client Component
 export function PricingPageClient() {
@@ -313,145 +534,360 @@ export function PricingPageClient() {
   const isRTL = rtlLocales.includes(locale);
   const t = useTranslations("pricingPage");
   const [selectedTimePeriod, setSelectedTimePeriod] = useState<TimePeriod>("sixMonths");
+  const [isSticky, setIsSticky] = useState(false);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
-  const { data, isLoading } = useQuery({
-    queryKey: [PRICING_KEY],
-    queryFn: pricingService.getPricingPlans,
-  });
-
-  const plans = data?.data || [];
+  useEffect(() => {
+    const handleScroll = () => {
+      if (sentinelRef.current) {
+        setIsSticky(sentinelRef.current.getBoundingClientRect().top < 0);
+      }
+    };
+    document.addEventListener("scroll", handleScroll, { passive: true, capture: true });
+    handleScroll();
+    return () => document.removeEventListener("scroll", handleScroll, { capture: true });
+  }, []);
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-background" dir={isRTL ? "rtl" : "ltr"}>
-      {/* Hero Section */}
-      <section className="pt-10 md:pt-20 lg:pt-32 relative overflow-hidden">
-        <Container>
-          <div className="text-center max-w-4xl mx-auto">
-            <Heading as="h1">
-              {t("heroTitle")} <br className="hidden md:block" />
-              {t("heroTitle2")}
-            </Heading>
-            <Subheading className="py-8 mx-auto">
-              {t("heroSubtitle")}
-            </Subheading>
-          </div>
-        </Container>
-      </section>
+      <div className="min-h-screen" dir={isRTL ? "rtl" : "ltr"}>
+        <PricingHero t={t} />
 
-      {/* Pricing Controls Section */}
-      <section className="pt-10 md:pt-20 pb-6 md:pb-10">
-        <Container>
-          <div className="max-w-5xl mx-auto">
-            {/* Period Tabs */}
-            <PeriodTabs
-              selectedTimePeriod={selectedTimePeriod}
-              setSelectedTimePeriod={setSelectedTimePeriod}
-            />
+        <div>
 
-            {/* Money-back Guarantee */}
-            <div className="flex items-center justify-center gap-2 text-neutral-600 dark:text-neutral-400 mb-10">
-              <IconCircleCheckFilled className="size-5 text-primary" />
-              <span className="text-sm font-medium">{t("moneyBackGuarantee")}</span>
-            </div>
-          </div>
-        </Container>
-      </section>
+        {/* Pricing Controls + Cards Section */}
+        <section className="pt-0 pb-6 md:pb-8 lg:pb-12">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: EASE }}
+            viewport={{ once: true, margin: "-100px" }}
+          >
+            <Container>
+              {/* Guarantee Badge (left) + Period Tabs (right) */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+                <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary font-semibold text-sm">
+                  <IconCircleCheckFilled className="size-4" />
+                  {t("moneyBackGuarantee")}
+                </span>
 
-      {/* Pricing Cards Grid */}
-      <section className="pb-10 md:pb-20">
-        <Container>
-          {isLoading ? (
-            <div className="flex justify-center py-20">
-              <Loader2 className="size-12 animate-spin text-primary" />
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {plans.map((plan) => (
-                <PricingCard
-                  key={plan.slug}
-                  plan={plan}
+                <PeriodTabs
                   selectedTimePeriod={selectedTimePeriod}
-                  t={t}
+                  setSelectedTimePeriod={setSelectedTimePeriod}
+                  className="justify-end mb-0"
                 />
-              ))}
-            </div>
-          )}
-        </Container>
-      </section>
+              </div>
 
-      {/* Complete Features Comparison Table */}
-      <section className="py-8 md:py-12 lg:py-16 bg-neutral-50 dark:bg-neutral-900">
-        <Container>
-          <div className="text-center mb-6 md:mb-10">
-            <Heading className="mb-4">{t("featuresTitle")}</Heading>
-            <Subheading className="mx-auto">
-              {t("featuresSubtitle")}
-            </Subheading>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse" aria-label="Feature comparison across pricing plans">
-              <thead>
-                <tr className="border-b-2 border-neutral-200 dark:border-neutral-800">
-                  <th className="text-start p-4 font-display font-bold text-lg">{t("tableFeature")}</th>
-                  <th className="text-center p-4 font-display font-bold text-lg">{t("tableFree")}</th>
-                  <th className="text-center p-4 font-display font-bold text-lg">{t("tableLight")}</th>
-                  <th className="text-center p-4 font-display font-bold text-lg bg-primary/5">{t("tableAdvanced")}</th>
-                  <th className="text-center p-4 font-display font-bold text-lg">{t("tableEnterprise")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {featureComparison.map((category) => (
-                  <Fragment key={category.name}>
-                    {/* Category Header */}
-                    <tr className="bg-neutral-100 dark:bg-neutral-800">
-                      <td
-                        colSpan={5}
-                        className="p-4 font-display font-bold text-sm uppercase tracking-wide"
-                      >
-                        {category.name}
-                      </td>
-                    </tr>
-
-                    {/* Category Features */}
-                    {category.features.map((feature) => (
-                      <tr
-                        key={feature.name}
-                        className="border-b border-neutral-200 dark:border-neutral-800 hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors"
-                      >
-                        <td className="p-4 text-sm text-neutral-700 dark:text-neutral-300">{feature.name}</td>
-                        <td className="p-4 text-center">{renderFeatureValue(feature.free)}</td>
-                        <td className="p-4 text-center">{renderFeatureValue(feature.unlimited)}</td>
-                        <td className="p-4 text-center bg-primary/5">{renderFeatureValue(feature.business)}</td>
-                        <td className="p-4 text-center">{renderFeatureValue(feature.enterprise)}</td>
-                      </tr>
-                    ))}
-                  </Fragment>
+              {/* Pricing Cards Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {STATIC_PLANS.map((plan) => (
+                  <PricingCard
+                    key={plan.slug}
+                    plan={plan}
+                    selectedTimePeriod={selectedTimePeriod}
+                    t={t}
+                  />
                 ))}
-              </tbody>
-            </table>
-          </div>
-        </Container>
-      </section>
+              </div>
+            </Container>
+          </motion.div>
 
-      {/* Marketplace Section */}
-      <section className="py-8 md:py-12 lg:py-16">
-        <Container>
-          <div className="text-center mb-6 md:mb-10">
-            <Heading className="mb-4">{t("marketplaceTitle")}</Heading>
-            <Subheading className="mx-auto">
-              {t("marketplaceSubtitle")}
-            </Subheading>
-          </div>
+          {/* See plans comparison link */}
+          <motion.div
+            className="flex justify-center pt-8 md:pt-10 pb-2"
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3, ease: EASE }}
+            viewport={{ once: true }}
+          >
+            <button
+              onClick={() => document.getElementById("features-comparison")?.scrollIntoView({ behavior: "smooth" })}
+              className="group inline-flex items-center gap-2.5 rounded-full border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/60 px-5 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-primary/5 transition-all cursor-pointer"
+            >
+              {t("seeComparison")}
+              <IconArrowDown className="size-4 transition-transform group-hover:translate-y-0.5" />
+            </button>
+          </motion.div>
+        </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {marketplaceItems.map((item) => (
-              <MarketplaceCard key={item.id} item={item} t={t} />
-            ))}
-          </div>
-        </Container>
-      </section>
+        {/* No Credit Card Section */}
+        <section className="py-12 md:py-16 lg:py-20">
+          <Container>
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-neutral-100 via-purple-50 to-neutral-100 dark:from-neutral-900 dark:via-purple-950/30 dark:to-neutral-900 border border-neutral-200/60 dark:border-neutral-800">
+              {/* Background orbs */}
+              <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
+              <div className="absolute bottom-0 left-0 w-72 h-72 bg-pink-500/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3" />
+
+              <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center p-8 md:p-12 lg:p-16">
+                {/* Text content */}
+                <motion.div
+                  initial={{ opacity: 0, x: -30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, ease: EASE }}
+                  viewport={{ once: true, margin: "-100px" }}
+                >
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
+                    <IconCircleCheckFilled className="size-4" />
+                    {t("noCreditCardBadge")}
+                  </div>
+
+                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold tracking-tight mb-4">
+                    {t("noCreditCardTitle")}
+                  </h2>
+
+                  <p className="text-lg text-muted-foreground mb-8 max-w-md">
+                    {t("noCreditCardDescription")}
+                  </p>
+
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <Button size="lg" asChild>
+                      <Link href="/signup">{t("heroCta")}</Link>
+                    </Button>
+                    <Button size="lg" variant="secondary" asChild>
+                      <Link href="/contact" className="gap-2">
+                        {t("contactSales")}
+                        <IconArrowRight className="size-4 rtl:rotate-180" />
+                      </Link>
+                    </Button>
+                  </div>
+                </motion.div>
+
+                {/* Credit card visual */}
+                <motion.div
+                  className="flex items-center justify-center"
+                  initial={{ opacity: 0, x: 30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: 0.2, ease: EASE }}
+                  viewport={{ once: true, margin: "-100px" }}
+                >
+                  <div className="relative">
+                    {/* Strike-through line over the card */}
+                    <CreditCard
+                      cardHolder="YOUR NAME"
+                      cardNumber="0000 0000 0000 0000"
+                      expiryDate="--/--"
+                      cvv="---"
+                      variant="gradient"
+                    />
+                  </div>
+                </motion.div>
+              </div>
+            </div>
+          </Container>
+        </section>
+
+        {/* Complete Features Comparison Table - alternate bg */}
+        <section id="features-comparison" className="py-6 md:py-8 lg:py-12 bg-neutral-50/50 dark:bg-neutral-900/30 scroll-mt-4">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: EASE }}
+            viewport={{ once: true, margin: "-100px" }}
+          >
+            <Container>
+              <div className="text-center mb-8 md:mb-10">
+                <Heading className="mb-4">{t("featuresTitle")}</Heading>
+                <Subheading className="mx-auto">
+                  {t("featuresSubtitle")}
+                </Subheading>
+              </div>
+
+              {/* Sentinel for sticky detection */}
+              <div ref={sentinelRef} className="h-px -mt-px" />
+
+              {/* Feature comparison table */}
+              <div>
+                <table className="w-full border-collapse" aria-label="Feature comparison across pricing plans">
+                  <thead className="sticky top-0 z-20">
+                    <tr>
+                      <th className={cn(isSticky ? "bg-background dark:bg-neutral-950 pt-3" : "bg-transparent")} />
+                      {STATIC_PLANS.map((plan) => {
+                        const price = plan.pricing[selectedTimePeriod];
+                        const isHighlighted = plan.isPopular;
+                        return (
+                          <th key={plan.slug} className={cn(
+                            "p-0 align-bottom",
+                            isSticky ? "bg-background dark:bg-neutral-950 pt-3 pb-1.5" : "bg-transparent"
+                          )}>
+                            <div className={cn(
+                              "rounded-t-xl p-4 mx-1.5 text-center transition-[border-radius] duration-200",
+                              isSticky ? "rounded-b-xl" : "rounded-b-none",
+                              isHighlighted
+                                ? "bg-gradient-to-b from-primary/15 to-primary/8 dark:from-primary/20 dark:to-primary/10 ring-1 ring-primary/20"
+                                : "bg-neutral-50 dark:bg-white/[0.04] ring-1 ring-neutral-200/60 dark:ring-white/[0.06]"
+                            )}>
+                              <div className="flex items-center justify-center gap-1.5 mb-1.5">
+                                {isHighlighted && <IconFlameFilled className="size-3.5 text-primary" />}
+                                <span className={cn(
+                                  "text-sm font-bold font-display",
+                                  isHighlighted ? "text-primary" : "text-neutral-700 dark:text-neutral-200"
+                                )}>
+                                  {plan.name}
+                                </span>
+                              </div>
+                              <div className="mb-3">
+                                {price === null ? (
+                                  <span className="text-2xl font-bold font-display">{t("custom")}</span>
+                                ) : price === 0 ? (
+                                  <span className="text-2xl font-bold font-display">$0</span>
+                                ) : (
+                                  <span className="text-2xl font-bold font-display">${price}<span className="text-sm font-normal text-neutral-400 ms-1">/{TIME_PERIOD_LABELS[selectedTimePeriod]}</span></span>
+                                )}
+                              </div>
+                              <Button
+                                asChild
+                                size="sm"
+                                variant={isHighlighted ? "default" : "secondary"}
+                                className={cn(
+                                  "w-full",
+                                  isHighlighted && "shadow-brand",
+                                  price === 0 && "bg-primary/10 text-primary hover:bg-primary/20"
+                                )}
+                              >
+                                <Link href={`/multi-step-form?plan=${plan.slug}&period=${selectedTimePeriod}`}>
+                                  {price === null ? t("contactSales") : price === 0 ? t("heroCta") : t("getStarted")}
+                                </Link>
+                              </Button>
+                            </div>
+                          </th>
+                        );
+                      })}
+                    </tr>
+                  </thead>
+                    <tbody>
+                      {featureComparison.map((category) => (
+                        <Fragment key={category.name}>
+                          {/* Category Header */}
+                          <tr className="bg-neutral-50 dark:bg-neutral-800/50">
+                            <td
+                              colSpan={5}
+                              className="p-4 md:px-5 font-display font-bold text-xs uppercase tracking-widest text-neutral-500 dark:text-neutral-400"
+                            >
+                              {category.name}
+                            </td>
+                          </tr>
+
+                          {/* Category Features */}
+                          {category.features.map((feature) => (
+                            <tr
+                              key={feature.name}
+                              className="border-b border-neutral-100 dark:border-neutral-800 hover:bg-primary/5 dark:hover:bg-primary/5 transition-colors"
+                            >
+                              <td className="p-4 md:px-5 text-sm text-neutral-700 dark:text-neutral-300 font-medium">{feature.name}</td>
+                              <td className="p-4 text-center">{renderFeatureValue(feature.free)}</td>
+                              <td className="p-4 text-center">{renderFeatureValue(feature.unlimited)}</td>
+                              <td className="p-4 text-center bg-primary/5 border-x border-primary/10">{renderFeatureValue(feature.business)}</td>
+                              <td className="p-4 text-center">{renderFeatureValue(feature.enterprise)}</td>
+                            </tr>
+                          ))}
+                        </Fragment>
+                      ))}
+                    </tbody>
+                </table>
+              </div>
+            </Container>
+          </motion.div>
+        </section>
+
+        {/* Marketplace Section - with grid background like product page marketplace */}
+        <section className="py-6 md:py-8 lg:py-12">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: EASE }}
+            viewport={{ once: true, margin: "-100px" }}
+          >
+            <Container>
+              <div className={cn(
+                "rounded-3xl border border-neutral-200 dark:border-neutral-800",
+                "bg-gradient-to-b from-white to-neutral-50 dark:from-neutral-900 dark:to-neutral-900/80",
+                "bg-[linear-gradient(to_right,theme(colors.neutral.200/0.4)_1px,transparent_1px),linear-gradient(to_bottom,theme(colors.neutral.200/0.4)_1px,transparent_1px)]",
+                "bg-[size:40px_40px]",
+                "dark:bg-[linear-gradient(to_right,theme(colors.neutral.800/0.3)_1px,transparent_1px),linear-gradient(to_bottom,theme(colors.neutral.800/0.3)_1px,transparent_1px)]",
+                "p-8 md:p-14"
+              )}>
+                {/* Badge */}
+                <div className="text-center mb-6">
+                  <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary font-semibold text-sm">
+                    <IconSparkles className="size-4" />
+                    {t("marketplaceTitle")}
+                  </span>
+                </div>
+
+                <div className="text-center mb-8 md:mb-10">
+                  <Heading className="mb-4">{t("marketplaceTitle")}</Heading>
+                  <Subheading className="mx-auto">
+                    {t("marketplaceSubtitle")}
+                  </Subheading>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {marketplaceItems.map((item, index) => (
+                    <MarketplaceCard key={item.id} item={item} t={t} index={index} />
+                  ))}
+                </div>
+              </div>
+            </Container>
+          </motion.div>
+        </section>
+
+        {/* FAQ Section */}
+        <section className="py-6 md:py-8 lg:py-12 bg-neutral-50/50 dark:bg-neutral-900/30">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: EASE }}
+            viewport={{ once: true, margin: "-100px" }}
+          >
+            <Container>
+              <div className="text-center mb-8 md:mb-10">
+                <Heading>{t("faqTitle")}</Heading>
+              </div>
+
+              <div className="flex flex-col gap-3 max-w-3xl mx-auto">
+                {FAQ_KEYS.map((i) => (
+                  <FAQQuestion
+                    key={i}
+                    question={t(`faq${i}Q`)}
+                    answer={t(`faq${i}A`)}
+                  />
+                ))}
+              </div>
+            </Container>
+          </motion.div>
+        </section>
+
+        {/* Bottom CTA Section */}
+        <section className="py-6 md:py-8 lg:py-12">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: EASE }}
+            viewport={{ once: true, margin: "-100px" }}
+          >
+            <Container>
+              <div className="text-center max-w-3xl mx-auto">
+                <Heading className="mb-4">{t("heroTagline")}</Heading>
+                <Subheading className="mx-auto mb-8">
+                  {t("heroSubtitle")}
+                </Subheading>
+                <div className="flex justify-center gap-4 flex-wrap">
+                  <Button size="lg" className="shadow-brand" asChild>
+                    <Link href="/signup">{t("heroCta")}</Link>
+                  </Button>
+                  <Button size="lg" variant="outline" asChild>
+                    <Link href="/contact" className="gap-2">
+                      {t("contactSales")}
+                      <IconArrowRight className="size-4 rtl:rotate-180" />
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </Container>
+          </motion.div>
+        </section>
+
+        </div>{/* end content sections wrapper */}
       </div>
     </PageTransition>
   );

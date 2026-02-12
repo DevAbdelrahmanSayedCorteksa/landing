@@ -14,7 +14,7 @@ import { LanguageSwitcher } from "./language-switcher";
 
 export const Navbar = () => {
   return (
-    <div className="border-b border-neutral-200 dark:border-neutral-800" dir="ltr">
+    <div className="relative z-50 border-b border-neutral-200 dark:border-neutral-800 bg-background" dir="ltr">
       <DesktopNavbar />
       <MobileNavbar />
     </div>

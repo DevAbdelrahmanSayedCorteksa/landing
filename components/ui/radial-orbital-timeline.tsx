@@ -14,7 +14,7 @@ export interface TimelineItem {
   date?: string;
   content: string;
   category: string;
-  icon: React.ElementType;
+  icon: React.ComponentType<{ className?: string }>;
   relatedIds: number[];
   status: "completed" | "in-progress" | "pending";
   energy: number;
