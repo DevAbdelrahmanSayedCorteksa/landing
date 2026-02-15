@@ -23,7 +23,9 @@
       "Bash(cd:*)",
       "Bash(git show:*)",
       "Bash(git ls-tree:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(npm run build:*)",
+      "Bash(python3:*)"
     ]
   }
 }
