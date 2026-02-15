@@ -10,3 +10,4 @@ export { AssistantSkeletonVisual } from "./ai-assistant";
 export { KanbanSkeletonVisual } from "./kanban";
 export { DashboardSkeletonVisual } from "./dashboard";
 export { CustomFieldsSkeletonVisual } from "./custom-fields";
+export { RelationsSkeletonVisual } from "./relations";

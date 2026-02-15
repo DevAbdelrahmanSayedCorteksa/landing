@@ -10,6 +10,7 @@ import { FeaturesDocuments } from "@/components/product/features-documents";
 import { FeaturesCollaboration } from "@/components/product/features-collaboration";
 import { FeaturesBestFit } from "@/components/product/features-best-fit";
 import { FeaturesAssistant } from "@/components/product/features-assistant";
+import { FeaturesUnits } from "@/components/product/features-units";
 import { FeaturesAll } from "@/components/product/features-all";
 import { FeaturesComingSoon } from "@/components/product/features-coming-soon";
 import { FeaturesMarketplace } from "@/components/product/features-marketplace";
@@ -26,8 +27,9 @@ export function ProductsPageClient() {
           <FeaturesOverview />
           <FeaturesDocuments />
           <FeaturesCollaboration />
-          <FeaturesBestFit />
           <FeaturesAssistant />
+          <FeaturesUnits />
+          <FeaturesBestFit />
           <FeaturesAll />
         </ScrollSyncProvider>
         <FeaturesComingSoon />

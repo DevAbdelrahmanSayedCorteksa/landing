@@ -11,8 +11,9 @@ const TAB_LABELS: Record<TabId, string> = {
   "the-system": "tabTheSystem",
   documents: "tabDocuments",
   collaboration: "tabCollaboration",
-  "best-fit": "tabBestFit",
   assistant: "tabAssistant",
+  units: "tabUnits",
+  "best-fit": "tabBestFit",
   "all-features": "tabAllFeatures",
 };
 

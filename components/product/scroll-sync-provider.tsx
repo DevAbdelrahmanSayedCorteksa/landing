@@ -6,8 +6,9 @@ export const TAB_IDS = [
   "the-system",
   "documents",
   "collaboration",
-  "best-fit",
   "assistant",
+  "units",
+  "best-fit",
   "all-features",
 ] as const;
 

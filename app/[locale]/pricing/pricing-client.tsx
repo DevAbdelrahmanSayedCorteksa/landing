@@ -10,6 +10,7 @@ import { PricingFeaturesTable } from "@/components/pricing/pricing-features-tabl
 import { PricingMarketplace } from "@/components/pricing/pricing-marketplace";
 import { PricingFaq } from "@/components/pricing/pricing-faq";
 import { PricingCta } from "@/components/pricing/pricing-cta";
+import { PricingHelp } from "@/components/pricing/pricing-help";
 import { useLocale } from "next-intl";
 import { rtlLocales, Locale } from "@/i18n/routing";
 
@@ -31,6 +32,7 @@ export function PricingPageClient() {
           <PricingCostCalculator />
           <PricingMarketplace />
           <PricingFaq />
+          <PricingHelp />
           <PricingCta />
         </div>
       </div>
