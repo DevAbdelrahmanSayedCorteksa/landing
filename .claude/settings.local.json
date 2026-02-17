@@ -25,7 +25,20 @@
       "Bash(git ls-tree:*)",
       "Bash(git add:*)",
       "Bash(npm run build:*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(for file in ar.json tr.json ru.json fa.json fr.json)",
+      "Bash(do echo \"Processing $file\")",
+      "mcp__chrome-devtools__list_pages",
+      "mcp__chrome-devtools__navigate_page",
+      "mcp__chrome-devtools__take_screenshot",
+      "mcp__chrome-devtools__new_page",
+      "mcp__chrome-devtools__select_page",
+      "mcp__chrome-devtools__wait_for",
+      "Bash(app/[locale]/multi-step-form/multi-step-form-client.tsx:*)",
+      "Bash(for f in messages/en.json messages/ar.json messages/tr.json messages/ru.json messages/fa.json messages/fr.json)",
+      "Bash(do node -e \"JSON.parse\\(require\\(''fs''\\).readFileSync\\(''$f'',''utf8''\\)\\); console.log\\(''$f: valid JSON''\\)\")",
+      "Bash(git stash:*)",
+      "Bash(git checkout:*)"
     ]
   }
 }
