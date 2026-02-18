@@ -492,7 +492,8 @@
     "planReviewTitle": "Review your workspace plan",
     "planReviewSubtitle": "Review the plan below. You can suggest changes or confirm to start building.",
     "thinking": "Thinking...",
-    "analyzing": "Analyzing your request..."
+    "analyzing": "Analyzing your request...",
+    "proceedToWorkspace": "Proceed to workspace"
   },
   "product": {
     "heroBadge": "All-in-One Platform",

@@ -1,11 +1,14 @@
 "use client";
 
 import Cookies from "js-cookie";
-import { AUTH, AUTH_TOKEN, WORKSPACE_SUBDOMAIN } from "./LocalKeys";
+import { AUTH, AUTH_TOKEN, REFRESH_TOKEN, WORKSPACE_SUBDOMAIN } from "./LocalKeys";
 import { LoginResponse } from "@/lib/types/authTypes";
 
 export const handleLogin = (response: LoginResponse) => {
   Cookies.set(AUTH_TOKEN, response.token);
+  if (response.refresh_token) {
+    Cookies.set(REFRESH_TOKEN, response.refresh_token);
+  }
   if (response.user) {
     localStorage.setItem(AUTH, JSON.stringify(response.user));
   }
@@ -28,8 +31,13 @@ export const getUser = (): LoginResponse | null => {
   return null;
 };
 
+export const getRefreshToken = () => {
+  return Cookies.get(REFRESH_TOKEN);
+};
+
 export const handleLogout = () => {
   Cookies.remove(AUTH_TOKEN);
+  Cookies.remove(REFRESH_TOKEN);
   localStorage.removeItem(AUTH);
 };
 

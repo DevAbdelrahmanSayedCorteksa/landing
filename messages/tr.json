@@ -492,7 +492,8 @@
     "planReviewTitle": "Çalışma alanı planınızı inceleyin",
     "planReviewSubtitle": "Aşağıdaki planı inceleyin. Değişiklik önerebilir veya oluşturmaya başlamak için onaylayabilirsiniz.",
     "thinking": "Düşünüyor...",
-    "analyzing": "İsteğiniz analiz ediliyor..."
+    "analyzing": "İsteğiniz analiz ediliyor...",
+    "proceedToWorkspace": "Çalışma alanına git"
   },
   "product": {
     "heroBadge": "Hepsi Bir Arada Platform",

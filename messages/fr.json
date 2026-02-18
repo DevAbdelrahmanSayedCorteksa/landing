@@ -492,7 +492,8 @@
     "planReviewTitle": "Vérifiez votre plan d'espace de travail",
     "planReviewSubtitle": "Vérifiez le plan ci-dessous. Vous pouvez suggérer des modifications ou confirmer pour lancer la construction.",
     "thinking": "Réflexion en cours...",
-    "analyzing": "Analyse de votre demande..."
+    "analyzing": "Analyse de votre demande...",
+    "proceedToWorkspace": "Accéder à l'espace de travail"
   },
   "product": {
     "heroBadge": "Plateforme Tout-en-Un",

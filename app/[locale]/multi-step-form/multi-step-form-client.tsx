@@ -1,16 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Logo } from "@/components/logo";
 import { LandingImages } from "@/components/landing-images";
-import { MultiStepForm } from "@/components/multi-step-form/multi-step-form";
+import { MultiStepForm, WorkspaceData } from "@/components/multi-step-form/multi-step-form";
 import { TimePeriod } from "@/lib/types/pricing";
 import { useTranslations } from "next-intl";
 import { Heading } from "@/components/heading";
 import { Subheading } from "@/components/subheading";
 import { AITemplateChatProvider } from "@/lib/contexts/AITemplateChatContext";
 import { LiveBuildPanel } from "@/components/multi-step-form/ai-chat/LiveBuildPanel";
+import { steperService } from "@/lib/services/SteperService";
+import { getToken, getRefreshToken, buildSSORedirectUrl, saveWorkspaceSubdomain } from "@/lib/services/AuthLocalService";
+import { WorkspaceCreationPayload } from "@/lib/types/workspace";
 
 interface MultiStepFormClientProps {
   selectedPlan?: string;
@@ -21,6 +24,35 @@ export function MultiStepFormClient({ selectedPlan, period }: MultiStepFormClien
   const t = useTranslations("multiStepForm");
   const [isAIChatActive, setIsAIChatActive] = useState(false);
   const [hasAIMessages, setHasAIMessages] = useState(false);
+  const [wsData, setWsData] = useState<WorkspaceData | null>(null);
+
+  const workspaceDomain = wsData ? (wsData.isFreePlan ? "app" : wsData.subdomain) : "";
+
+  const proceedToWorkspace = useCallback(async () => {
+    if (!wsData) return;
+    const payload: WorkspaceCreationPayload = {
+      workspace_name: wsData.workspace_name,
+      pricing_plan_slug: wsData.pricing_plan_slug,
+    };
+    if (!wsData.isFreePlan) {
+      payload.subdomain = wsData.subdomain;
+      payload.pricing_period = wsData.pricing_plan_period;
+    }
+    if (wsData.template_slug) {
+      payload.template_slug = wsData.template_slug;
+    }
+
+    const response = await steperService(payload) as any;
+    const subdomain = response.data?.subdomain || wsData.subdomain;
+
+    const token = getToken();
+    const refreshToken = getRefreshToken();
+    if (token) {
+      const ssoUrl = buildSSORedirectUrl(subdomain, token, refreshToken || "", false);
+      saveWorkspaceSubdomain(subdomain);
+      window.location.href = ssoUrl;
+    }
+  }, [wsData]);
 
   // Show 2-panel layout only after first message is sent
   const showTwoPanel = isAIChatActive && hasAIMessages;
@@ -59,6 +91,7 @@ export function MultiStepFormClient({ selectedPlan, period }: MultiStepFormClien
             period={period}
             onAIChatActiveChange={setIsAIChatActive}
             onAIHasMessagesChange={setHasAIMessages}
+            onWorkspaceDataReady={setWsData}
           />
         </motion.div>
       </motion.div>
@@ -75,7 +108,10 @@ export function MultiStepFormClient({ selectedPlan, period }: MultiStepFormClien
             className="hidden lg:flex flex-col justify-start relative h-screen p-3 ps-0"
           >
             <div className="flex-1 rounded-2xl border border-white/[0.06] bg-[#1e1e22] overflow-hidden">
-              <LiveBuildPanel />
+              <LiveBuildPanel
+                onProceedToWorkspace={wsData ? proceedToWorkspace : undefined}
+                workspaceDomain={workspaceDomain}
+              />
             </div>
           </motion.section>
         ) : !isAIChatActive ? (

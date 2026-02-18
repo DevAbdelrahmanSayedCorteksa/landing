@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
 import { useState, useRef } from "react";
-import { Check } from "lucide-react";
+import { Check, ExternalLink } from "lucide-react";
 import { IconLoader2, IconSearch, IconRocket } from "@tabler/icons-react";
 import { TextShimmer } from "@/components/ui/text-shimmer";
 import { TypewriterMarkdown } from "./TypewriterMarkdown";
@@ -21,7 +21,12 @@ const PlasmaGlobe = dynamic(() => import("@/components/lightswind/plasma-globe")
 
 const rtlLocales = ["ar", "fa"];
 
-export function LiveBuildPanel() {
+interface LiveBuildPanelProps {
+  onProceedToWorkspace?: () => Promise<void>;
+  workspaceDomain?: string;
+}
+
+export function LiveBuildPanel({ onProceedToWorkspace, workspaceDomain }: LiveBuildPanelProps) {
   const t = useTranslations("multiStepForm");
   const locale = useLocale();
   const isRTL = rtlLocales.includes(locale);
@@ -37,6 +42,7 @@ export function LiveBuildPanel() {
   } = useAITemplateChatContext();
 
   const [isSaving, setIsSaving] = useState(false);
+  const [isProceeding, setIsProceeding] = useState(false);
   const wasStreamingRef = useRef(false);
 
   if (streamingContent) {
@@ -167,7 +173,37 @@ export function LiveBuildPanel() {
                 </div>
               </div>
 
-              {hasTemplate && (
+              {savedTemplateSlug && onProceedToWorkspace ? (
+                <div className="flex items-center gap-3">
+                  {workspaceDomain && (
+                    <code className="text-xs text-[#a78bfa] bg-[#7c3aed]/10 px-2.5 py-1 rounded" dir="ltr">
+                      {workspaceDomain}.corteksa.net
+                    </code>
+                  )}
+                  <button
+                    onClick={async () => {
+                      setIsProceeding(true);
+                      try { await onProceedToWorkspace(); }
+                      catch { setIsProceeding(false); }
+                    }}
+                    disabled={isProceeding}
+                    className="flex-shrink-0 flex items-center gap-2 px-5 py-2 rounded-lg text-[13px] font-medium bg-[#7c3aed] hover:bg-[#8b5cf6] text-white transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.97] cursor-pointer shadow-[0_0_16px_rgba(124,58,237,0.25)]"
+                  >
+                    {isProceeding ? (
+                      <>
+                        <IconLoader2 className="size-3.5 animate-spin" />
+                        {t("creatingWorkspace")}
+                      </>
+                    ) : (
+                      <>
+                        <IconRocket className="size-3.5" />
+                        {t("proceedToWorkspace")}
+                        <ExternalLink className="size-3" />
+                      </>
+                    )}
+                  </button>
+                </div>
+              ) : hasTemplate ? (
                 <button
                   onClick={handleSave}
                   disabled={isSaving}
@@ -185,7 +221,7 @@ export function LiveBuildPanel() {
                     </>
                   )}
                 </button>
-              )}
+              ) : null}
             </div>
           </motion.div>
         )}

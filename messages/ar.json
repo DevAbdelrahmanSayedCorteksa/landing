@@ -492,7 +492,8 @@
     "planReviewTitle": "مراجعة خطة مساحة العمل",
     "planReviewSubtitle": "راجع الخطة أدناه. يمكنك اقتراح تعديلات أو التأكيد لبدء البناء.",
     "thinking": "جاري التفكير...",
-    "analyzing": "جاري تحليل طلبك..."
+    "analyzing": "جاري تحليل طلبك...",
+    "proceedToWorkspace": "انتقل إلى مساحة العمل"
   },
   "product": {
     "heroBadge": "منصة شاملة",

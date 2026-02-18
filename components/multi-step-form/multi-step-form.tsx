@@ -44,14 +44,24 @@ interface FormData {
   templateName?: string;  // For display after saving
 }
 
+export interface WorkspaceData {
+  workspace_name: string;
+  pricing_plan_slug: string;
+  subdomain: string;
+  pricing_plan_period: TimePeriod;
+  template_slug?: string;
+  isFreePlan: boolean;
+}
+
 interface MultiStepFormProps {
   selectedPlan?: string;
   period?: TimePeriod;
   onAIChatActiveChange?: (isAIChatActive: boolean) => void;
   onAIHasMessagesChange?: (hasMessages: boolean) => void;
+  onWorkspaceDataReady?: (data: WorkspaceData) => void;
 }
 
-export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAIHasMessagesChange }: MultiStepFormProps) {
+export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAIHasMessagesChange, onWorkspaceDataReady }: MultiStepFormProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -103,6 +113,20 @@ export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAI
   useEffect(() => {
     onAIHasMessagesChange?.(hasAIMessages);
   }, [hasAIMessages, onAIHasMessagesChange]);
+
+  // Lift workspace data to parent when template is saved
+  useEffect(() => {
+    if (formData.template_slug && onWorkspaceDataReady) {
+      onWorkspaceDataReady({
+        workspace_name: formData.workspace_name,
+        pricing_plan_slug: formData.pricing_plan_slug,
+        subdomain: formData.subdomain,
+        pricing_plan_period: formData.pricing_plan_period,
+        template_slug: formData.template_slug,
+        isFreePlan,
+      });
+    }
+  }, [formData.template_slug]);
 
   const handleNext = () => {
     if (!validateCurrentStep()) {
