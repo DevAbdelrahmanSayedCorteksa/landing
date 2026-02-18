@@ -1,7 +1,7 @@
 // PlasmaGlobe.tsx
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Renderer, Program, Mesh, Triangle } from "ogl";
 
 interface PlasmaGlobeProps {
@@ -243,19 +243,28 @@ export default function PlasmaGlobe({
   intensity = 1.0,
 }: PlasmaGlobeProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const [webglFailed, setWebglFailed] = useState(false);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    // create renderer
-    const renderer = new Renderer({ antialias: true });
-    const gl = renderer.gl;
+    let renderer: Renderer;
+    try {
+      renderer = new Renderer({ antialias: true });
+    } catch {
+      setWebglFailed(true);
+      return;
+    }
 
-    // geometry
+    const gl = renderer.gl;
+    if (!gl?.canvas) {
+      setWebglFailed(true);
+      return;
+    }
+
     const geometry = new Triangle(gl);
 
-    // program
     const program = new Program(gl, {
       vertex: VERTEX_SHADER,
       fragment: FRAGMENT_SHADER,
@@ -274,7 +283,6 @@ export default function PlasmaGlobe({
     gl.canvas.style.height = "100%";
     container.appendChild(gl.canvas);
 
-    // resize
     const resize = () => {
       const width = container.offsetWidth;
       const height = container.offsetHeight;
@@ -287,7 +295,6 @@ export default function PlasmaGlobe({
     let rafId = 0;
     const loop = (t: number) => {
       rafId = requestAnimationFrame(loop);
-      // uTime passed in seconds, multiplied by speed
       program.uniforms.uTime.value = (t * 0.001) * speed;
       program.uniforms.uIntensity.value = intensity;
       renderer.render({ scene: mesh });
@@ -302,11 +309,18 @@ export default function PlasmaGlobe({
     };
   }, [speed, intensity]);
 
+  if (webglFailed) {
+    return (
+      <div className="w-full h-full absolute inset-0 pointer-events-none rounded-full overflow-hidden flex items-center justify-center">
+        <div className="size-3/4 rounded-full bg-gradient-to-br from-[#7c3aed]/30 via-[#7c3aed]/10 to-transparent blur-2xl animate-pulse" />
+      </div>
+    );
+  }
+
   return (
     <div
       ref={containerRef}
       className="w-full h-full absolute inset-0 pointer-events-none rounded-full overflow-hidden"
     />
-
   );
 }
