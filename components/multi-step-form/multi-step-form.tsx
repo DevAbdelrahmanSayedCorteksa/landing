@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { IconArrowLeft, IconTemplate, IconSparkles, IconPlayerSkipForward, IconX, IconPlus } from "@tabler/icons-react";
+import { IconArrowLeft, IconTemplate, IconSparkles, IconPlayerSkipForward, IconFlameFilled } from "@tabler/icons-react";
 import { Loader2, Check, X, ExternalLink, Copy } from "lucide-react";
 import { Heading } from "@/components/heading";
 import { Subheading } from "@/components/subheading";
@@ -17,12 +17,12 @@ import { toast } from "sonner";
 import { steperService } from "@/lib/services/SteperService";
 import { handleLogout, saveWorkspaceSubdomain } from "@/lib/services/AuthLocalService";
 import { OK } from "@/lib/services/statusCodes";
-import { PricingPlan, TimePeriod, TIME_PERIOD_LABELS } from "@/lib/types/pricing";
-import { PRICING_KEY, pricingService } from "@/lib/services/PricingService";
+import { TimePeriod, TIME_PERIOD_LABELS } from "@/lib/types/pricing";
 import { PeriodTabs } from "@/components/ui/period-tabs";
+import { AnimatedPrice } from "@/components/ui/animated-price";
+import * as PricingCardUI from "@/components/pricing-card";
+import { STATIC_PLANS, type StaticPlan } from "@/components/pricing/pricing-data";
 import { cn } from "@/lib/utils";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SetupMethodCard } from "./setup-method-card";
 import { WorkspaceSetupMethod, WorkspaceCreationPayload } from "@/lib/types/workspace";
 import { TEMPLATES_KEY, templateService } from "@/lib/services/TemplateService";
@@ -70,13 +70,7 @@ export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAI
   const router = useRouter();
   const t = useTranslations("multiStepForm");
 
-  // Fetch pricing plans from API
-  const { data: pricingData, isLoading: isPricingLoading } = useQuery({
-    queryKey: [PRICING_KEY],
-    queryFn: pricingService.getPricingPlans,
-  });
-
-  const plans = pricingData?.data || [];
+  const plans = STATIC_PLANS;
 
   const [formData, setFormData] = useState<FormData>({
     workspace_name: "",
@@ -92,7 +86,7 @@ export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAI
 
   const isFreePlan = useMemo(() => {
     if (!selectedPlanData) return false;
-    const price = selectedPlanData.timePeriodPricing[formData.pricing_plan_period];
+    const price = selectedPlanData.pricing[formData.pricing_plan_period];
     return price === 0;
   }, [selectedPlanData, formData.pricing_plan_period]);
 
@@ -278,8 +272,6 @@ export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAI
           <Step2PricingSelection
             formData={formData}
             updateFormData={updateFormData}
-            plans={plans}
-            isLoading={isPricingLoading}
           />
         );
       case 3:
@@ -320,8 +312,37 @@ export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAI
   // Check if we're on AI step (for conditional width)
   const isAIStep = (currentStep === totalSteps) && formData.setup_method === "ai";
 
+  // Step title/subtitle mapping
+  const getStepHeader = () => {
+    if (isSuccess) return null;
+    const setupStep = isFreePlan ? 3 : 4;
+    switch (currentStep) {
+      case 1: return { title: t("step1Title"), subtitle: t("step1Subtitle") };
+      case 2: return { title: t("step2Title"), subtitle: t("step2Subtitle") };
+      case 3:
+        if (!isFreePlan) return { title: t("step3Title"), subtitle: t("step3Subtitle") };
+        return { title: t("setupTitle"), subtitle: t("setupSubtitle") };
+      case setupStep: return { title: t("setupTitle"), subtitle: t("setupSubtitle") };
+      default: return null;
+    }
+  };
+
+  const stepHeader = getStepHeader();
+
   return (
     <div className={isAIStep ? "h-full flex flex-col" : "space-y-8"}>
+      {/* Centered Step Title */}
+      {stepHeader && !isAIStep && (
+        <div className="text-center">
+          <h2 className="text-3xl mb-2 tracking-tight font-display font-bold">
+            {stepHeader.title}
+          </h2>
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">
+            {stepHeader.subtitle}
+          </p>
+        </div>
+      )}
+
       {/* Step Content */}
       <AnimatePresence mode="wait">
         <motion.div
@@ -330,7 +351,10 @@ export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAI
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.2, ease: "easeOut" }}
-          className={isAIStep ? "mx-auto w-full h-full" : "mx-auto w-full max-w-lg"}
+          className={cn(
+            "mx-auto w-full",
+            isAIStep ? "h-full" : currentStep === 2 ? "max-w-xl" : "max-w-lg"
+          )}
         >
           {renderStep()}
         </motion.div>
@@ -338,7 +362,7 @@ export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAI
 
       {/* Navigation Buttons - hide on success and AI step */}
       {!isSuccess && !isAIStep && (
-        <div className="flex gap-4">
+        <div className={cn("flex gap-4 mx-auto w-full", currentStep === 2 ? "max-w-xl" : "max-w-lg")}>
           {currentStep > 1 && (
             <Button type="button" variant="outline" onClick={handleBack} className="flex-1" disabled={isLoading}>
               <IconArrowLeft className="size-4 me-2" />
@@ -371,15 +395,6 @@ function Step1WorkspaceName({
 
   return (
     <div className="space-y-8">
-      <div>
-        <h2 className="text-3xl mb-2 tracking-tight font-display font-bold">
-          {t("step1Title")}
-        </h2>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400">
-          {t("step1Subtitle")}
-        </p>
-      </div>
-
       {/* Workspace Name */}
       <div>
         <Label htmlFor="workspace-name" className="text-base font-medium block mb-3">{t("workspaceName")} *</Label>
@@ -455,15 +470,6 @@ function Step3Subdomain({
 
   return (
     <div className="space-y-8">
-      <div>
-        <h2 className="text-3xl mb-2 tracking-tight font-display font-bold">
-          {t("step3Title")}
-        </h2>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400">
-          {t("step3Subtitle")}
-        </p>
-      </div>
-
       {/* Subdomain Input - Always LTR for domain input */}
       <div>
         <Label htmlFor="subdomain" className="text-base font-medium block mb-3">{t("subdomain")} *</Label>
@@ -548,55 +554,44 @@ function StepSetupPreferences({
 
   return (
     <div className="space-y-8">
-      <div>
-        <h2 className="text-3xl mb-2 tracking-tight font-display font-bold">
-          {t("setupTitle")}
-        </h2>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400">
-          {t("setupSubtitle")}
-        </p>
-      </div>
-
       {/* Setup Method Selection */}
-      <div>
-        <Label className="text-base font-medium block mb-3">{t("setupMethod")}</Label>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <SetupMethodCard
-            method="template"
-            icon={IconTemplate}
-            title={t("templateOption")}
-            description={t("templateDesc")}
-            isSelected={formData.setup_method === "template"}
-            onSelect={() => updateFormData({
-              setup_method: "template",
+      <div className="flex flex-col gap-2.5">
+        <SetupMethodCard
+          method="ai"
+          icon={IconSparkles}
+          title={t("aiOption")}
+          description={t("aiDesc")}
+          isSelected={formData.setup_method as string === "ai"}
+          badge={t("recommended")}
+          onSelect={() => {
+            updateFormData({
+              setup_method: "ai",
               template_slug: undefined
-            })}
-          />
-          <SetupMethodCard
-            method="ai"
-            icon={IconSparkles}
-            title={t("aiOption")}
-            description={t("aiDesc")}
-            isSelected={formData.setup_method as string === "ai"}
-            onSelect={() => {
-              updateFormData({
-                setup_method: "ai",
-                template_slug: undefined
-              });
-            }}
-          />
-          <SetupMethodCard
-            method="skip"
-            icon={IconPlayerSkipForward}
-            title={t("skipOption")}
-            description={t("skipDesc")}
-            isSelected={formData.setup_method === "skip"}
-            onSelect={() => updateFormData({
-              setup_method: "skip",
-              template_slug: undefined
-            })}
-          />
-        </div>
+            });
+          }}
+        />
+        <SetupMethodCard
+          method="template"
+          icon={IconTemplate}
+          title={t("templateOption")}
+          description={t("templateDesc")}
+          isSelected={formData.setup_method === "template"}
+          onSelect={() => updateFormData({
+            setup_method: "template",
+            template_slug: undefined
+          })}
+        />
+        <SetupMethodCard
+          method="skip"
+          icon={IconPlayerSkipForward}
+          title={t("skipOption")}
+          description={t("skipDesc")}
+          isSelected={formData.setup_method === "skip"}
+          onSelect={() => updateFormData({
+            setup_method: "skip",
+            template_slug: undefined
+          })}
+        />
       </div>
 
       {/* Template Selection - Only show if template method selected */}
@@ -674,13 +669,9 @@ function StepSetupPreferences({
 function Step2PricingSelection({
   formData,
   updateFormData,
-  plans,
-  isLoading,
 }: {
   formData: FormData;
   updateFormData: (data: Partial<FormData>) => void;
-  plans: PricingPlan[];
-  isLoading: boolean;
 }) {
   const t = useTranslations("multiStepForm");
   const [selectedTimePeriod, setSelectedTimePeriod] = useState<TimePeriod>(
@@ -699,76 +690,47 @@ function Step2PricingSelection({
     });
   };
 
-  if (isLoading) {
-    return (
-      <div className="space-y-8">
-        <div>
-          <h2 className="text-3xl mb-2 tracking-tight font-display font-bold">
-            {t("step2Title")}
-          </h2>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">
-            {t("step2Subtitle")}
-          </p>
-        </div>
-        <div className="flex justify-center py-12">
-          <Loader2 className="size-12 animate-spin text-primary" />
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-8">
-      <div>
-        <h2 className="text-3xl mb-2 tracking-tight font-display font-bold">
-          {t("step2Title")}
-        </h2>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400">
-          {t("step2Subtitle")}
-        </p>
+    <div className="space-y-6">
+      {/* Period Tabs */}
+      <div className="flex justify-center">
+        <PeriodTabs
+          selectedTimePeriod={selectedTimePeriod}
+          setSelectedTimePeriod={handlePeriodChange}
+          className="mb-0"
+        />
       </div>
 
-      {/* Period Tabs */}
-      <PeriodTabs
-        selectedTimePeriod={selectedTimePeriod}
-        setSelectedTimePeriod={handlePeriodChange}
-        className="mb-6"
-      />
-
-      {/* Pricing Cards - Professional Grid Layout */}
-      <div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {plans.map((plan) => (
-            <PricingCardCompact
-              key={plan.slug}
-              plan={plan}
-              selectedTimePeriod={selectedTimePeriod}
-              isSelected={formData.pricing_plan_slug === plan.slug}
-              onSelect={handlePlanSelect}
-            />
-          ))}
-        </div>
+      {/* Pricing Cards Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {STATIC_PLANS.map((plan) => (
+          <SelectablePricingCard
+            key={plan.slug}
+            plan={plan}
+            selectedTimePeriod={selectedTimePeriod}
+            isSelected={formData.pricing_plan_slug === plan.slug}
+            onSelect={handlePlanSelect}
+          />
+        ))}
       </div>
     </div>
   );
 }
 
-// Clean Pricing Card Design
-interface PricingCardCompactProps {
-  plan: PricingPlan;
-  selectedTimePeriod: TimePeriod;
-  isSelected: boolean;
-  onSelect: (slug: string) => void;
-}
-
-function PricingCardCompact({
+// Selectable Pricing Card - reuses PricingCardUI from pricing page
+function SelectablePricingCard({
   plan,
   selectedTimePeriod,
   isSelected,
   onSelect,
-}: PricingCardCompactProps) {
+}: {
+  plan: StaticPlan;
+  selectedTimePeriod: TimePeriod;
+  isSelected: boolean;
+  onSelect: (slug: string) => void;
+}) {
   const t = useTranslations("multiStepForm");
-  const price = plan.timePeriodPricing[selectedTimePeriod];
+  const price = plan.pricing[selectedTimePeriod];
   const periodLabel = TIME_PERIOD_LABELS[selectedTimePeriod];
 
   return (
@@ -776,48 +738,41 @@ function PricingCardCompact({
       type="button"
       onClick={() => onSelect(plan.slug)}
       className={cn(
-        "w-full p-6 rounded-2xl text-center transition-all duration-200 relative",
-        "bg-neutral-100 dark:bg-neutral-800/80 hover:bg-neutral-200 dark:hover:bg-neutral-800",
-        isSelected && "ring-2 ring-primary/50 shadow-[0_4px_20px_rgba(124,58,237,0.15)]"
+        "text-start w-full rounded-xl p-3 transition-all duration-200 cursor-pointer",
+        "bg-neutral-50 dark:bg-white/[0.04]",
+        "border border-neutral-100 dark:border-white/[0.06]",
+        isSelected
+          ? "border-primary/40 dark:border-primary/30 bg-primary/5 dark:bg-primary/10 shadow-[0_0_20px_-5px] shadow-primary/20"
+          : "hover:border-neutral-300 dark:hover:border-neutral-700"
       )}
     >
-      {/* Popular Badge */}
-      {plan.isPopular && (
-        <span className="absolute -top-2.5 start-1/2 -translate-x-1/2 rtl:translate-x-1/2 text-[10px] px-3 py-1 rounded-full bg-primary text-primary-foreground font-semibold uppercase tracking-wide">
-          {t("popular")}
-        </span>
-      )}
-
-      {/* Plan Name */}
-      <h3 className={cn(
-        "font-bold text-lg mb-3",
-        isSelected ? "text-primary" : "text-foreground"
-      )}>
-        {plan.name}
-      </h3>
-
-      {/* Price */}
-      <div className="mb-3">
-        {price === null || price === undefined ? (
-          <span className={cn(
-            "text-3xl font-bold",
-            isSelected ? "text-primary" : "text-foreground"
-          )}>{t("custom")}</span>
-        ) : (
-          <div className="flex items-baseline justify-center gap-1" dir="ltr">
-            <span className={cn(
-              "text-3xl font-bold",
-              isSelected ? "text-primary" : "text-foreground"
-            )}>${price}</span>
-            <span className="text-sm text-muted-foreground">/{periodLabel}</span>
-          </div>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2 text-sm font-medium text-neutral-600 dark:text-neutral-300">
+          {plan.isPopular && <IconFlameFilled className="size-3.5 text-primary" />}
+          {plan.name}
+        </div>
+        {plan.isPopular && (
+          <span className="rounded-full border px-2 py-0.5 text-xs border-primary/30 text-primary bg-primary/10">
+            {t("popular")}
+          </span>
         )}
       </div>
 
-      {/* Description */}
-      <p className="text-sm leading-relaxed text-muted-foreground">
-        {plan.description}
-      </p>
+      <div className="flex items-end gap-1 mb-2">
+        {price === null ? (
+          <span className="text-2xl font-bold font-display tracking-tight">{t("custom")}</span>
+        ) : (
+          <>
+            <AnimatedPrice
+              value={price}
+              className="text-2xl font-bold font-display tracking-tight"
+            />
+            <span className="text-foreground/80 pb-0.5 text-sm">/{periodLabel}</span>
+          </>
+        )}
+      </div>
+
+      <p className="text-muted-foreground text-xs">{plan.description}</p>
     </button>
   );
 }

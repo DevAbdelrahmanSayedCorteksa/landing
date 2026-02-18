@@ -68,9 +68,9 @@ export function LiveBuildPanel({ onProceedToWorkspace, workspaceDomain }: LiveBu
 
   const showHeader = isThinking || isAnalyzing || isPlanReview || (isStreaming && !isAnalyzing) || showComplete;
 
-  // Plasma globe: always visible at slow speed, fast only during analyzing (real planning)
+  // Plasma globe: always visible at slow speed, fast during thinking/analyzing
   const showPlasma = !isStreaming && !showComplete && !isPlanReview;
-  const plasmaSpeed = isAnalyzing ? 5.0 : 0.4;
+  const plasmaSpeed = (isThinking || isAnalyzing) ? 5.0 : 0.4;
 
   return (
     <div className="h-full flex flex-col overflow-hidden bg-[#1e1e22] relative">

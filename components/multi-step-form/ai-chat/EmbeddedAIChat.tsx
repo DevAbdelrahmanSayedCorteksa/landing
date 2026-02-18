@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { AnimatePresence } from "motion/react";
 import { useAITemplateChatContext } from "@/lib/contexts/AITemplateChatContext";
 import { BoltStyleChat } from "@/components/ui/bolt-style-chat";
@@ -16,6 +17,7 @@ interface EmbeddedAIChatProps {
 }
 
 export function EmbeddedAIChat({ updateFormData, onMessagesChange }: EmbeddedAIChatProps) {
+  const t = useTranslations("multiStepForm");
   const {
     messages,
     isConnected,
@@ -59,6 +61,12 @@ export function EmbeddedAIChat({ updateFormData, onMessagesChange }: EmbeddedAIC
                 title="What will you"
                 subtitle="Create your custom CRM template by chatting with AI."
                 placeholder="Describe your business..."
+                suggestions={[
+                  t("exampleDental"),
+                  t("exampleRealEstate"),
+                  t("exampleMarketing"),
+                  t("exampleEcommerce"),
+                ]}
                 onSend={sendMessage}
               />
             </div>

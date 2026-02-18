@@ -2,8 +2,8 @@
 
 import React, { useState, useRef, useEffect } from 'react'
 import {
-  Plus, Lightbulb, Paperclip, Image as ImageIcon, FileCode,
-  ChevronDown, Check, Sparkles, Zap, Brain, Bolt, Github,
+  Plus, Lightbulb,
+  ChevronDown, Check, Sparkles, Zap, Brain, Bolt,
   SendHorizontal
 } from 'lucide-react'
 import Image from 'next/image'
@@ -15,19 +15,6 @@ interface Model {
   description: string
   icon: React.ReactNode
   badge?: string
-}
-
-// FIGMA ICON
-function FigmaIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none">
-      <path d="M8 24C10.208 24 12 22.208 12 20V16H8C5.792 16 4 17.792 4 20C4 22.208 5.792 24 8 24Z" fill="currentColor"/>
-      <path d="M4 12C4 9.792 5.792 8 8 8H12V16H8C5.792 16 4 14.208 4 12Z" fill="currentColor"/>
-      <path d="M4 4C4 1.792 5.792 0 8 0H12V8H8C5.792 8 4 6.208 4 4Z" fill="currentColor"/>
-      <path d="M12 0H16C18.208 0 20 1.792 20 4C20 6.208 18.208 8 16 8H12V0Z" fill="currentColor"/>
-      <path d="M20 12C20 14.208 18.208 16 16 16C13.792 16 12 14.208 12 12C12 9.792 13.792 8 16 8C18.208 8 20 9.792 20 12Z" fill="currentColor"/>
-    </svg>
-  )
 }
 
 // MODEL SELECTOR
@@ -251,26 +238,20 @@ function AnnouncementBadge({ text, href = "#" }: { text: string; href?: string }
   )
 }
 
-// IMPORT BUTTONS COMPONENT
-function ImportButtons({ onImport }: { onImport?: (source: string) => void }) {
+// PROMPT SUGGESTIONS COMPONENT
+function PromptSuggestions({ suggestions, onSelect }: { suggestions?: string[]; onSelect?: (prompt: string) => void }) {
+  if (!suggestions || suggestions.length === 0) return null
   return (
-    <div className="flex items-center gap-4 justify-center">
-      <span className="text-sm text-[#6a6a6f]">or import from</span>
-      <div className="flex gap-2">
-        {[
-          { id: 'figma', name: 'Figma', icon: <FigmaIcon className="size-4" /> },
-          { id: 'github', name: 'GitHub', icon: <Github className="size-4" /> }
-        ].map((option) => (
-          <button
-            key={option.id}
-            onClick={() => onImport?.(option.id)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border border-white/10 bg-[#0f0f0f] hover:bg-[#1a1a1e] text-[#8a8a8f] hover:text-white transition-all duration-200 active:scale-95"
-          >
-            {option.icon}
-            <span>{option.name}</span>
-          </button>
-        ))}
-      </div>
+    <div className="flex flex-wrap items-center justify-center gap-2 px-4">
+      {suggestions.map((prompt, i) => (
+        <button
+          key={i}
+          onClick={() => onSelect?.(prompt)}
+          className="px-4 py-2 rounded-full text-xs font-medium border border-white/10 bg-white/[0.03] hover:bg-white/[0.08] text-[#8a8a8f] hover:text-white transition-all duration-200 active:scale-95"
+        >
+          {prompt}
+        </button>
+      ))}
     </div>
   )
 }
@@ -282,8 +263,8 @@ interface BoltChatProps {
   announcementText?: string
   announcementHref?: string
   placeholder?: string
+  suggestions?: string[]
   onSend?: (message: string) => void
-  onImport?: (source: string) => void
 }
 
 export function BoltStyleChat({
@@ -292,8 +273,8 @@ export function BoltStyleChat({
   announcementText = "Introducing Bolt V2",
   announcementHref = "#",
   placeholder = "What do you want to build?",
+  suggestions,
   onSend,
-  onImport
 }: BoltChatProps) {
   return (
     <div className="relative flex flex-col items-center justify-center h-full w-full overflow-hidden bg-[#0f0f0f]">
@@ -317,8 +298,8 @@ export function BoltStyleChat({
           <ChatInput placeholder={placeholder} onSend={onSend} />
         </div>
 
-        {/* Import buttons */}
-        <ImportButtons onImport={onImport} />
+        {/* Prompt suggestions */}
+        <PromptSuggestions suggestions={suggestions} onSelect={onSend} />
       </div>
     </div>
   )
