@@ -5,7 +5,7 @@ import { SendHorizontal, Plus, Lightbulb, ChevronDown } from "lucide-react";
 import Image from "next/image";
 
 interface ChatInputProps {
-  onSend: (message: string) => void;
+  onSend: (message: string, options?: { plan?: boolean }) => void;
   disabled?: boolean;
   placeholder?: string;
   isTyping?: boolean;
@@ -33,7 +33,7 @@ export function ChatInput({
     const trimmedMessage = message.trim();
     if (!trimmedMessage || disabled || isTyping) return;
 
-    onSend(trimmedMessage);
+    onSend(trimmedMessage, { plan: true });
     setMessage("");
 
     // Refocus input
@@ -103,11 +103,11 @@ export function ChatInput({
           <div className="flex-1" />
 
           <div className="flex items-center gap-2">
-            {/* Plan button */}
-            <button className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-medium text-[#6a6a6f] hover:text-white hover:bg-white/5 transition-all duration-200">
+            {/* Plan — always active */}
+            <span className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-medium bg-[#7c3aed]/15 text-[#a78bfa] ring-1 ring-[#7c3aed]/30">
               <Lightbulb className="size-4" />
               <span className="hidden sm:inline">Plan</span>
-            </button>
+            </span>
 
             {/* Send button */}
             <button

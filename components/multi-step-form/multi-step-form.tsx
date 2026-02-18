@@ -48,11 +48,10 @@ interface MultiStepFormProps {
   selectedPlan?: string;
   period?: TimePeriod;
   onAIChatActiveChange?: (isAIChatActive: boolean) => void;
-  onAIBuildingChange?: (isBuilding: boolean) => void;
   onAIHasMessagesChange?: (hasMessages: boolean) => void;
 }
 
-export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAIBuildingChange, onAIHasMessagesChange }: MultiStepFormProps) {
+export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAIHasMessagesChange }: MultiStepFormProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -270,7 +269,6 @@ export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAI
               formData={formData}
               updateFormData={updateFormData}
               onMessagesChange={setHasAIMessages}
-              onBuildingStateChange={onAIBuildingChange}
             />
           );
         }
@@ -281,7 +279,6 @@ export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAI
             formData={formData}
             updateFormData={updateFormData}
             onMessagesChange={setHasAIMessages}
-            onBuildingStateChange={onAIBuildingChange}
           />
         );
       default:
@@ -496,12 +493,10 @@ function StepSetupPreferences({
   formData,
   updateFormData,
   onMessagesChange,
-  onBuildingStateChange,
 }: {
   formData: FormData;
   updateFormData: (data: Partial<FormData>) => void;
   onMessagesChange?: (hasMessages: boolean) => void;
-  onBuildingStateChange?: (isBuilding: boolean) => void;
 }) {
   const t = useTranslations("multiStepForm");
 
@@ -522,7 +517,6 @@ function StepSetupPreferences({
           formData={formData}
           updateFormData={updateFormData}
           onMessagesChange={onMessagesChange}
-          onBuildingStateChange={onBuildingStateChange}
         />
       </div>
     );

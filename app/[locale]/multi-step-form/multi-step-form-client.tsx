@@ -20,7 +20,6 @@ interface MultiStepFormClientProps {
 export function MultiStepFormClient({ selectedPlan, period }: MultiStepFormClientProps) {
   const t = useTranslations("multiStepForm");
   const [isAIChatActive, setIsAIChatActive] = useState(false);
-  const [isAIBuilding, setIsAIBuilding] = useState(false);
   const [hasAIMessages, setHasAIMessages] = useState(false);
 
   // Show 2-panel layout only after first message is sent
@@ -45,7 +44,7 @@ export function MultiStepFormClient({ selectedPlan, period }: MultiStepFormClien
         className={`flex items-center justify-center transition-all duration-700 ease-out ${
           isAIChatActive
             ? showTwoPanel
-              ? "h-screen p-0 lg:border-e border-white/[0.06]"
+              ? "h-screen p-0 pt-14"
               : "h-screen p-0"
             : "p-8 md:p-12 lg:p-16 lg:border-e border-border"
         }`}
@@ -59,7 +58,6 @@ export function MultiStepFormClient({ selectedPlan, period }: MultiStepFormClien
             selectedPlan={selectedPlan}
             period={period}
             onAIChatActiveChange={setIsAIChatActive}
-            onAIBuildingChange={setIsAIBuilding}
             onAIHasMessagesChange={setHasAIMessages}
           />
         </motion.div>
@@ -74,9 +72,11 @@ export function MultiStepFormClient({ selectedPlan, period }: MultiStepFormClien
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="hidden lg:flex flex-col justify-start relative overflow-hidden h-screen bg-[#0f0f0f]"
+            className="hidden lg:flex flex-col justify-start relative h-screen p-3 ps-0"
           >
-            <LiveBuildPanel isPreviewReady={isAIBuilding} />
+            <div className="flex-1 rounded-2xl border border-white/[0.06] bg-[#1e1e22] overflow-hidden">
+              <LiveBuildPanel />
+            </div>
           </motion.section>
         ) : !isAIChatActive ? (
           <motion.section
@@ -119,6 +119,11 @@ export function MultiStepFormClient({ selectedPlan, period }: MultiStepFormClien
 
   return (
     <main className={`relative ${isAIChatActive ? "bg-[#0f0f0f] h-screen overflow-hidden" : "bg-background min-h-screen overflow-hidden"}`}>
+      {/* Background Glow - Top Corner */}
+      <div
+        className="absolute top-0 start-0 w-[300px] h-[300px] bg-primary/35 rounded-full blur-[100px] pointer-events-none -translate-x-1/4 -translate-y-1/2"
+      />
+
       {/* Logo - Top Left */}
       <motion.div
         animate={{ opacity: 1 }}

@@ -23,7 +23,7 @@ export function AIChatModal({
   const {
     messages,
     isConnected,
-    isTyping,
+    isProcessing,
     sessionId,
     currentTemplate,
     savedTemplateSlug,
@@ -133,13 +133,13 @@ export function AIChatModal({
               <WelcomeState
                 onSend={sendMessage}
                 isConnected={isConnected}
-                isTyping={isTyping}
+                isTyping={isProcessing}
               />
             ) : (
               <ChatActiveState
                 messages={messages}
                 isConnected={isConnected}
-                isTyping={isTyping}
+                isTyping={isProcessing}
                 onSend={sendMessage}
                 messagesEndRef={messagesEndRef}
               />

@@ -1,4 +1,5 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+@plugin 'lightswind/plugin';
 @import "tw-animate-css";
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -130,6 +131,11 @@
   --animate-border-beam: border-beam calc(var(--duration)*1s) infinite linear;
 
   --animate-orbit: orbit var(--orbit-duration) linear infinite;
+
+  @keyframes shimmer {
+    0% { background-position: 100% center; }
+    100% { background-position: 0% center; }
+  }
 
   @keyframes border-beam {
     100% {

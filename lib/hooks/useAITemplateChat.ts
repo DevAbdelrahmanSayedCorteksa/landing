@@ -10,6 +10,11 @@ import {
   ResultResponse,
   TemplateSavedResponse,
   TemplateErrorResponse,
+  ThinkingResponse,
+  TokenResponse,
+  TemplatePlanEvent,
+  TemplatePhaseEvent,
+  TemplateTaskUpdateEvent,
 } from "@/lib/types/aiChat";
 
 export function useAITemplateChat() {
@@ -17,14 +22,34 @@ export function useAITemplateChat() {
     messages: [],
     sessionId: null,
     isConnected: false,
-    isTyping: false,
+    builderState: "idle",
+    phaseMessage: "",
+    tasks: [],
+    planResult: null,
+    streamingContent: "",
     savedTemplateSlug: null,
     templateName: "",
     category: "",
   });
 
-  const [previewBuildComplete, setPreviewBuildComplete] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // ── Throttled streaming buffer ──
+  // Tokens arrive rapidly. Accumulate in ref, flush to state on animation frame.
+  const streamBufferRef = useRef("");
+  const rafIdRef = useRef<number | null>(null);
+  const analyzeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const flushStreamBuffer = useCallback(() => {
+    rafIdRef.current = null;
+    const buffered = streamBufferRef.current;
+    if (buffered) {
+      setState((prev) => ({
+        ...prev,
+        streamingContent: buffered,
+      }));
+    }
+  }, []);
 
   // Scroll to bottom when messages change
   const scrollToBottom = useCallback(() => {
@@ -33,33 +58,114 @@ export function useAITemplateChat() {
 
   useEffect(() => {
     scrollToBottom();
-  }, [state.messages, scrollToBottom]);
+  }, [state.messages, state.builderState, state.tasks, scrollToBottom]);
 
   // Connect to WebSocket on mount
   useEffect(() => {
     const socket = wsService.connect();
 
-    // Connection event handlers
     const handleConnect = () => {
       setState((prev) => ({ ...prev, isConnected: true }));
-      console.log("[Chat] WebSocket connected");
     };
 
     const handleDisconnect = () => {
       setState((prev) => ({ ...prev, isConnected: false }));
       toast.error("Connection lost. Reconnecting...");
-      console.log("[Chat] WebSocket disconnected");
     };
 
-    // Chat reply handler (AI asking for more info)
-    const handleMessage = (data: MessageResponse) => {
-      console.log("[Chat] Received message (full):", JSON.stringify(data, null, 2));
-
+    // ── template:thinking — AI starts processing ──
+    const handleThinking = (data: ThinkingResponse) => {
+      streamBufferRef.current = "";
+      if (rafIdRef.current) {
+        cancelAnimationFrame(rafIdRef.current);
+        rafIdRef.current = null;
+      }
+      if (analyzeTimerRef.current) {
+        clearTimeout(analyzeTimerRef.current);
+        analyzeTimerRef.current = null;
+      }
       setState((prev) => ({
         ...prev,
-        sessionId: data.sessionId,
-        isTyping: false,
+        sessionId: data.sessionId || prev.sessionId,
+        builderState: "thinking",
+        phaseMessage: "",
+        tasks: [],
+        planResult: null,
+        streamingContent: "",
       }));
+    };
+
+    // ── template:plan — plan ready: add message, brief analyzing, then plan review ──
+    const handlePlan = (data: TemplatePlanEvent) => {
+      if (analyzeTimerRef.current) {
+        clearTimeout(analyzeTimerRef.current);
+        analyzeTimerRef.current = null;
+      }
+
+      // Add the plan message as a chat message
+      const planMessage: ChatMessage = {
+        id: `ai-plan-${Date.now()}`,
+        role: "assistant",
+        content: data.message,
+        created_at: new Date().toISOString(),
+      };
+
+      // Step 1: Add message + show "Analyzing" animation
+      setState((prev) => ({
+        ...prev,
+        sessionId: data.sessionId || prev.sessionId,
+        builderState: "analyzing",
+        phaseMessage: data.message,
+        planResult: data.plan,
+        messages: [...prev.messages, planMessage],
+      }));
+
+      // Step 2: Brief animation, then transition to plan review
+      analyzeTimerRef.current = setTimeout(() => {
+        analyzeTimerRef.current = null;
+        setState((prev) => {
+          if (prev.builderState !== "analyzing") return prev;
+          return { ...prev, builderState: "plan_review" };
+        });
+      }, 2500);
+    };
+
+    // ── template:phase — phase update (analyzing or building) ──
+    const handlePhase = (data: TemplatePhaseEvent) => {
+      setState((prev) => ({
+        ...prev,
+        sessionId: data.sessionId || prev.sessionId,
+        builderState: data.phase === "building" ? "building" : "analyzing",
+        phaseMessage: data.message,
+        tasks: data.tasks || prev.tasks,
+      }));
+    };
+
+    // ── template:task_update — update individual task status ──
+    const handleTaskUpdate = (data: TemplateTaskUpdateEvent) => {
+      setState((prev) => ({
+        ...prev,
+        tasks: prev.tasks.map((t) =>
+          t.id === data.taskId ? { ...t, status: data.status } : t
+        ),
+      }));
+    };
+
+    // ── template:token — accumulate in ref, flush on animation frame ──
+    const handleToken = (data: TokenResponse) => {
+      streamBufferRef.current += data.delta;
+      if (!rafIdRef.current) {
+        rafIdRef.current = requestAnimationFrame(flushStreamBuffer);
+      }
+    };
+
+    // ── template:message — AI replied with text ──
+    const handleMessage = (data: MessageResponse) => {
+      streamBufferRef.current = "";
+      if (rafIdRef.current) {
+        cancelAnimationFrame(rafIdRef.current);
+        rafIdRef.current = null;
+      }
 
       const aiMessage: ChatMessage = {
         id: `ai-${Date.now()}`,
@@ -70,21 +176,23 @@ export function useAITemplateChat() {
 
       setState((prev) => ({
         ...prev,
+        sessionId: data.sessionId,
+        builderState: "idle",
+        phaseMessage: "",
+        tasks: [],
+        planResult: null,
+        streamingContent: "",
         messages: [...prev.messages, aiMessage],
       }));
     };
 
-    // Schema result handler (AI generated/refined schema)
+    // ── template:result — schema generated ──
     const handleResult = (data: ResultResponse) => {
-      console.log("[Chat] Received result (full):", JSON.stringify(data, null, 2));
-
-      setState((prev) => ({
-        ...prev,
-        sessionId: data.sessionId,
-        templateName: data.templateName,
-        category: data.category,
-        isTyping: false,
-      }));
+      streamBufferRef.current = "";
+      if (rafIdRef.current) {
+        cancelAnimationFrame(rafIdRef.current);
+        rafIdRef.current = null;
+      }
 
       const aiMessage: ChatMessage = {
         id: `ai-${Date.now()}`,
@@ -105,25 +213,34 @@ export function useAITemplateChat() {
 
       setState((prev) => ({
         ...prev,
+        sessionId: data.sessionId,
+        templateName: data.templateName,
+        category: data.category,
+        builderState: "completed",
+        phaseMessage: "",
+        streamingContent: "",
+        // Mark all tasks as completed for a clean finish
+        tasks: prev.tasks.map((t) => ({ ...t, status: "completed" as const })),
         messages: [...prev.messages, aiMessage],
       }));
     };
 
-    // Template saved handler
+    // ── template:saved ──
     const handleSaved = (data: TemplateSavedResponse) => {
-      console.log("[Chat] Template saved:", data);
-
       setState((prev) => ({
         ...prev,
         savedTemplateSlug: data.slug,
       }));
-
       toast.success(data.message || "Template saved successfully!");
     };
 
-    // Error handler — add error message to chat so user sees it inline
+    // ── template:error ──
     const handleError = (data: TemplateErrorResponse) => {
-      console.error("[Chat] Error:", data);
+      streamBufferRef.current = "";
+      if (rafIdRef.current) {
+        cancelAnimationFrame(rafIdRef.current);
+        rafIdRef.current = null;
+      }
 
       const errorMessage: ChatMessage = {
         id: `error-${Date.now()}`,
@@ -134,7 +251,11 @@ export function useAITemplateChat() {
 
       setState((prev) => ({
         ...prev,
-        isTyping: false,
+        builderState: "error",
+        phaseMessage: "",
+        tasks: [],
+        planResult: null,
+        streamingContent: "",
         messages: [...prev.messages, errorMessage],
       }));
     };
@@ -142,31 +263,41 @@ export function useAITemplateChat() {
     // Subscribe to events
     socket.on("connect", handleConnect);
     socket.on("disconnect", handleDisconnect);
+    socket.on("template:thinking", handleThinking);
+    socket.on("template:plan", handlePlan);
+    socket.on("template:phase", handlePhase);
+    socket.on("template:task_update", handleTaskUpdate);
+    socket.on("template:token", handleToken);
     socket.on("template:message", handleMessage);
     socket.on("template:result", handleResult);
     socket.on("template:saved", handleSaved);
     socket.on("template:error", handleError);
 
-    // Set initial connection state
     if (socket.connected) {
       setState((prev) => ({ ...prev, isConnected: true }));
     }
 
-    // Cleanup on unmount
     return () => {
       socket.off("connect", handleConnect);
       socket.off("disconnect", handleDisconnect);
+      socket.off("template:thinking", handleThinking);
+      socket.off("template:plan", handlePlan);
+      socket.off("template:phase", handlePhase);
+      socket.off("template:task_update", handleTaskUpdate);
+      socket.off("template:token", handleToken);
       socket.off("template:message", handleMessage);
       socket.off("template:result", handleResult);
       socket.off("template:saved", handleSaved);
       socket.off("template:error", handleError);
+      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
+      if (analyzeTimerRef.current) clearTimeout(analyzeTimerRef.current);
       wsService.disconnect();
     };
-  }, []);
+  }, [flushStreamBuffer]);
 
-  // Send message (initial generation or refinement)
+  // Send message
   const sendMessage = useCallback(
-    (message: string) => {
+    (message: string, options?: { plan?: boolean }) => {
       if (!message.trim()) {
         toast.error("Message cannot be empty");
         return;
@@ -177,7 +308,6 @@ export function useAITemplateChat() {
         return;
       }
 
-      // Add user message to chat immediately (optimistic UI)
       const userMessage: ChatMessage = {
         id: `user-${Date.now()}`,
         role: "user",
@@ -185,23 +315,55 @@ export function useAITemplateChat() {
         created_at: new Date().toISOString(),
       };
 
+      streamBufferRef.current = "";
+      if (rafIdRef.current) {
+        cancelAnimationFrame(rafIdRef.current);
+        rafIdRef.current = null;
+      }
+
       setState((prev) => ({
         ...prev,
         messages: [...prev.messages, userMessage],
-        isTyping: true,
+        builderState: "thinking",
+        phaseMessage: "",
+        tasks: [],
+        planResult: null,
+        streamingContent: "",
       }));
 
-      // Reset preview build state for new cycle
-      setPreviewBuildComplete(false);
-
-      // Always emit template:send (backend determines mode)
       wsService.emit("template:send", {
         message: message,
-        sessionId: state.sessionId || undefined,  // Include if available
+        sessionId: state.sessionId || undefined,
+        plan: options?.plan || false,
       });
     },
     [state.isConnected, state.sessionId]
   );
+
+  // Confirm plan — sends the plan back to server, triggers building phase
+  const confirmPlan = useCallback(() => {
+    if (!state.sessionId) {
+      toast.error("No active session");
+      return;
+    }
+
+    if (!state.planResult) {
+      toast.error("No plan to confirm");
+      return;
+    }
+
+    wsService.emit("template:confirm", {
+      sessionId: state.sessionId,
+      plan: state.planResult,
+    });
+
+    // Optimistically move to thinking while server processes
+    setState((prev) => ({
+      ...prev,
+      builderState: "thinking",
+      phaseMessage: "",
+    }));
+  }, [state.sessionId, state.planResult]);
 
   // Save template
   const saveTemplate = useCallback(
@@ -235,15 +397,19 @@ export function useAITemplateChat() {
   return {
     messages: state.messages,
     isConnected: state.isConnected,
-    isTyping: state.isTyping,
+    builderState: state.builderState,
+    phaseMessage: state.phaseMessage,
+    tasks: state.tasks,
+    planResult: state.planResult,
+    streamingContent: state.streamingContent,
+    isProcessing: !["idle", "completed", "error", "plan_review"].includes(state.builderState),
     sessionId: state.sessionId,
     currentTemplate,
     savedTemplateSlug: state.savedTemplateSlug,
     templateName: state.templateName,
     category: state.category,
-    previewBuildComplete,
-    setPreviewBuildComplete,
     sendMessage,
+    confirmPlan,
     saveTemplate,
     messagesEndRef,
   };

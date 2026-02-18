@@ -83,7 +83,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
             className="w-full h-full"
           />
         </div>
-        <span className="text-xs font-medium text-[#8a8a8f]">Corteksa</span>
+        <span className="text-xs font-medium text-[#8a8a8f]">Cortex AI</span>
         {message.templateName && (
           <Badge variant="secondary" className="text-[10px] h-5 bg-[#1e1e22] text-[#a0a0a5] border-white/[0.08]">
             {message.templateName}

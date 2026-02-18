@@ -2,7 +2,9 @@
 
 import { motion } from "motion/react";
 import { TextShimmer } from "@/components/ui/text-shimmer";
-import Image from "next/image";
+import dynamic from "next/dynamic";
+
+const PlasmaGlobe = dynamic(() => import("@/components/lightswind/plasma-globe"), { ssr: false });
 
 export function TypingIndicator() {
   return (
@@ -13,15 +15,9 @@ export function TypingIndicator() {
       transition={{ duration: 0.2 }}
       className="flex items-center gap-3"
     >
-      {/* Corteksa Logo Avatar */}
-      <div className="flex-shrink-0 size-8 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20 flex items-center justify-center p-1.5">
-        <Image
-          src="/Corteksa.svg"
-          alt="Corteksa AI"
-          width={20}
-          height={20}
-          className="w-full h-full"
-        />
+      {/* Plasma Globe Avatar - fast speed during thinking */}
+      <div className="relative flex-shrink-0 size-8 rounded-full overflow-hidden">
+        <PlasmaGlobe speed={5.0} intensity={1.0} />
       </div>
 
       {/* Shimmer text */}

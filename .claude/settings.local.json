@@ -38,7 +38,15 @@
       "Bash(for f in messages/en.json messages/ar.json messages/tr.json messages/ru.json messages/fa.json messages/fr.json)",
       "Bash(do node -e \"JSON.parse\\(require\\(''fs''\\).readFileSync\\(''$f'',''utf8''\\)\\); console.log\\(''$f: valid JSON''\\)\")",
       "Bash(git stash:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(git push:*)",
+      "Bash(for f in messages/en.json messages/ar.json messages/tr.json messages/fr.json messages/ru.json messages/fa.json)",
+      "Bash(do node -e \"JSON.parse\\(require\\(''fs''\\).readFileSync\\(''$f'',''utf8''\\)\\); console.log\\(''$f: valid''\\)\")",
+      "WebFetch(domain:muz.li)",
+      "WebFetch(domain:v0.app)",
+      "WebFetch(domain:colorswall.com)",
+      "Bash(npm i:*)",
+      "Bash(npx lightswind@latest add:*)"
     ]
   }
 }

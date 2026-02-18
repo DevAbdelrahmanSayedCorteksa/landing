@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { AnimatePresence } from "motion/react";
 import { useAITemplateChatContext } from "@/lib/contexts/AITemplateChatContext";
 import { BoltStyleChat } from "@/components/ui/bolt-style-chat";
@@ -13,25 +13,24 @@ interface EmbeddedAIChatProps {
   };
   updateFormData: (data: { template_slug?: string; sessionId?: string; templateName?: string }) => void;
   onMessagesChange?: (hasMessages: boolean) => void;
-  onBuildingStateChange?: (isBuilding: boolean) => void;
 }
 
-export function EmbeddedAIChat({ formData, updateFormData, onMessagesChange, onBuildingStateChange }: EmbeddedAIChatProps) {
+export function EmbeddedAIChat({ updateFormData, onMessagesChange }: EmbeddedAIChatProps) {
   const {
     messages,
     isConnected,
-    isTyping,
+    builderState,
+    phaseMessage,
+    tasks,
+    planResult,
+    isProcessing,
     sessionId,
     savedTemplateSlug,
     templateName,
-    currentTemplate,
-    previewBuildComplete,
     sendMessage,
+    confirmPlan,
     messagesEndRef,
   } = useAITemplateChatContext();
-  const prevBuildingRef = useRef(false);
-  const prevTypingRef = useRef(false);
-  const panelTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   // Auto-update form data when template is saved
   useEffect(() => {
@@ -48,42 +47,6 @@ export function EmbeddedAIChat({ formData, updateFormData, onMessagesChange, onB
   useEffect(() => {
     onMessagesChange?.(messages.length > 0);
   }, [messages.length, onMessagesChange]);
-
-  // Cleanup panel timer on unmount
-  useEffect(() => {
-    return () => {
-      if (panelTimerRef.current) clearTimeout(panelTimerRef.current);
-    };
-  }, []);
-
-  // Show right panel ONLY when a template arrives — not on every typing cycle
-  // Text-only replies (e.g. "What business?") should NOT trigger the preview panel
-  useEffect(() => {
-    // Panel already visible from a previous template — keep it
-    if (currentTemplate && prevBuildingRef.current) {
-      prevTypingRef.current = isTyping;
-      return;
-    }
-
-    // Template exists but panel not yet shown (e.g. page restore) — show immediately
-    if (currentTemplate && !prevBuildingRef.current) {
-      prevBuildingRef.current = true;
-      // Start panel timer to match BuildingProgress animation
-      if (panelTimerRef.current) clearTimeout(panelTimerRef.current);
-      panelTimerRef.current = setTimeout(() => {
-        onBuildingStateChange?.(true);
-      }, 33800);
-      prevTypingRef.current = isTyping;
-      return;
-    }
-
-    // Typing stopped without a template → cancel any pending panel timer
-    if (!isTyping && prevTypingRef.current && !currentTemplate) {
-      if (panelTimerRef.current) clearTimeout(panelTimerRef.current);
-    }
-
-    prevTypingRef.current = isTyping;
-  }, [isTyping, currentTemplate, onBuildingStateChange, messages]);
 
   return (
     <div className="flex flex-col h-full bg-[#0f0f0f]">
@@ -104,16 +67,19 @@ export function EmbeddedAIChat({ formData, updateFormData, onMessagesChange, onB
               <EmbeddedChatState
                 messages={messages}
                 isConnected={isConnected}
-                isTyping={isTyping}
+                builderState={builderState}
+                phaseMessage={phaseMessage}
+                tasks={tasks}
+                planResult={planResult}
+                isProcessing={isProcessing}
                 onSend={sendMessage}
+                onConfirm={confirmPlan}
                 messagesEndRef={messagesEndRef}
-                isPreviewBuildComplete={previewBuildComplete}
               />
             </div>
           )}
         </AnimatePresence>
       </div>
-
     </div>
   );
 }

@@ -23,7 +23,7 @@ export function AIChatInterface({ onTemplateSaved }: AIChatInterfaceProps) {
   const {
     messages,
     isConnected,
-    isTyping,
+    isProcessing,
     sessionId,
     currentTemplate,
     savedTemplateSlug,
@@ -103,7 +103,7 @@ export function AIChatInterface({ onTemplateSaved }: AIChatInterfaceProps) {
 
           {/* Typing indicator */}
           <AnimatePresence>
-            {isTyping && <TypingIndicator />}
+            {isProcessing && <TypingIndicator />}
           </AnimatePresence>
 
           {/* Scroll anchor */}
@@ -120,7 +120,7 @@ export function AIChatInterface({ onTemplateSaved }: AIChatInterfaceProps) {
                 ? t("chatPlaceholder")
                 : t("refinePrompt")
             }
-            isTyping={isTyping}
+            isTyping={isProcessing}
           />
         </div>
       </div>
