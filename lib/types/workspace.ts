@@ -35,6 +35,15 @@ export interface GeneratedTemplatePreview {
   };
 }
 
+// Full template returned by GET /api/v1/user/object-templates/:slug
+export interface TemplateWithSchema extends Template {
+  schema: {
+    objects: any[];
+    relations?: any[];
+    sample_data?: Record<string, Array<Record<string, unknown>>>;
+  };
+}
+
 export interface WorkspaceCreationPayload {
   // Required
   workspace_name: string;

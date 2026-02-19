@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { IconArrowLeft, IconTemplate, IconSparkles, IconPlayerSkipForward, IconFlameFilled } from "@tabler/icons-react";
+import { IconArrowLeft, IconTemplate, IconSparkles, IconFlameFilled } from "@tabler/icons-react";
 import { Loader2, Check, X, ExternalLink, Copy } from "lucide-react";
 import { Heading } from "@/components/heading";
 import { Subheading } from "@/components/subheading";
@@ -27,6 +27,7 @@ import { SetupMethodCard } from "./setup-method-card";
 import { WorkspaceSetupMethod, WorkspaceCreationPayload } from "@/lib/types/workspace";
 import { TEMPLATES_KEY, templateService } from "@/lib/services/TemplateService";
 import { EmbeddedAIChat } from "./ai-chat/EmbeddedAIChat";
+import { TemplateBrowserPanel } from "./TemplateBrowserPanel";
 
 interface FormData {
   // Required fields
@@ -59,9 +60,13 @@ interface MultiStepFormProps {
   onAIChatActiveChange?: (isAIChatActive: boolean) => void;
   onAIHasMessagesChange?: (hasMessages: boolean) => void;
   onWorkspaceDataReady?: (data: WorkspaceData) => void;
+  onRequestTemplatePreview?: (slug: string | null) => void;
+  onTemplateBrowserChange?: (active: boolean) => void;
+  externalTemplateSlug?: string;
+  templatePreviewSlug?: string;
 }
 
-export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAIHasMessagesChange, onWorkspaceDataReady }: MultiStepFormProps) {
+export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAIHasMessagesChange, onWorkspaceDataReady, onRequestTemplatePreview, onTemplateBrowserChange, externalTemplateSlug, templatePreviewSlug }: MultiStepFormProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -103,10 +108,23 @@ export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAI
     onAIChatActiveChange?.(isOnAIStep);
   }, [currentStep, totalSteps, formData.setup_method, onAIChatActiveChange]);
 
+  // Notify parent when template browser is active
+  useEffect(() => {
+    const active = (currentStep === totalSteps) && formData.setup_method === "template";
+    onTemplateBrowserChange?.(active);
+  }, [currentStep, totalSteps, formData.setup_method, onTemplateBrowserChange]);
+
   // Notify parent when AI messages exist (triggers 2-panel layout)
   useEffect(() => {
     onAIHasMessagesChange?.(hasAIMessages);
   }, [hasAIMessages, onAIHasMessagesChange]);
+
+  // Sync external template slug confirmed by parent (e.g. "Use Template" clicked in preview panel)
+  useEffect(() => {
+    if (externalTemplateSlug !== undefined) {
+      updateFormData({ template_slug: externalTemplateSlug });
+    }
+  }, [externalTemplateSlug]);
 
   // Lift workspace data to parent when template is saved
   useEffect(() => {
@@ -141,6 +159,10 @@ export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAI
     if (currentStep > 1) {
       setCurrentStep((prev) => prev - 1);
     }
+  };
+
+  const handleStartFresh = () => {
+    if (!isLoading) handleSubmit(true);
   };
 
   const validateCurrentStep = (): boolean => {
@@ -200,8 +222,8 @@ export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAI
     }
   };
 
-  const handleSubmit = async () => {
-    if (!validateCurrentStep()) {
+  const handleSubmit = async (skipTemplate?: boolean) => {
+    if (!skipTemplate && !validateCurrentStep()) {
       return;
     }
 
@@ -220,8 +242,8 @@ export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAI
         payload.pricing_period = formData.pricing_plan_period;
       }
 
-      // Add template slug if selected
-      if (formData.template_slug) {
+      // Add template slug if selected (not when skipping)
+      if (!skipTemplate && formData.template_slug) {
         payload.template_slug = formData.template_slug;
       }
 
@@ -285,6 +307,8 @@ export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAI
               formData={formData}
               updateFormData={updateFormData}
               onMessagesChange={setHasAIMessages}
+              onRequestTemplatePreview={onRequestTemplatePreview}
+              templatePreviewSlug={templatePreviewSlug}
             />
           );
         }
@@ -295,6 +319,8 @@ export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAI
             formData={formData}
             updateFormData={updateFormData}
             onMessagesChange={setHasAIMessages}
+            onRequestTemplatePreview={onRequestTemplatePreview}
+            templatePreviewSlug={templatePreviewSlug}
           />
         );
       default:
@@ -311,6 +337,7 @@ export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAI
 
   // Check if we're on AI step (for conditional width)
   const isAIStep = (currentStep === totalSteps) && formData.setup_method === "ai";
+  const isTemplateBrowserStep = (currentStep === totalSteps) && formData.setup_method === "template";
 
   // Step title/subtitle mapping
   const getStepHeader = () => {
@@ -330,9 +357,9 @@ export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAI
   const stepHeader = getStepHeader();
 
   return (
-    <div className={isAIStep ? "h-full flex flex-col" : "space-y-8"}>
+    <div className={isAIStep || isTemplateBrowserStep ? "h-full flex flex-col" : "space-y-8"}>
       {/* Centered Step Title */}
-      {stepHeader && !isAIStep && (
+      {stepHeader && !isAIStep && !isTemplateBrowserStep && (
         <div className="text-center">
           <h2 className="text-3xl mb-2 tracking-tight font-display font-bold">
             {stepHeader.title}
@@ -353,7 +380,7 @@ export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAI
           transition={{ duration: 0.2, ease: "easeOut" }}
           className={cn(
             "mx-auto w-full",
-            isAIStep ? "h-full" : currentStep === 2 ? "max-w-xl" : "max-w-lg"
+            isAIStep ? "h-full" : isTemplateBrowserStep ? "flex-1 min-h-0" : currentStep === 2 ? "max-w-xl" : "max-w-lg"
           )}
         >
           {renderStep()}
@@ -361,22 +388,34 @@ export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAI
       </AnimatePresence>
 
       {/* Navigation Buttons - hide on success and AI step */}
-      {!isSuccess && !isAIStep && (
-        <div className={cn("flex gap-4 mx-auto w-full", currentStep === 2 ? "max-w-xl" : "max-w-lg")}>
-          {currentStep > 1 && (
-            <Button type="button" variant="outline" onClick={handleBack} className="flex-1" disabled={isLoading}>
-              <IconArrowLeft className="size-4 me-2" />
-              {t("back")}
+      {!isSuccess && !isAIStep && !isTemplateBrowserStep && (
+        <div className={cn("flex flex-col gap-2 mx-auto w-full", currentStep === 2 ? "max-w-xl" : "max-w-lg")}>
+          <div className="flex gap-4">
+            {currentStep > 1 && (
+              <Button type="button" variant="outline" onClick={handleBack} className="flex-1" disabled={isLoading}>
+                <IconArrowLeft className="size-4 me-2" />
+                {t("back")}
+              </Button>
+            )}
+            <Button
+              type="button"
+              onClick={handleNext}
+              className={currentStep === 1 ? "w-full" : "flex-1"}
+              disabled={isLoading}
+            >
+              {getButtonText()}
             </Button>
+          </div>
+          {currentStep === totalSteps && (
+            <button
+              type="button"
+              onClick={handleStartFresh}
+              disabled={isLoading}
+              className="text-center text-sm text-muted-foreground hover:text-foreground transition-colors py-1 cursor-pointer"
+            >
+              {t("skipOption")} — {t("skipDesc")}
+            </button>
           )}
-          <Button
-            type="button"
-            onClick={handleNext}
-            className={currentStep === 1 ? "w-full" : "flex-1"}
-            disabled={isLoading}
-          >
-            {getButtonText()}
-          </Button>
         </div>
       )}
     </div>
@@ -523,10 +562,14 @@ function StepSetupPreferences({
   formData,
   updateFormData,
   onMessagesChange,
+  onRequestTemplatePreview,
+  templatePreviewSlug,
 }: {
   formData: FormData;
   updateFormData: (data: Partial<FormData>) => void;
   onMessagesChange?: (hasMessages: boolean) => void;
+  onRequestTemplatePreview?: (slug: string | null) => void;
+  templatePreviewSlug?: string;
 }) {
   const t = useTranslations("multiStepForm");
 
@@ -539,128 +582,105 @@ function StepSetupPreferences({
 
   const templates = templatesData?.data || [];
 
-  // Show embedded AI chat if AI method selected
-  if (formData.setup_method === "ai") {
-    return (
-      <div className="h-full flex flex-col">
-        <EmbeddedAIChat
-          formData={formData}
-          updateFormData={updateFormData}
-          onMessagesChange={onMessagesChange}
-        />
-      </div>
-    );
-  }
+  const view = formData.setup_method === "ai"
+    ? "ai"
+    : formData.setup_method === "template"
+      ? "template"
+      : "selection";
 
   return (
-    <div className="space-y-8">
-      {/* Setup Method Selection */}
-      <div className="flex flex-col gap-2.5">
-        <SetupMethodCard
-          method="ai"
-          icon={IconSparkles}
-          title={t("aiOption")}
-          description={t("aiDesc")}
-          isSelected={formData.setup_method as string === "ai"}
-          badge={t("recommended")}
-          onSelect={() => {
-            updateFormData({
-              setup_method: "ai",
-              template_slug: undefined
-            });
-          }}
-        />
-        <SetupMethodCard
-          method="template"
-          icon={IconTemplate}
-          title={t("templateOption")}
-          description={t("templateDesc")}
-          isSelected={formData.setup_method === "template"}
-          onSelect={() => updateFormData({
-            setup_method: "template",
-            template_slug: undefined
-          })}
-        />
-        <SetupMethodCard
-          method="skip"
-          icon={IconPlayerSkipForward}
-          title={t("skipOption")}
-          description={t("skipDesc")}
-          isSelected={formData.setup_method === "skip"}
-          onSelect={() => updateFormData({
-            setup_method: "skip",
-            template_slug: undefined
-          })}
-        />
-      </div>
-
-      {/* Template Selection - Only show if template method selected */}
-      {formData.setup_method === "template" && (
-        <div>
-          <Label className="text-base font-medium block mb-3">{t("chooseTemplate")} *</Label>
-          {isLoadingTemplates ? (
-            <div className="flex justify-center py-8">
-              <Loader2 className="size-8 animate-spin text-primary" />
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[300px] overflow-y-auto">
-              {templates.map((template) => (
-                <button
-                  key={template.slug}
-                  type="button"
-                  onClick={() => updateFormData({ template_slug: template.slug })}
-                  className={cn(
-                    "p-4 rounded-lg text-start transition-all",
-                    "bg-neutral-100 dark:bg-neutral-800/80 hover:bg-neutral-200 dark:hover:bg-neutral-800",
-                    "border-2 border-transparent",
-                    formData.template_slug === template.slug && "border-primary"
-                  )}
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="text-2xl">{template.icon || "📋"}</div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold text-sm mb-1">{template.name}</h4>
-                      {template.description && (
-                        <p className="text-xs text-muted-foreground line-clamp-2">
-                          {template.description}
-                        </p>
-                      )}
-                      {template.category && (
-                        <span className="text-[10px] text-primary font-medium uppercase mt-1 inline-block">
-                          {template.category}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Saved Template Indicator - Show when non-AI method but template exists */}
-      {(formData.setup_method as string) !== "ai" && formData.template_slug && (
+    <AnimatePresence mode="popLayout">
+      {view === "ai" ? (
         <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-3 rounded-lg border border-green-500/20 bg-green-500/10 px-4 py-3"
+          key="ai"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="h-full flex flex-col"
         >
-          <Check className="size-5 text-green-600 flex-shrink-0" />
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-foreground">
-              {t("templateSaved")}
-            </p>
-            <button
-              onClick={() => updateFormData({ setup_method: "ai" })}
-              className="text-xs text-primary hover:underline"
-            >
-              {t("viewOrEdit")}
-            </button>
+          <EmbeddedAIChat
+            formData={formData}
+            updateFormData={updateFormData}
+            onMessagesChange={onMessagesChange}
+          />
+        </motion.div>
+      ) : view === "template" ? (
+        <motion.div
+          key="template"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="h-full"
+        >
+          <TemplateBrowserPanel
+            templates={templates}
+            isLoading={isLoadingTemplates}
+            selectedSlug={formData.template_slug}
+            previewingSlug={templatePreviewSlug}
+            onPreview={(slug) => onRequestTemplatePreview?.(slug)}
+            onBack={() => {
+              updateFormData({ setup_method: undefined, template_slug: undefined });
+              onRequestTemplatePreview?.(null);
+            }}
+          />
+        </motion.div>
+      ) : (
+        <motion.div
+          key="selection"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
+          <div className="space-y-8">
+            {/* Setup Method Selection */}
+            <div className="grid grid-cols-2 gap-3">
+              <SetupMethodCard
+                method="ai"
+                icon={IconSparkles}
+                title={t("aiOption")}
+                description={t("aiDesc")}
+                isSelected={formData.setup_method as string === "ai"}
+                badge={t("recommended")}
+                onSelect={() => {
+                  updateFormData({
+                    setup_method: "ai",
+                    template_slug: undefined
+                  });
+                }}
+              />
+              <SetupMethodCard
+                method="template"
+                icon={IconTemplate}
+                title={t("templateOption")}
+                description={t("templateDesc")}
+                isSelected={(formData.setup_method as string) === "template"}
+                onSelect={() => updateFormData({
+                  setup_method: "template",
+                  template_slug: undefined
+                })}
+              />
+            </div>
+
+            {/* Confirmed Template Indicator */}
+            {formData.template_slug && !templatePreviewSlug && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex items-center gap-3 rounded-lg border border-green-500/20 bg-green-500/10 px-4 py-3"
+              >
+                <Check className="size-5 text-green-600 flex-shrink-0" />
+                <p className="text-sm font-medium text-foreground">
+                  {t("templateSaved")}
+                </p>
+              </motion.div>
+            )}
           </div>
         </motion.div>
       )}
-    </div>
+    </AnimatePresence>
   );
 }
 

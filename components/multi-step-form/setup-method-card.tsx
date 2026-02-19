@@ -27,58 +27,42 @@ export function SetupMethodCard({
       type="button"
       onClick={onSelect}
       className={cn(
-        "group w-full flex items-center gap-4 p-4 rounded-xl text-start transition-all duration-200",
-        "border",
+        "text-start w-full rounded-xl p-5 transition-all duration-200 cursor-pointer",
+        "bg-neutral-50 dark:bg-white/[0.04]",
+        "border border-neutral-100 dark:border-white/[0.06]",
         isSelected
-          ? "border-primary/40 bg-primary/5 dark:bg-primary/[0.08] shadow-[0_0_20px_-5px] shadow-primary/15"
-          : "border-neutral-200/80 dark:border-white/[0.06] bg-neutral-50/50 dark:bg-white/[0.02] hover:border-neutral-300 dark:hover:border-white/[0.12] hover:bg-neutral-50 dark:hover:bg-white/[0.04]"
+          ? "border-primary/40 dark:border-primary/30 bg-primary/5 dark:bg-primary/10 shadow-[0_0_20px_-5px] shadow-primary/20"
+          : "hover:border-neutral-300 dark:hover:border-neutral-700"
       )}
     >
-      {/* Radio indicator */}
-      <div
-        className={cn(
-          "size-5 shrink-0 rounded-full border-2 flex items-center justify-center transition-colors",
-          isSelected
-            ? "border-primary bg-primary"
-            : "border-neutral-300 dark:border-neutral-600"
-        )}
-      >
-        {isSelected && (
-          <div className="size-2 rounded-full bg-white" />
-        )}
-      </div>
-
-      {/* Icon */}
-      <div
-        className={cn(
-          "size-10 shrink-0 rounded-lg flex items-center justify-center transition-colors",
-          isSelected
-            ? "bg-primary text-primary-foreground"
-            : "bg-neutral-100 dark:bg-white/[0.06] text-neutral-500 dark:text-neutral-400"
-        )}
-      >
-        <Icon className="size-5" strokeWidth={1.8} />
-      </div>
-
-      {/* Content */}
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <h4 className={cn(
-            "font-medium text-sm",
-            isSelected ? "text-primary" : "text-foreground"
-          )}>
-            {title}
-          </h4>
-          {badge && (
-            <span className="rounded-full px-2 py-0.5 text-[10px] font-medium bg-primary/10 text-primary border border-primary/20">
-              {badge}
-            </span>
+      {/* Top row: icon + badge */}
+      <div className="flex items-center justify-between mb-4">
+        <div
+          className={cn(
+            "size-11 rounded-xl flex items-center justify-center transition-colors duration-200",
+            isSelected
+              ? "bg-primary/15 text-primary"
+              : "bg-neutral-100 dark:bg-white/[0.06] text-neutral-500 dark:text-neutral-400"
           )}
+        >
+          <Icon className="size-5" strokeWidth={1.8} />
         </div>
-        <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
-          {description}
-        </p>
+        {badge && (
+          <span className="rounded-full border px-2 py-0.5 text-[10px] font-medium border-primary/30 text-primary bg-primary/10">
+            {badge}
+          </span>
+        )}
       </div>
+
+      {/* Title */}
+      <div className="text-sm font-semibold text-neutral-700 dark:text-neutral-200 mb-2">
+        {title}
+      </div>
+
+      {/* Description */}
+      <p className="text-muted-foreground text-xs leading-relaxed line-clamp-3">
+        {description}
+      </p>
     </button>
   );
 }

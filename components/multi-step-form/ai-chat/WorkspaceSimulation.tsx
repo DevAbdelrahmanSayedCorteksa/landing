@@ -234,20 +234,13 @@ export function WorkspaceSimulation({ template, isRTL = false, onComplete, skipA
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.97 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.15 }}
       className="w-full h-full"
     >
-      <div className="w-full h-full rounded-2xl border border-white/[0.08] bg-[#1a1a1e]/80 backdrop-blur-sm overflow-hidden shadow-lg">
-        <div
-          className="w-full h-full"
-          style={{
-            transform: `rotateY(${isRTL ? "3deg" : "-3deg"}) rotateX(2deg)`,
-            transformOrigin: isRTL ? "right center" : "left center",
-            perspective: "1200px",
-          }}
-        >
+      <div className="w-full h-full rounded-2xl overflow-hidden">
+        <div className="w-full h-full">
           <div className={`flex h-full ${isRTL ? "flex-row-reverse" : "flex-row"}`}>
             {/* ═══ SIDEBAR ═══ */}
             <div

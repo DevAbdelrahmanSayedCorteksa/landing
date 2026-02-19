@@ -137,15 +137,8 @@ export function StreamingPreview({ streamingContent, isRTL = false }: StreamingP
       transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
       className="w-full h-full"
     >
-      <div className="w-full h-full rounded-2xl border border-white/[0.08] bg-[#1a1a1e]/80 backdrop-blur-sm overflow-hidden shadow-lg">
-        <div
-          className="w-full h-full"
-          style={{
-            transform: `rotateY(${isRTL ? "3deg" : "-3deg"}) rotateX(2deg)`,
-            transformOrigin: isRTL ? "right center" : "left center",
-            perspective: "1200px",
-          }}
-        >
+      <div className="w-full h-full rounded-2xl border border-white/[0.08] bg-[#1a1a1e] overflow-hidden">
+        <div className="w-full h-full">
           <div className={`flex h-full ${isRTL ? "flex-row-reverse" : "flex-row"}`}>
             {/* ═══ SIDEBAR ═══ */}
             <div
@@ -398,17 +391,17 @@ export function StreamingPreview({ streamingContent, isRTL = false }: StreamingP
                                 <motion.div
                                   key={`ph-${ri}`}
                                   initial={{ opacity: 0 }}
-                                  animate={{ opacity: 0.5 }}
+                                  animate={{ opacity: 1 }}
                                   transition={{ duration: 0.3, delay: ri * 0.1 }}
-                                  className="flex items-center border-b border-white/[0.03] min-w-max"
+                                  className="flex items-center border-b border-white/[0.06] min-w-max"
                                 >
                                   <div className="w-8 flex-shrink-0 flex items-center justify-center py-2.5">
-                                    <div className="size-3 rounded border border-white/[0.06]" />
+                                    <div className="size-3 rounded border border-white/[0.15]" />
                                   </div>
                                   {fields.map((_, ci) => (
                                     <div key={ci} className="w-[120px] flex-shrink-0 px-3 py-2.5">
                                       <div
-                                        className="h-3 rounded bg-white/[0.06] animate-pulse"
+                                        className="h-3 rounded bg-white/[0.12] animate-pulse"
                                         style={{ width: `${50 + ((ri * 17 + ci * 31) % 40)}%` }}
                                       />
                                     </div>
@@ -540,15 +533,8 @@ function StreamingSkeleton({ isRTL }: { isRTL: boolean }) {
       transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
       className="w-full h-full"
     >
-      <div className="w-full h-full rounded-2xl border border-white/[0.08] bg-[#1a1a1e]/80 backdrop-blur-sm overflow-hidden shadow-lg">
-        <div
-          className="w-full h-full"
-          style={{
-            transform: `rotateY(${isRTL ? "3deg" : "-3deg"}) rotateX(2deg)`,
-            transformOrigin: isRTL ? "right center" : "left center",
-            perspective: "1200px",
-          }}
-        >
+      <div className="w-full h-full rounded-2xl border border-white/[0.08] bg-[#1a1a1e] overflow-hidden">
+        <div className="w-full h-full">
           <div className={`flex h-full ${isRTL ? "flex-row-reverse" : "flex-row"}`}>
             {/* Sidebar skeleton */}
             <div

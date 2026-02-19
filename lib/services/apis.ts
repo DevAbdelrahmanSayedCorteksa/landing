@@ -11,3 +11,8 @@ export const API_USER_STEPER_ENDPOINT = `${versionApi}/${apiModuleUser}/auth/wor
 export const API_CHECK_SUBDOMAIN_ENDPOINT = `${versionApi}/${apiModuleUser}/auth/check-subdomain`;
 export const API_PRICING_PLANS_ENDPOINT = `${versionApi}/pricing/plans`;
 export const API_PRICING_ENDPOINT = `${versionApi}/${apiModuleUser}/pricing`;
+export const API_OBJECT_TEMPLATES_ENDPOINT = `${versionApi}/${apiModuleUser}/object-templates`;
+export const API_OBJECT_TEMPLATE_BY_SLUG_ENDPOINT = (slug: string) =>
+  `${versionApi}/${apiModuleUser}/object-templates/${slug}`;
+export const API_TEMPLATE_GENERATE_ENDPOINT = `${versionApi}/${apiModuleUser}/auth/template/generate`;
+export const API_TEMPLATE_SAVE_ENDPOINT = `${versionApi}/${apiModuleUser}/auth/template/save`;

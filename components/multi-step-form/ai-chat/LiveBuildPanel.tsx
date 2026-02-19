@@ -70,7 +70,8 @@ export function LiveBuildPanel({ onProceedToWorkspace, workspaceDomain }: LiveBu
 
   // Plasma globe: always visible at slow speed, fast during thinking/analyzing
   const showPlasma = !isStreaming && !showComplete && !isPlanReview;
-  const plasmaSpeed = (isThinking || isAnalyzing) ? 5.0 : 0.4;
+  const plasmaSpeed = (isThinking || isAnalyzing) ? 1.2 : 0.4;
+  const plasmaIntensity = (isThinking || isAnalyzing) ? 2.0 : 1.0;
 
   return (
     <div className="h-full flex flex-col overflow-hidden bg-[#1e1e22] relative">
@@ -242,7 +243,7 @@ export function LiveBuildPanel({ onProceedToWorkspace, workspaceDomain }: LiveBu
           <div className="flex items-center justify-center h-full">
             <div className="flex flex-col items-center justify-center">
               <div className="relative size-[280px] mb-5">
-                <PlasmaGlobe speed={plasmaSpeed} intensity={1.0} />
+                <PlasmaGlobe speed={plasmaSpeed} intensity={plasmaIntensity} />
               </div>
 
               <AnimatePresence mode="wait">
