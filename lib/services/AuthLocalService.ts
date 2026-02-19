@@ -35,6 +35,11 @@ export const getRefreshToken = () => {
   return Cookies.get(REFRESH_TOKEN);
 };
 
+export const updateTokens = (token: string, refreshToken: string) => {
+  Cookies.set(AUTH_TOKEN, token);
+  Cookies.set(REFRESH_TOKEN, refreshToken);
+};
+
 export const handleLogout = () => {
   Cookies.remove(AUTH_TOKEN);
   Cookies.remove(REFRESH_TOKEN);

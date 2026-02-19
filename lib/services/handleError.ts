@@ -4,11 +4,7 @@ import {
   INVALID_MESSAGE,
   NETWORK_ERROR,
 } from "./messages";
-import {
-  FORBIDDEN,
-  UNAUTHORIZED_ERROR,
-  UNPROCESSABLE_ENTITY,
-} from "./statusCodes";
+import { FORBIDDEN, UNPROCESSABLE_ENTITY } from "./statusCodes";
 import { TO_LOGIN } from "./urls";
 import { handleLogout } from "./AuthLocalService";
 
@@ -27,7 +23,7 @@ export const handleError = async (error: any) => {
   if (typeof window !== "undefined" && window.location.pathname !== TO_LOGIN) {
     if (status === UNPROCESSABLE_ENTITY) {
       toast.error(INVALID_MESSAGE);
-    } else if (status === FORBIDDEN || status === UNAUTHORIZED_ERROR) {
+    } else if (status === FORBIDDEN) {
       handleLogout();
       window.location.href = TO_LOGIN;
     } else {
