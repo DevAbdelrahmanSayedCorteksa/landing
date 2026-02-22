@@ -33,30 +33,34 @@
     "requestForm": "Request Form"
   },
   "hero": {
-    "title": "The brain behind your business",
-    "subtitle": "Manage projects, clients, offers, and operations in one hub designed to fit the way you work.",
+    "title": "Organized work.",
+    "title2": "Made simple.",
+    "subtitle": "Projects, responsibilities, and documents — unified in one clear, practical system.",
     "cta": "Get Started",
     "secondaryCta": "See all features"
   },
   "features": {
     "title": "Why Corteksa?",
     "subtitle": "We address real user frustrations with clarity, simplicity, and trust. Every feature is designed to make your work easier.",
-    "card1Title": "Arabic Language Interface",
-    "card2Title": "Tailored System Built Around You",
-    "card3Title": "Unlimited Support, A True Partnership"
+    "card1Title": "Work in your own language",
+    "card1Desc": "Clear and comfortable in Arabic, with full English support — so every detail stays easy to understand across your team.",
+    "card2Title": "Designed for how you work",
+    "card2Desc": "Every part of the system serves a clear purpose, supporting focused and efficient work.",
+    "card3Title": "Always within reach",
+    "card3Desc": "Real support to answer questions, guide your team, and help you move forward without hesitation."
   },
   "speed": {
-    "title": "Work with clarity.",
-    "title2": "Stay in control.",
-    "subtitle": "All your tasks, files, and workflows simplified in one place. See your core features in action."
+    "title": "The challenge isn't effort.",
+    "title2": "It's structure.",
+    "subtitle": "All the work that matters in one place."
   },
   "featuresSecondary": {
     "unitsTitle": "Corteksa Units",
-    "unitsDesc": "Build the system you need. Create units that fit your business, add details that matter, and connect everything effortlessly.",
-    "kanbanTitle": "Kanban Boards",
-    "kanbanDesc": "Track projects your way. Design workflows with simple Kanban boards to keep every project clear, visible, and on track.",
+    "unitsDesc": "Build the system you need: Create units that fit your business, add details that matter, and connect everything effortlessly.",
+    "kanbanTitle": "View",
+    "kanbanDesc": "Track projects your way: Design workflows with simple Kanban boards to keep every project clear, visible, and on track.",
     "docGenTitle": "Document Generation",
-    "docGenDesc": "Create documents in one click. Generate contracts, offers, or any document instantly.",
+    "docGenDesc": "Create documents in one click: Generate contracts, offers, or any document instantly to save time and focus on real work.",
     "customFieldsTitle": "Custom Fields",
     "customFieldsDesc": "Add the details that matter to you. Customize every unit with fields that fit your workflow.",
     "dashboardTitle": "Smart Dashboard",

@@ -5,8 +5,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { Container } from "../container";
 import { Heading } from "../heading";
 import { Subheading } from "../subheading";
-import { Card, CardContent, CardCTA, CardSkeleton, CardTitle } from "./card";
-import { IconPlus } from "@tabler/icons-react";
+import { Card, CardContent, CardSkeleton, CardTitle } from "./card";
 import { SkeletonOne } from "./skeletons/first";
 import { SkeletonThree } from "./skeletons/third";
 import { SkeletonTwo } from "./skeletons/second";
@@ -39,22 +38,18 @@ export const Features = () => {
           <CardSkeleton>
             <SkeletonOne />
           </CardSkeleton>
-          <CardContent>
+          <CardContent className="flex-col items-start gap-2">
             <CardTitle>{t("card1Title")}</CardTitle>
-            <CardCTA>
-              <IconPlus />
-            </CardCTA>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">{t("card1Desc")}</p>
           </CardContent>
         </Card>
         <Card className="flex-1">
           <CardSkeleton>
             <SkeletonTwo />
           </CardSkeleton>
-          <CardContent>
+          <CardContent className="flex-col items-start gap-2">
             <CardTitle>{t("card2Title")}</CardTitle>
-            <CardCTA>
-              <IconPlus />
-            </CardCTA>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">{t("card2Desc")}</p>
           </CardContent>
         </Card>
         <Card className={cn(
@@ -66,11 +61,9 @@ export const Features = () => {
           <CardSkeleton>
             <SkeletonThree />
           </CardSkeleton>
-          <CardContent>
+          <CardContent className="flex-col items-start gap-2">
             <CardTitle>{t("card3Title")}</CardTitle>
-            <CardCTA>
-              <IconPlus />
-            </CardCTA>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">{t("card3Desc")}</p>
           </CardContent>
         </Card>
       </div>

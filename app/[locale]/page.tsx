@@ -20,22 +20,22 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const alternates = generateAlternates("", locale as Locale);
 
   return {
-    title: "Corteksa - The Brain Behind Your Business",
+    title: "Corteksa - Organized Work. Made Simple.",
     description:
-      "Corteksa is a flexible workspace to manage projects, clients, and documents in one place. Powered by Cortex AI to help you work smarter, not harder.",
+      "Projects, responsibilities, and documents — unified in one clear, practical system. Manage your work with clarity and structure.",
     alternates,
     openGraph: {
-      title: "Corteksa - The Brain Behind Your Business",
+      title: "Corteksa - Organized Work. Made Simple.",
       description:
-        "AI-powered CRM platform for project management, client management, and team collaboration. Start free today.",
+        "Projects, responsibilities, and documents — unified in one clear, practical system. Start free today.",
       type: "website",
       images: ["/og-image.png"],
     },
     twitter: {
       card: "summary_large_image",
-      title: "Corteksa - The Brain Behind Your Business",
+      title: "Corteksa - Organized Work. Made Simple.",
       description:
-        "AI-powered CRM platform for project management, client management, and team collaboration.",
+        "Projects, responsibilities, and documents — unified in one clear, practical system.",
       images: ["/og-image.png"],
     },
   };

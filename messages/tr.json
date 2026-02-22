@@ -33,30 +33,34 @@
     "requestForm": "Talep Formu"
   },
   "hero": {
-    "title": "İşinizin arkasındaki beyin",
-    "subtitle": "Projeleri, müşterileri, teklifleri ve operasyonları çalışma şeklinize uygun tek bir merkezde yönetin.",
+    "title": "Düzenli çalışma.",
+    "title2": "Basitçe.",
+    "subtitle": "Projeler, sorumluluklar ve belgeler — tek bir açık, pratik sistemde birleştirildi.",
     "cta": "Başla",
     "secondaryCta": "Tüm özellikleri gör"
   },
   "features": {
     "title": "Neden Corteksa?",
     "subtitle": "Gerçek kullanıcı hayal kırıklıklarını netlik, basitlik ve güvenle ele alıyoruz. Her özellik işinizi kolaylaştırmak için tasarlandı.",
-    "card1Title": "Arapça Dil Arayüzü",
-    "card2Title": "Size Göre Tasarlanmış Sistem",
-    "card3Title": "Sınırsız Destek, Gerçek Ortaklık"
+    "card1Title": "Kendi dilinizde çalışın",
+    "card1Desc": "Arapça'da açık ve rahat, tam İngilizce desteğiyle — böylece her detay ekibiniz genelinde anlaşılır kalır.",
+    "card2Title": "Çalışma şeklinize göre tasarlandı",
+    "card2Desc": "Sistemin her parçası net bir amaca hizmet eder, odaklanmış ve verimli çalışmayı destekler.",
+    "card3Title": "Her zaman ulaşılabilir",
+    "card3Desc": "Soruları yanıtlamak, ekibinize rehberlik etmek ve tereddüt etmeden ilerlemenize yardımcı olmak için gerçek destek."
   },
   "speed": {
-    "title": "Netlikle çalışın.",
-    "title2": "Kontrolü elinizde tutun.",
-    "subtitle": "Tüm görevleriniz, dosyalarınız ve iş akışlarınız tek bir yerde basitleştirildi. Temel özelliklerinizi iş başında görün."
+    "title": "Zorluk çaba değil.",
+    "title2": "Yapıdır.",
+    "subtitle": "Önemli olan tüm işler tek bir yerde."
   },
   "featuresSecondary": {
     "unitsTitle": "Corteksa Birimleri",
-    "unitsDesc": "İhtiyacınız olan sistemi kurun. İşinize uyan birimler oluşturun, önemli detayları ekleyin ve her şeyi zahmetsizce bağlayın.",
-    "kanbanTitle": "Kanban Panoları",
-    "kanbanDesc": "Projeleri kendi yönteminizle takip edin. Her projeyi net, görünür ve yolunda tutmak için basit Kanban panoları ile iş akışları tasarlayın.",
+    "unitsDesc": "İhtiyacınız olan sistemi kurun: İşinize uygun birimler oluşturun, önemli detayları ekleyin ve her şeyi zahmetsizce bağlayın.",
+    "kanbanTitle": "Görünüm",
+    "kanbanDesc": "Projeleri kendi yolunuzla takip edin: Her projeyi açık, görünür ve yolunda tutmak için basit Kanban panoları ile iş akışları tasarlayın.",
     "docGenTitle": "Belge Oluşturma",
-    "docGenDesc": "Tek tıkla belgeler oluşturun. Sözleşmeler, teklifler veya herhangi bir belgeyi anında oluşturun.",
+    "docGenDesc": "Tek tıkla belge oluşturun: Zamandan tasarruf etmek ve gerçek işe odaklanmak için sözleşmeleri, teklifleri veya herhangi bir belgeyi anında oluşturun.",
     "customFieldsTitle": "Özel Alanlar",
     "customFieldsDesc": "Sizin için önemli olan detayları ekleyin. Her birimi iş akışınıza uyan alanlarla özelleştirin.",
     "dashboardTitle": "Akıllı Gösterge Paneli",

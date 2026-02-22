@@ -16,7 +16,10 @@ export const Hero = () => {
   return (
     <section className="pt-10 md:pt-20 lg:pt-32 relative overflow-hidden">
       <Container>
-        <Heading as="h1">{t("title")}</Heading>
+        <Heading as="h1">
+          {t("title")} <br />
+          {t("title2")}
+        </Heading>
 
         <Subheading className="py-8">{t("subtitle")}</Subheading>
         <div className="flex items-center gap-6">
