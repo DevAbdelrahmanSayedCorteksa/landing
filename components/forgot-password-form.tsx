@@ -7,7 +7,7 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { motion } from "motion/react";
 import { IconArrowLeft, IconCheck } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { sileo } from "sileo";
 import { sendForgotPasswordEmail } from "@/lib/auth/ForgotPasswordService";
 import { handleOtpLogin } from "@/lib/services/AuthLocalService";
 import { ApiResponse } from "@/lib/types/apiResponse";
@@ -27,7 +27,7 @@ export function ForgotPasswordForm() {
       const response = await sendForgotPasswordEmail(email);
 
       if (response.status === ACCEPTED) {
-        toast.success("OTP sent to your email. Please verify to reset your password.");
+        sileo.success({ title: "OTP Sent", description: "A verification code was sent to your email. Use it to reset your password." });
         sessionStorage.setItem("verifyForForgotPassword", "true");
         if (response.data?.data?.otpToken) {
           handleOtpLogin(response.data.data.otpToken);
@@ -38,10 +38,9 @@ export function ForgotPasswordForm() {
       }
     } catch (error: any) {
       if (error.response?.status === BAD_REQUEST) {
-        const message = error.response.data?.message || "Failed to send reset email";
-        toast.error(message);
+        sileo.error({ title: "Reset Failed", description: "Could not send the reset email. Please check your email and try again." });
       } else {
-        toast.error("Failed to send reset email. Please try again.");
+        sileo.error({ title: "Reset Failed", description: "Something went wrong. Please check your connection and try again." });
       }
     } finally {
       setIsLoading(false);

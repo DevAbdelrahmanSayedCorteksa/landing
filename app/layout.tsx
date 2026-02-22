@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { QueryProvider } from "@/providers/query-provider";
-import { Toaster } from "sonner";
+import { ToastProvider } from "@/providers/toast-provider";
 import { Manrope, Inter, IBM_Plex_Sans_Arabic } from "next/font/google";
 import localFont from "next/font/local";
 import { rtlLocales, defaultLocale, Locale } from "@/i18n/routing";
@@ -149,13 +149,9 @@ export default async function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            {children}
-            <Toaster
-              position="bottom-right"
-              richColors
-              expand={false}
-              visibleToasts={5}
-            />
+            <ToastProvider>
+              {children}
+            </ToastProvider>
           </ThemeProvider>
         </QueryProvider>
       </body>

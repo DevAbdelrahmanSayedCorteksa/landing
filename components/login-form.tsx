@@ -10,7 +10,7 @@ import { Checkbox } from "./ui/checkbox";
 import { Divider } from "./ui/divider";
 import { IconBrandGoogle, IconEye, IconEyeOff } from "@tabler/icons-react";
 import { motion } from "motion/react";
-import { toast } from "sonner";
+import { sileo } from "sileo";
 import { login } from "@/lib/auth/LoginService";
 import {
   handleLogin,
@@ -41,7 +41,7 @@ export function LoginForm() {
       const res = response as ApiResponse<LoginResponse>;
 
       if (res.status === OK) {
-        toast.success(t("loginSuccess"));
+        sileo.success({ title: t("loginSuccess"), description: t("loginSuccessDesc") });
         const loginData = res.data;
 
         // System admin - always redirect to CRM (no subdomain needed)
@@ -75,19 +75,19 @@ export function LoginForm() {
       } else if (res.status === ACCEPTED) {
         handleOtpLogin(res.data.token);
         sessionStorage.setItem("verifyForLogin", "true");
-        toast.info(res.message || t("verifyOtp"));
+        sileo.info({ title: t("verifyOtp"), description: t("verifyOtpDesc") });
         router.push("/otp");
       } else {
-        toast.error(t("loginFailed"));
+        sileo.error({ title: t("loginFailed"), description: t("loginFailedDesc") });
       }
     } catch (error: any) {
       if (error.response?.status === UNAUTHORIZED_ERROR) {
         handleOtpLogin(error.response.data.data.otpToken);
         sessionStorage.setItem("verifyRegister", "true");
-        toast.error(error.response.data.message);
+        sileo.error({ title: t("loginFailed"), description: t("loginFailedDesc") });
         router.push("/otp");
       } else {
-        toast.error(error.response?.data?.message || t("loginFailed"));
+        sileo.error({ title: t("loginFailed"), description: t("loginFailedDesc") });
       }
     } finally {
       setIsLoading(false);

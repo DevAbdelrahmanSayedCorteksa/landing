@@ -7,7 +7,7 @@ import Cookies from "js-cookie";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { motion } from "motion/react";
-import { toast } from "sonner";
+import { sileo } from "sileo";
 import { verifyOtp, resendOtp } from "@/lib/auth/OtpService";
 import { handleLogoutOtp } from "@/lib/services/AuthLocalService";
 import { ApiResponse } from "@/lib/types/apiResponse";
@@ -75,7 +75,7 @@ export function OtpForm() {
 
     // Validate 4-digit string
     if (!/^\d{4}$/.test(pastedData)) {
-      toast.error(t("invalidPaste"));
+      sileo.error({ title: t("invalidPaste"), description: t("invalidPasteDesc") });
       return;
     }
 
@@ -88,7 +88,7 @@ export function OtpForm() {
     const otpString = otp.join("");
 
     if (otpString.length !== 4) {
-      toast.error(t("enterComplete"));
+      sileo.error({ title: t("enterComplete"), description: t("enterCompleteDesc") });
       return;
     }
 
@@ -99,7 +99,7 @@ export function OtpForm() {
       const res = response as ApiResponse<LoginResponse>;
 
       if (res.status === OK) {
-        toast.success(t("verifySuccess"));
+        sileo.success({ title: t("verifySuccess"), description: t("verifySuccessDesc") });
 
         // Determine redirect based on context
         const verifyRegister = sessionStorage.getItem("verifyRegister");
@@ -120,14 +120,13 @@ export function OtpForm() {
           router.push("/login");
         }
       } else if (res.status === BAD_REQUEST) {
-        toast.error(res.message || t("invalidOtp"));
+        sileo.error({ title: t("invalidOtp"), description: t("invalidOtpDesc") });
       }
     } catch (error: any) {
       if (error.response?.status === BAD_REQUEST) {
-        const message = error.response.data?.message || t("invalidOtp");
-        toast.error(message);
+        sileo.error({ title: t("invalidOtp"), description: t("invalidOtpDesc") });
       } else {
-        toast.error(t("verifyFailed"));
+        sileo.error({ title: t("verifyFailed"), description: t("verifyFailedDesc") });
       }
     } finally {
       setIsLoading(false);
@@ -139,12 +138,11 @@ export function OtpForm() {
 
     try {
       await resendOtp();
-      toast.success(t("resendSuccess"));
+      sileo.success({ title: t("resendSuccess"), description: t("resendSuccessDesc") });
       setIsResendDisabled(true);
       setResendCountdown(30);
     } catch (error: any) {
-      const message = error.response?.data?.message || t("resendFailed");
-      toast.error(message);
+      sileo.error({ title: t("resendFailed"), description: t("resendFailedDesc") });
     }
   };
 

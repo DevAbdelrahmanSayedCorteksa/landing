@@ -13,7 +13,7 @@ import { Loader2, Check, X, ExternalLink, Copy } from "lucide-react";
 import { Heading } from "@/components/heading";
 import { Subheading } from "@/components/subheading";
 import { checkSubdomainAvailability } from "@/lib/services/SubdomainService";
-import { toast } from "sonner";
+import { sileo } from "sileo";
 import { steperService } from "@/lib/services/SteperService";
 import { handleLogout, saveWorkspaceSubdomain } from "@/lib/services/AuthLocalService";
 import { OK } from "@/lib/services/statusCodes";
@@ -170,7 +170,7 @@ export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAI
       case 1:
         // Step 1: Workspace Name
         if (!formData.workspace_name) {
-          toast.error(t("enterWorkspaceName"));
+          sileo.error({ title: t("enterWorkspaceName"), description: t("enterWorkspaceNameDesc") });
           return false;
         }
         return true;
@@ -178,7 +178,7 @@ export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAI
       case 2:
         // Step 2: Pricing Selection
         if (!formData.pricing_plan_slug) {
-          toast.error(t("selectPricingPlan"));
+          sileo.error({ title: t("selectPricingPlan"), description: t("selectPricingPlanDesc") });
           return false;
         }
         return true;
@@ -186,15 +186,15 @@ export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAI
       case 3:
         // Step 3: Subdomain (only for paid plans)
         if (!formData.subdomain) {
-          toast.error(t("enterSubdomain"));
+          sileo.error({ title: t("enterSubdomain"), description: t("enterSubdomainDesc") });
           return false;
         }
         if (formData.subdomain.length < 3) {
-          toast.error(t("subdomainMin3"));
+          sileo.error({ title: t("subdomainMin3"), description: t("subdomainMin3Desc") });
           return false;
         }
         if (!/^[a-z0-9]+$/.test(formData.subdomain)) {
-          toast.error(t("subdomainOnlyLowercase"));
+          sileo.error({ title: t("subdomainOnlyLowercase"), description: t("subdomainOnlyLowercaseDesc") });
           return false;
         }
         return true;
@@ -205,13 +205,13 @@ export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAI
         if (currentStep === setupStep) {
           // Validate template selection
           if (formData.setup_method === "template" && !formData.template_slug) {
-            toast.error(t("selectTemplate"));
+            sileo.error({ title: t("selectTemplate"), description: t("selectTemplateDesc") });
             return false;
           }
 
           // Validate AI chat - template must be saved
           if (formData.setup_method === "ai" && !formData.template_slug) {
-            toast.error(t("saveTemplateFirst"));
+            sileo.error({ title: t("saveTemplateFirst"), description: t("saveTemplateFirstDesc") });
             return false;
           }
 
@@ -250,7 +250,7 @@ export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAI
       const response = await steperService(payload) as any;
 
       if (response.status === OK || response.status === 201) {
-        toast.success(t("workspaceCreated"));
+        sileo.success({ title: t("workspaceCreated"), description: t("workspaceCreatedDesc") });
 
         if (isFreePlan) {
           // Free plan: redirect to login directly
@@ -266,11 +266,11 @@ export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAI
       }
     } catch (error: any) {
       if (error.response?.status === 409) {
-        toast.error(t("subdomainTaken"));
+        sileo.error({ title: t("subdomainTaken"), description: t("subdomainTakenDesc") });
       } else if (error.response?.status === 400) {
-        toast.error(error.response.data?.message || t("validationError"));
+        sileo.error({ title: t("validationError"), description: t("validationErrorDesc") });
       } else {
-        toast.error(t("createFailed"));
+        sileo.error({ title: t("createFailed"), description: t("createFailedDesc") });
       }
     } finally {
       setIsLoading(false);
@@ -807,7 +807,7 @@ function SuccessScreen({ subdomain }: { subdomain: string }) {
   const handleCopy = () => {
     navigator.clipboard.writeText(workspaceUrl);
     setCopied(true);
-    toast.success(t("copiedToClipboard"));
+    sileo.success({ title: t("copiedToClipboard"), description: t("copiedToClipboardDesc") });
     setTimeout(() => setCopied(false), 2000);
   };
 

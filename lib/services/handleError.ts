@@ -1,4 +1,4 @@
-import { toast } from "sonner";
+import { sileo } from "sileo";
 import {
   AN_UNEXPECTED_ERROR,
   INVALID_MESSAGE,
@@ -18,7 +18,7 @@ export const handleError = async (error: any) => {
   }
 
   if (!error.response) {
-    toast.error(NETWORK_ERROR);
+    sileo.error({ title: "Network Error", description: NETWORK_ERROR });
     return Promise.reject(error);
   }
 
@@ -26,12 +26,12 @@ export const handleError = async (error: any) => {
 
   if (typeof window !== "undefined" && window.location.pathname !== TO_LOGIN) {
     if (status === UNPROCESSABLE_ENTITY) {
-      toast.error(INVALID_MESSAGE);
+      sileo.error({ title: "Validation Error", description: INVALID_MESSAGE });
     } else if (status === FORBIDDEN || status === UNAUTHORIZED_ERROR) {
       handleLogout();
       window.location.href = TO_LOGIN;
     } else {
-      toast.error(AN_UNEXPECTED_ERROR);
+      sileo.error({ title: "Error", description: AN_UNEXPECTED_ERROR });
     }
   }
 

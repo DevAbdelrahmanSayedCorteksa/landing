@@ -46,7 +46,14 @@
       "WebFetch(domain:v0.app)",
       "WebFetch(domain:colorswall.com)",
       "Bash(npm i:*)",
-      "Bash(npx lightswind@latest add:*)"
+      "Bash(npx lightswind@latest add:*)",
+      "WebFetch(domain:sileo.aaryan.design)",
+      "Bash(npm uninstall:*)",
+      "mcp__chrome-devtools__evaluate_script",
+      "mcp__chrome-devtools__take_snapshot",
+      "mcp__chrome-devtools__list_console_messages",
+      "mcp__chrome-devtools__fill_form",
+      "mcp__chrome-devtools__click"
     ]
   }
 }

@@ -10,7 +10,7 @@ import { Checkbox } from "./ui/checkbox";
 import { Divider } from "./ui/divider";
 import { IconBrandGoogle, IconEye, IconEyeOff } from "@tabler/icons-react";
 import { motion } from "motion/react";
-import { toast } from "sonner";
+import { sileo } from "sileo";
 import { register } from "@/lib/auth/RegisterService";
 import { handleOtpLogin } from "@/lib/services/AuthLocalService";
 import { ApiResponse } from "@/lib/types/apiResponse";
@@ -33,12 +33,12 @@ export function SignupForm() {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      toast.error(t("passwordMismatch"));
+      sileo.error({ title: t("passwordMismatch"), description: t("passwordMismatchDesc") });
       return;
     }
 
     if (!acceptTerms) {
-      toast.error(t("acceptTerms"));
+      sileo.error({ title: t("acceptTerms"), description: t("acceptTermsDesc") });
       return;
     }
 
@@ -54,19 +54,18 @@ export function SignupForm() {
       const res = response as ApiResponse<LoginResponse>;
 
       if (res.status === CREATED) {
-        toast.success(t("registrationSuccess"));
+        sileo.success({ title: t("registrationSuccess"), description: t("registrationSuccessDesc") });
         sessionStorage.setItem("verifyRegister", "true");
         handleOtpLogin(res.data.token);
         router.push("/otp");
       } else if (res.status === BAD_REQUEST) {
-        toast.error(res.message);
+        sileo.error({ title: t("registrationFailed"), description: t("registrationFailedDesc") });
       }
     } catch (error: any) {
       if (error.response?.status === BAD_REQUEST) {
-        const message = error.response.data?.message || t("registrationFailed");
-        toast.error(message);
+        sileo.error({ title: t("registrationFailed"), description: t("registrationFailedDesc") });
       } else {
-        toast.error(t("registrationFailed"));
+        sileo.error({ title: t("registrationFailed"), description: t("registrationFailedDesc") });
       }
     } finally {
       setIsLoading(false);

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { toast } from "sonner";
+import { sileo } from "sileo";
 import { wsService } from "@/lib/services/WebSocketService";
 import {
   ChatState,
@@ -70,7 +70,7 @@ export function useAITemplateChat() {
 
     const handleDisconnect = () => {
       setState((prev) => ({ ...prev, isConnected: false }));
-      toast.error("Connection lost. Reconnecting...");
+      sileo.error({ title: "Connection Lost", description: "Lost connection to the server. Reconnecting automatically." });
     };
 
     // ── template:thinking — AI starts processing ──
@@ -231,7 +231,7 @@ export function useAITemplateChat() {
         ...prev,
         savedTemplateSlug: data.slug,
       }));
-      toast.success(data.message || "Template saved successfully!");
+      sileo.success({ title: "Template Saved", description: data.message || "Your template is saved and ready to use." });
     };
 
     // ── template:error ──
@@ -299,12 +299,12 @@ export function useAITemplateChat() {
   const sendMessage = useCallback(
     (message: string, options?: { plan?: boolean }) => {
       if (!message.trim()) {
-        toast.error("Message cannot be empty");
+        sileo.error({ title: "Empty Message", description: "Please type a message before sending." });
         return;
       }
 
       if (!state.isConnected) {
-        toast.error("Not connected. Please wait...");
+        sileo.error({ title: "Not Connected", description: "Server is unavailable. Please wait while we reconnect." });
         return;
       }
 
@@ -343,12 +343,12 @@ export function useAITemplateChat() {
   // Confirm plan — sends the plan back to server, triggers building phase
   const confirmPlan = useCallback(() => {
     if (!state.sessionId) {
-      toast.error("No active session");
+      sileo.error({ title: "No Session", description: "No active session. Please start a new conversation." });
       return;
     }
 
     if (!state.planResult) {
-      toast.error("No plan to confirm");
+      sileo.error({ title: "No Plan", description: "No plan to confirm. Describe your business to generate one." });
       return;
     }
 
@@ -369,13 +369,13 @@ export function useAITemplateChat() {
   const saveTemplate = useCallback(
     (customName?: string) => {
       if (!state.sessionId) {
-        toast.error("No active session");
+        sileo.error({ title: "No Session", description: "No active session. Please start a new conversation." });
         return;
       }
 
       const nameToSave = customName?.trim() || state.templateName;
       if (!nameToSave) {
-        toast.error("Template name is required");
+        sileo.error({ title: "Name Required", description: "Please enter a template name before saving." });
         return;
       }
 
