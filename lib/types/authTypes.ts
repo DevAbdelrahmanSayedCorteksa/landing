@@ -18,3 +18,10 @@ export interface RegisterData {
   email: string;
   password: string;
 }
+
+export interface RefreshTokenResponse {
+  data: {
+    token: string;
+    refresh_token: string;
+  };
+}

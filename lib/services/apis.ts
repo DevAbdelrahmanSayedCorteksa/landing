@@ -16,3 +16,4 @@ export const API_OBJECT_TEMPLATE_BY_SLUG_ENDPOINT = (slug: string) =>
   `${versionApi}/${apiModuleUser}/object-templates/${slug}`;
 export const API_TEMPLATE_GENERATE_ENDPOINT = `${versionApi}/${apiModuleUser}/auth/template/generate`;
 export const API_TEMPLATE_SAVE_ENDPOINT = `${versionApi}/${apiModuleUser}/auth/template/save`;
+export const API_REFRESH_TOKEN_ENDPOINT = `${versionApi}/${apiModuleUser}/auth/refresh`;
