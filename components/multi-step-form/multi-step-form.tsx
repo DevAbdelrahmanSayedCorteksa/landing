@@ -15,7 +15,7 @@ import { Subheading } from "@/components/subheading";
 import { checkSubdomainAvailability } from "@/lib/services/SubdomainService";
 import { sileo } from "sileo";
 import { steperService } from "@/lib/services/SteperService";
-import { handleLogout, saveWorkspaceSubdomain } from "@/lib/services/AuthLocalService";
+import { handleLogout, saveWorkspaceSubdomain, getToken, getRefreshToken, buildSSORedirectUrl } from "@/lib/services/AuthLocalService";
 import { OK } from "@/lib/services/statusCodes";
 import { TimePeriod, TIME_PERIOD_LABELS } from "@/lib/types/pricing";
 import { PeriodTabs } from "@/components/ui/period-tabs";
@@ -72,6 +72,8 @@ export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAI
   const [isSuccess, setIsSuccess] = useState(false);
   const [createdSubdomain, setCreatedSubdomain] = useState("");
   const [hasAIMessages, setHasAIMessages] = useState(false);
+  const [isSubdomainAvailable, setIsSubdomainAvailable] = useState<boolean | null>(null);
+  const [isCheckingSubdomain, setIsCheckingSubdomain] = useState(false);
   const router = useRouter();
   const t = useTranslations("multiStepForm");
 
@@ -197,6 +199,14 @@ export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAI
           sileo.error({ title: t("subdomainOnlyLowercase"), description: t("subdomainOnlyLowercaseDesc") });
           return false;
         }
+        if (isCheckingSubdomain) {
+          sileo.error({ title: t("checkingAvailability"), description: t("waitForSubdomainCheck") });
+          return false;
+        }
+        if (isSubdomainAvailable === false) {
+          sileo.error({ title: t("subdomainTaken"), description: t("subdomainTakenDesc") });
+          return false;
+        }
         return true;
 
       default:
@@ -299,7 +309,7 @@ export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAI
       case 3:
         if (!isFreePlan) {
           // Paid plan: show subdomain step
-          return <Step3Subdomain formData={formData} updateFormData={updateFormData} />;
+          return <Step3Subdomain formData={formData} updateFormData={updateFormData} onAvailabilityChange={setIsSubdomainAvailable} onCheckingChange={setIsCheckingSubdomain} />;
         } else {
           // Free plan: show setup preferences step
           return (
@@ -401,7 +411,7 @@ export function MultiStepForm({ selectedPlan, period, onAIChatActiveChange, onAI
               type="button"
               onClick={handleNext}
               className={currentStep === 1 ? "w-full" : "flex-1"}
-              disabled={isLoading}
+              disabled={isLoading || (currentStep === 3 && !isFreePlan && (isCheckingSubdomain || isSubdomainAvailable === false))}
             >
               {getButtonText()}
             </Button>
@@ -452,9 +462,13 @@ function Step1WorkspaceName({
 function Step3Subdomain({
   formData,
   updateFormData,
+  onAvailabilityChange,
+  onCheckingChange,
 }: {
   formData: FormData;
   updateFormData: (data: Partial<FormData>) => void;
+  onAvailabilityChange: (available: boolean | null) => void;
+  onCheckingChange: (checking: boolean) => void;
 }) {
   const t = useTranslations("multiStepForm");
   const [isChecking, setIsChecking] = useState(false);
@@ -477,6 +491,7 @@ function Step3Subdomain({
     // Reset state if empty or too short
     if (!formData.subdomain || formData.subdomain.length < 3) {
       setIsAvailable(null);
+      onAvailabilityChange(null);
       setStatusMessage("");
       return;
     }
@@ -484,27 +499,36 @@ function Step3Subdomain({
     // Validate format first
     if (!/^[a-z0-9]+$/.test(formData.subdomain)) {
       setIsAvailable(false);
+      onAvailabilityChange(false);
       setStatusMessage(t("onlyLowercaseAllowed"));
       return;
     }
 
     // Debounce the API call
+    setIsChecking(true);
+    onCheckingChange(true);
     const timeoutId = setTimeout(async () => {
-      setIsChecking(true);
       setStatusMessage("");
       try {
         const response = await checkSubdomainAvailability(formData.subdomain);
         setIsAvailable(response.data.available);
+        onAvailabilityChange(response.data.available);
         setStatusMessage(response.data.available ? t("available") : t("alreadyTaken"));
       } catch {
         setStatusMessage(t("couldNotCheck"));
         setIsAvailable(null);
+        onAvailabilityChange(null);
       } finally {
         setIsChecking(false);
+        onCheckingChange(false);
       }
     }, 500);
 
-    return () => clearTimeout(timeoutId);
+    return () => {
+      clearTimeout(timeoutId);
+      setIsChecking(false);
+      onCheckingChange(false);
+    };
   }, [formData.subdomain, t]);
 
   return (
@@ -800,12 +824,22 @@ function SelectablePricingCard({
 // Success Screen Component
 function SuccessScreen({ subdomain }: { subdomain: string }) {
   const t = useTranslations("multiStepForm");
-  const workspaceUrl = `https://${subdomain}.corteksa.net`;
+  const displayUrl = `https://${subdomain}.corteksa.net`;
   const [copied, setCopied] = useState(false);
   const [countdown, setCountdown] = useState(5);
 
+  const goToWorkspace = () => {
+    const token = getToken();
+    const refreshToken = getRefreshToken();
+    if (token && refreshToken) {
+      window.location.href = buildSSORedirectUrl(subdomain, token, refreshToken, false);
+    } else {
+      window.location.href = displayUrl;
+    }
+  };
+
   const handleCopy = () => {
-    navigator.clipboard.writeText(workspaceUrl);
+    navigator.clipboard.writeText(displayUrl);
     setCopied(true);
     sileo.success({ title: t("copiedToClipboard"), description: t("copiedToClipboardDesc") });
     setTimeout(() => setCopied(false), 2000);
@@ -814,7 +848,7 @@ function SuccessScreen({ subdomain }: { subdomain: string }) {
   // Auto redirect countdown
   useEffect(() => {
     if (countdown <= 0) {
-      window.open(workspaceUrl, "_blank");
+      goToWorkspace();
       return;
     }
 
@@ -823,7 +857,7 @@ function SuccessScreen({ subdomain }: { subdomain: string }) {
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [countdown, workspaceUrl]);
+  }, [countdown]);
 
   return (
     <motion.div
@@ -863,7 +897,7 @@ function SuccessScreen({ subdomain }: { subdomain: string }) {
         </p>
         <div className="flex items-center justify-center gap-3" dir="ltr">
           <code className="text-sm md:text-base font-mono text-primary">
-            {workspaceUrl}
+            {displayUrl}
           </code>
           <button
             onClick={handleCopy}
@@ -886,7 +920,7 @@ function SuccessScreen({ subdomain }: { subdomain: string }) {
         className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4"
       >
         <Button
-          onClick={() => window.open(workspaceUrl, "_blank")}
+          onClick={goToWorkspace}
           className="shadow-brand"
         >
           {t("goToWorkspace")} ({countdown}s)

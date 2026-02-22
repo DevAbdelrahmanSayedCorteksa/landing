@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { IconUser, IconLogout, IconChevronDown } from "@tabler/icons-react";
-import { getWorkspaceSubdomain } from "@/lib/services/AuthLocalService";
+import { getWorkspaceSubdomain, getToken, getRefreshToken, buildSSORedirectUrl } from "@/lib/services/AuthLocalService";
 
 interface UserProfileDropdownProps {
   user: {
@@ -28,9 +28,14 @@ export function UserProfileDropdown({
   const handleWorkspaceClick = () => {
     const subdomain = getWorkspaceSubdomain();
     if (subdomain) {
-      window.location.href = `https://${subdomain}.corteksa.net`;
+      const token = getToken();
+      const refreshToken = getRefreshToken();
+      if (token && refreshToken) {
+        window.location.href = buildSSORedirectUrl(subdomain, token, refreshToken, false);
+      } else {
+        window.location.href = `https://${subdomain}.corteksa.net`;
+      }
     } else {
-      // Fallback: go to multi-step-form to set up workspace
       window.location.href = "/multi-step-form";
     }
   };

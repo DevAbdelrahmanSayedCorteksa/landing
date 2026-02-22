@@ -235,7 +235,16 @@ export function useAITemplateChat() {
     };
 
     // ── template:error ──
-    const handleError = (data: TemplateErrorResponse) => {
+    const handleError = async (data: TemplateErrorResponse) => {
+      // Token expired mid-session — refresh and reconnect silently
+      if (data.code === "AUTH_INVALID") {
+        const success = await wsService.refreshAndReconnect();
+        if (success) {
+          setState((prev) => ({ ...prev, builderState: "idle", streamingContent: "" }));
+          return;
+        }
+      }
+
       streamBufferRef.current = "";
       if (rafIdRef.current) {
         cancelAnimationFrame(rafIdRef.current);

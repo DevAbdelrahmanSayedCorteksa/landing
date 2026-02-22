@@ -394,6 +394,7 @@
     "subdomain": "Sous-domaine",
     "subdomainPlaceholder": "monentreprise",
     "checkingAvailability": "Vérification de la disponibilité...",
+    "waitForSubdomainCheck": "Veuillez patienter pendant la vérification de la disponibilité du sous-domaine.",
     "available": "Disponible",
     "alreadyTaken": "Déjà pris",
     "onlyLowercaseAllowed": "Seules les lettres minuscules et les chiffres sont autorisés",

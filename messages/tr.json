@@ -394,6 +394,7 @@
     "subdomain": "Alt Alan Adı",
     "subdomainPlaceholder": "sirketim",
     "checkingAvailability": "Uygunluk kontrol ediliyor...",
+    "waitForSubdomainCheck": "Alt alan adı uygunluğu doğrulanırken lütfen bekleyin.",
     "available": "Kullanılabilir",
     "alreadyTaken": "Zaten alınmış",
     "onlyLowercaseAllowed": "Yalnızca küçük harfler ve sayılara izin verilir",

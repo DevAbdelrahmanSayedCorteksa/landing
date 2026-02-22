@@ -394,6 +394,7 @@
     "subdomain": "Поддомен",
     "subdomainPlaceholder": "мояфирма",
     "checkingAvailability": "Проверка доступности...",
+    "waitForSubdomainCheck": "Пожалуйста, подождите, пока мы проверяем доступность поддомена.",
     "available": "Доступен",
     "alreadyTaken": "Уже занят",
     "onlyLowercaseAllowed": "Допускаются только строчные буквы и цифры",

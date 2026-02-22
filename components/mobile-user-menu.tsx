@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { IconLogout, IconUser } from "@tabler/icons-react";
-import { getWorkspaceSubdomain } from "@/lib/services/AuthLocalService";
+import { getWorkspaceSubdomain, getToken, getRefreshToken, buildSSORedirectUrl } from "@/lib/services/AuthLocalService";
 
 interface MobileUserMenuProps {
   user: {
@@ -17,7 +17,13 @@ export function MobileUserMenu({ user, onLogout }: MobileUserMenuProps) {
   const handleWorkspaceClick = () => {
     const subdomain = getWorkspaceSubdomain();
     if (subdomain) {
-      window.location.href = `https://${subdomain}.corteksa.net`;
+      const token = getToken();
+      const refreshToken = getRefreshToken();
+      if (token && refreshToken) {
+        window.location.href = buildSSORedirectUrl(subdomain, token, refreshToken, false);
+      } else {
+        window.location.href = `https://${subdomain}.corteksa.net`;
+      }
     } else {
       window.location.href = "/multi-step-form";
     }

@@ -395,6 +395,7 @@
     "subdomain": "Subdomain",
     "subdomainPlaceholder": "mycompany",
     "checkingAvailability": "Checking availability...",
+    "waitForSubdomainCheck": "Please wait while we verify subdomain availability.",
     "available": "Available",
     "alreadyTaken": "Already taken",
     "onlyLowercaseAllowed": "Only lowercase letters and numbers allowed",

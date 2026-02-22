@@ -394,6 +394,7 @@
     "subdomain": "النطاق الفرعي",
     "subdomainPlaceholder": "شركتي",
     "checkingAvailability": "جاري التحقق من التوفر...",
+    "waitForSubdomainCheck": "يرجى الانتظار بينما نتحقق من توفر النطاق الفرعي.",
     "available": "متاح",
     "alreadyTaken": "مأخوذ بالفعل",
     "onlyLowercaseAllowed": "يُسمح فقط بالأحرف الصغيرة والأرقام",

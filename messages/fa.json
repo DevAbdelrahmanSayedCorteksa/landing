@@ -394,6 +394,7 @@
     "subdomain": "زیردامنه",
     "subdomainPlaceholder": "شرکت‌من",
     "checkingAvailability": "در حال بررسی موجودی...",
+    "waitForSubdomainCheck": "لطفاً صبر کنید تا موجودی زیردامنه بررسی شود.",
     "available": "موجود",
     "alreadyTaken": "قبلاً گرفته شده",
     "onlyLowercaseAllowed": "فقط حروف کوچک و اعداد مجاز است",
