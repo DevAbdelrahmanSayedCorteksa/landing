@@ -121,7 +121,7 @@ export function MultiStepFormClient({ selectedPlan, period }: MultiStepFormClien
             transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
             className="hidden lg:flex flex-col justify-start relative h-screen p-3 ps-0"
           >
-            <div className="flex-1 rounded-2xl border border-white/[0.06] bg-[#1e1e22] overflow-hidden">
+            <div className="flex-1 rounded-2xl border border-neutral-200 dark:border-white/[0.06] bg-white dark:bg-[#1e1e22] overflow-hidden">
               <LiveBuildPanel
                 onProceedToWorkspace={wsData ? proceedToWorkspace : undefined}
                 workspaceDomain={workspaceDomain}
@@ -137,7 +137,7 @@ export function MultiStepFormClient({ selectedPlan, period }: MultiStepFormClien
             transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
             className="hidden lg:flex flex-col justify-start relative h-screen p-3 ps-0"
           >
-            <div className="flex-1 rounded-2xl bg-[#1e1e22] overflow-hidden">
+            <div className="flex-1 rounded-2xl bg-white dark:bg-[#1e1e22] overflow-hidden">
               <TemplatePreviewPanel
                 slug={templatePreviewSlug!}
                 confirmedSlug={confirmedTemplateSlug}
@@ -189,7 +189,7 @@ export function MultiStepFormClient({ selectedPlan, period }: MultiStepFormClien
   );
 
   return (
-    <main className={`relative transition-colors duration-500 ${isAIChatActive ? "bg-[#0f0f0f] h-screen overflow-hidden" : isTemplateBrowserActive ? "bg-background h-screen overflow-hidden" : "bg-background min-h-screen"}`}>
+    <main className={`relative transition-colors duration-500 ${isAIChatActive ? "bg-neutral-50 dark:bg-[#0f0f0f] h-screen overflow-hidden" : isTemplateBrowserActive ? "bg-background h-screen overflow-hidden" : "bg-background min-h-screen"}`}>
       {/* Background Glow - Top Corner */}
       <div
         className="absolute top-0 start-0 w-[300px] h-[300px] bg-primary/35 rounded-full blur-[100px] pointer-events-none -translate-x-1/4 -translate-y-1/2"

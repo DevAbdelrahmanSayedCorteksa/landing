@@ -7,6 +7,7 @@ import { Renderer, Program, Mesh, Triangle } from "ogl";
 interface PlasmaGlobeProps {
   speed?: number; // global time speed multiplier
   intensity?: number; // color intensity multiplier
+  transparent?: boolean; // make background transparent (for light mode)
 }
 
 const VERTEX_SHADER = `#version 300 es
@@ -37,6 +38,7 @@ uniform vec2 uResolution;
 uniform vec2 uMouse;
 uniform float uSpeed;
 uniform float uIntensity;
+uniform float uTransparent;
 
 #define NUM_RAYS 13.0
 #define VOLUMETRIC_STEPS 19
@@ -202,7 +204,8 @@ void main(){
   vec3 bro = ro;
   vec3 brd = rd;
 
-  vec3 col = vec3(0.118, 0.118, 0.133);
+  vec3 bgVal = vec3(0.118, 0.118, 0.133);
+  vec3 col = bgVal;
 
   // multiple rays to create many filaments
   for (float j = 1.0; j < NUM_RAYS + 1.0; j++){
@@ -234,13 +237,26 @@ void main(){
   // final tone mapping & intensity
   col *= (1.0 + uIntensity * 0.6);
   col = pow(clamp(col, 0.0, 10.0), vec3(1.5));
-  fragColor = vec4(col * 1.3, 1.0);
+  vec3 finalCol = col * 1.3;
+
+  // In transparent mode, background pixels become see-through
+  float alpha = 1.0;
+  if (uTransparent > 0.5) {
+    // Measure how bright/different this pixel is from the dark background
+    vec3 tonemappedBg = pow(bgVal * (1.0 + uIntensity * 0.6), vec3(1.5)) * 1.3;
+    float diff = length(finalCol - tonemappedBg);
+    alpha = smoothstep(0.0, 0.15, diff);
+    // Premultiply alpha for correct blending
+    finalCol *= alpha;
+  }
+  fragColor = vec4(finalCol, alpha);
 }
 `;
 
 export default function PlasmaGlobe({
   speed = 1.0,
   intensity = 1.0,
+  transparent = false,
 }: PlasmaGlobeProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [webglFailed, setWebglFailed] = useState(false);
@@ -251,7 +267,7 @@ export default function PlasmaGlobe({
 
     let renderer: Renderer;
     try {
-      renderer = new Renderer({ antialias: true });
+      renderer = new Renderer({ antialias: true, alpha: true, premultipliedAlpha: false });
     } catch {
       setWebglFailed(true);
       return;
@@ -274,6 +290,7 @@ export default function PlasmaGlobe({
         uMouse: { value: [0, 0] },
         uSpeed: { value: speed },
         uIntensity: { value: intensity },
+        uTransparent: { value: transparent ? 1.0 : 0.0 },
       },
     });
 
@@ -297,6 +314,7 @@ export default function PlasmaGlobe({
       rafId = requestAnimationFrame(loop);
       program.uniforms.uTime.value = (t * 0.001) * speed;
       program.uniforms.uIntensity.value = intensity;
+      program.uniforms.uTransparent.value = transparent ? 1.0 : 0.0;
       renderer.render({ scene: mesh });
     };
     rafId = requestAnimationFrame(loop);
@@ -307,7 +325,7 @@ export default function PlasmaGlobe({
       if (gl.canvas.parentNode === container) container.removeChild(gl.canvas);
       gl.getExtension("WEBGL_lose_context")?.loseContext();
     };
-  }, [speed, intensity]);
+  }, [speed, intensity, transparent]);
 
   if (webglFailed) {
     return (

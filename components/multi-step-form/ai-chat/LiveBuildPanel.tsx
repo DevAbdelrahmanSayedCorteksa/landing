@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
 import { useState, useRef } from "react";
+import { useTheme } from "next-themes";
 import { Check, ExternalLink } from "lucide-react";
 import { IconLoader2, IconSearch, IconRocket } from "@tabler/icons-react";
 import { TextShimmer } from "@/components/ui/text-shimmer";
@@ -41,6 +42,9 @@ export function LiveBuildPanel({ onProceedToWorkspace, workspaceDomain }: LiveBu
     confirmPlan,
   } = useAITemplateChatContext();
 
+  const { resolvedTheme } = useTheme();
+  const isLightMode = resolvedTheme === "light";
+
   const [isSaving, setIsSaving] = useState(false);
   const [isProceeding, setIsProceeding] = useState(false);
   const wasStreamingRef = useRef(false);
@@ -74,7 +78,7 @@ export function LiveBuildPanel({ onProceedToWorkspace, workspaceDomain }: LiveBu
   const plasmaIntensity = (isThinking || isAnalyzing) ? 2.0 : 1.0;
 
   return (
-    <div className="h-full flex flex-col overflow-hidden bg-[#1e1e22] relative">
+    <div className="h-full flex flex-col overflow-hidden bg-white dark:bg-[#1e1e22] relative">
       {/* Unified Header */}
       <AnimatePresence mode="wait">
         {showHeader && !showComplete && (
@@ -93,7 +97,7 @@ export function LiveBuildPanel({ onProceedToWorkspace, workspaceDomain }: LiveBu
                     <p className="text-[11px] font-semibold uppercase tracking-widest text-[#7c3aed] mb-1.5">
                       {planResult.category.replace(/_/g, " ")}
                     </p>
-                    <h2 className="text-xl md:text-2xl font-display font-bold text-[#fafafa]">
+                    <h2 className="text-xl md:text-2xl font-display font-bold text-foreground">
                       {planResult.template_name}
                     </h2>
                   </>
@@ -102,18 +106,18 @@ export function LiveBuildPanel({ onProceedToWorkspace, workspaceDomain }: LiveBu
                     <div className="flex items-center gap-3 mb-1.5">
                       {isAnalyzing && <IconSearch className="size-5 text-[#a78bfa]" />}
                       {isStreaming && !isAnalyzing && <IconLoader2 className="size-5 text-[#a78bfa] animate-spin" />}
-                      <h2 className="text-lg md:text-xl font-display font-semibold text-[#fafafa]">
+                      <h2 className="text-lg md:text-xl font-display font-semibold text-foreground">
                         {isThinking ? (
                           <TextShimmer
                             duration={1.8}
-                            className="[--base-color:#a1a1aa] [--base-gradient-color:#fafafa]"
+                            className="[--base-color:#71717a] [--base-gradient-color:#18181b] dark:[--base-color:#a1a1aa] dark:[--base-gradient-color:#fafafa]"
                           >
                             {t("sideSubtitle")}
                           </TextShimmer>
                         ) : isAnalyzing ? (
                           <TextShimmer
                             duration={1.8}
-                            className="[--base-color:#a1a1aa] [--base-gradient-color:#fafafa]"
+                            className="[--base-color:#71717a] [--base-gradient-color:#18181b] dark:[--base-color:#a1a1aa] dark:[--base-gradient-color:#fafafa]"
                           >
                             {t("analyzing")}
                           </TextShimmer>
@@ -123,7 +127,7 @@ export function LiveBuildPanel({ onProceedToWorkspace, workspaceDomain }: LiveBu
                       </h2>
                     </div>
                     {(isAnalyzing || (isStreaming && !isAnalyzing)) && (
-                      <p className="text-[13px] text-[#71717a]">
+                      <p className="text-[13px] text-muted-foreground">
                         {t("sideSubtitle")}
                       </p>
                     )}
@@ -153,23 +157,23 @@ export function LiveBuildPanel({ onProceedToWorkspace, workspaceDomain }: LiveBu
             transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
             className="mx-6 mt-5"
           >
-            <div className="flex items-center justify-between gap-4 rounded-xl border border-white/[0.06] bg-[#27272a]/80 px-4 py-3">
+            <div className="flex items-center justify-between gap-4 rounded-xl border border-neutral-200 dark:border-white/[0.06] bg-neutral-100 dark:bg-[#27272a]/80 px-4 py-3">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2.5 mb-1">
                   <div className="size-5 rounded-full bg-emerald-500/15 flex items-center justify-center flex-shrink-0">
                     <Check className="size-3 text-emerald-400" strokeWidth={3} />
                   </div>
-                  <p className="text-sm font-semibold text-[#fafafa] truncate">
+                  <p className="text-sm font-semibold text-foreground truncate">
                     {currentTemplate.template_name}
                   </p>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-[#71717a] flex-wrap ps-7">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap ps-7">
                   <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#7c3aed]/10 text-[#a78bfa]">
                     {currentTemplate.category}
                   </span>
-                  <span className="text-[#3f3f46]">·</span>
+                  <span className="text-neutral-400 dark:text-[#3f3f46]">·</span>
                   <span>{objectCount} {objectCount === 1 ? "Object" : "Objects"}</span>
-                  <span className="text-[#3f3f46]">·</span>
+                  <span className="text-neutral-400 dark:text-[#3f3f46]">·</span>
                   <span>{relationCount} {relationCount === 1 ? "Relation" : "Relations"}</span>
                 </div>
               </div>
@@ -243,7 +247,7 @@ export function LiveBuildPanel({ onProceedToWorkspace, workspaceDomain }: LiveBu
           <div className="flex items-center justify-center h-full">
             <div className="flex flex-col items-center justify-center">
               <div className="relative size-[280px] mb-5">
-                <PlasmaGlobe speed={plasmaSpeed} intensity={plasmaIntensity} />
+                <PlasmaGlobe speed={plasmaSpeed} intensity={plasmaIntensity} transparent={isLightMode} />
               </div>
 
               <AnimatePresence mode="wait">
@@ -343,7 +347,7 @@ export function LiveBuildPanel({ onProceedToWorkspace, workspaceDomain }: LiveBu
       </div>
 
       {/* Cortex AI — bottom right */}
-      <span className={`${unbounded.className} absolute bottom-4 end-5 text-xs font-normal tracking-wider text-[#fafafa]/30`}>
+      <span className={`${unbounded.className} absolute bottom-4 end-5 text-xs font-normal tracking-wider text-foreground/20 dark:text-[#fafafa]/30`}>
         Cortex <span className="text-[#7c3aed]/50">AI</span>
       </span>
     </div>
@@ -361,7 +365,7 @@ function PlanObjectsGrid({
     || planResult.objects.map((o) => `- **${o.name}** — ${o.description}`).join("\n");
 
   return (
-    <div className="w-full px-2 pb-6 overflow-y-auto max-h-full [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-white/[0.06] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:hover:bg-white/10">
+    <div className="w-full px-2 pb-6 overflow-y-auto max-h-full [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-neutral-300 dark:[&::-webkit-scrollbar-thumb]:bg-white/[0.06] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:hover:bg-neutral-400 dark:[&::-webkit-scrollbar-thumb]:hover:bg-white/10">
       <TypewriterMarkdown content={planText} speed={3} interval={10} size="sm" showCursor={false} />
     </div>
   );

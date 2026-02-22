@@ -137,17 +137,17 @@ export function StreamingPreview({ streamingContent, isRTL = false }: StreamingP
       transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
       className="w-full h-full"
     >
-      <div className="w-full h-full rounded-2xl border border-white/[0.08] bg-[#1a1a1e] overflow-hidden">
+      <div className="w-full h-full rounded-2xl border border-neutral-200 dark:border-white/[0.08] bg-white dark:bg-[#1a1a1e] overflow-hidden">
         <div className="w-full h-full">
           <div className={`flex h-full ${isRTL ? "flex-row-reverse" : "flex-row"}`}>
             {/* ═══ SIDEBAR ═══ */}
             <div
-              className={`w-52 flex-shrink-0 border-white/[0.06] bg-[#141416] flex flex-col overflow-hidden ${
+              className={`w-52 flex-shrink-0 border-neutral-200 dark:border-white/[0.06] bg-neutral-50 dark:bg-[#141416] flex flex-col overflow-hidden ${
                 isRTL ? "border-l" : "border-r"
               }`}
             >
               {/* Logo area */}
-              <div className="px-3 pt-3 pb-2 border-b border-white/[0.06]">
+              <div className="px-3 pt-3 pb-2 border-b border-neutral-200 dark:border-white/[0.06]">
                 <div className="flex items-center gap-2">
                   <div className="size-6 flex items-center justify-center flex-shrink-0">
                     <Image src="/Corteksa.svg" alt="Logo" width={18} height={18} className="w-[18px] h-[18px]" />
@@ -157,38 +157,38 @@ export function StreamingPreview({ streamingContent, isRTL = false }: StreamingP
                       <motion.span
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        className="text-[11px] font-semibold text-white/80 truncate"
+                        className="text-[11px] font-semibold text-foreground truncate"
                       >
                         Corteksa CRM
                       </motion.span>
                     ) : (
-                      <div className="h-3 w-20 rounded bg-white/[0.06] animate-pulse" />
+                      <div className="h-3 w-20 rounded bg-neutral-200 dark:bg-white/[0.06] animate-pulse" />
                     )}
-                    <IconChevronDown className="size-3 text-white/30 flex-shrink-0" />
+                    <IconChevronDown className="size-3 text-muted-foreground flex-shrink-0" />
                   </div>
                 </div>
               </div>
 
               {/* Search bar */}
               <div className="px-3 mt-3 mb-2">
-                <div className="flex items-center gap-2 h-8 px-2.5 rounded-md bg-[#1a1a1e] border border-white/[0.08]">
-                  <IconSearch className="size-3.5 text-[#52525b] flex-shrink-0" />
-                  <span className="text-[11px] text-[#52525b] flex-1">Search</span>
-                  <span className="text-[10px] text-[#52525b] bg-white/[0.06] px-1.5 py-0.5 rounded-sm font-medium text-nowrap">⌘K</span>
+                <div className="flex items-center gap-2 h-8 px-2.5 rounded-md bg-white dark:bg-[#1a1a1e] border border-neutral-200 dark:border-white/[0.08]">
+                  <IconSearch className="size-3.5 text-muted-foreground flex-shrink-0" />
+                  <span className="text-[11px] text-muted-foreground flex-1">Search</span>
+                  <span className="text-[10px] text-muted-foreground bg-neutral-200 dark:bg-white/[0.06] px-1.5 py-0.5 rounded-sm font-medium text-nowrap">⌘K</span>
                 </div>
               </div>
 
               {/* Static nav items */}
               <div className="px-2 space-y-0.5">
-                <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11px] text-[#6a6a6f]">
+                <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11px] text-muted-foreground">
                   <IconHome className="size-3.5 flex-shrink-0" />
                   <span>Home</span>
                 </div>
-                <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11px] text-[#6a6a6f]">
+                <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11px] text-muted-foreground">
                   <IconCheckbox className="size-3.5 flex-shrink-0" />
                   <span>My Tasks</span>
                 </div>
-                <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11px] text-[#6a6a6f]">
+                <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11px] text-muted-foreground">
                   <IconHeadphones className="size-3.5 flex-shrink-0" />
                   <span>Support</span>
                 </div>
@@ -196,8 +196,8 @@ export function StreamingPreview({ streamingContent, isRTL = false }: StreamingP
 
               {/* Units section */}
               <div className="px-3 mt-3">
-                <div className="h-px bg-white/[0.06] mb-2" />
-                <span className="text-[9px] font-semibold uppercase tracking-widest text-[#4a4a4f] px-0.5">Units</span>
+                <div className="h-px bg-neutral-200 dark:bg-white/[0.06] mb-2" />
+                <span className="text-[9px] font-semibold uppercase tracking-widest text-neutral-400 dark:text-[#4a4a4f] px-0.5">Units</span>
               </div>
 
               {/* Object list */}
@@ -217,8 +217,8 @@ export function StreamingPreview({ streamingContent, isRTL = false }: StreamingP
                         isActive
                           ? "bg-[#7c3aed]/10 text-[#a78bfa] font-medium"
                           : isComplete
-                            ? "text-[#6a6a6f]"
-                            : "text-[#4a4a4f]"
+                            ? "text-muted-foreground"
+                            : "text-neutral-400 dark:text-[#4a4a4f]"
                       }`}
                     >
                       <SideIcon className="size-3.5 flex-shrink-0" />
@@ -230,21 +230,21 @@ export function StreamingPreview({ streamingContent, isRTL = false }: StreamingP
               </div>
 
               {/* Bottom icons bar */}
-              <div className="px-3 h-10 border-t border-white/[0.06] flex items-center gap-1">
-                <div className="size-6 rounded-md flex items-center justify-center text-[#4a4a4f]">
+              <div className="px-3 h-10 border-t border-neutral-200 dark:border-white/[0.06] flex items-center gap-1">
+                <div className="size-6 rounded-md flex items-center justify-center text-neutral-400 dark:text-[#4a4a4f]">
                   <IconBell className="size-3.5" />
                 </div>
-                <div className="size-6 rounded-md flex items-center justify-center text-[#4a4a4f]">
+                <div className="size-6 rounded-md flex items-center justify-center text-neutral-400 dark:text-[#4a4a4f]">
                   <IconSettings className="size-3.5" />
                 </div>
-                <div className="size-6 rounded-md flex items-center justify-center text-[#4a4a4f]">
+                <div className="size-6 rounded-md flex items-center justify-center text-neutral-400 dark:text-[#4a4a4f]">
                   <IconFlag className="size-3.5" />
                 </div>
               </div>
             </div>
 
             {/* ═══ MAIN CONTENT ═══ */}
-            <div className="flex-1 min-w-0 flex flex-col overflow-hidden bg-[#141416]">
+            <div className="flex-1 min-w-0 flex flex-col overflow-hidden bg-neutral-50 dark:bg-[#141416]">
               <AnimatePresence mode="wait">
                 {activeObj ? (
                   <motion.div
@@ -256,12 +256,12 @@ export function StreamingPreview({ streamingContent, isRTL = false }: StreamingP
                     className="flex-1 min-w-0 flex flex-col overflow-hidden"
                   >
                     {/* Breadcrumb + user avatar */}
-                    <div className="flex items-center justify-between px-5 pt-3 pb-2 border-b border-white/[0.06]">
-                      <div className="flex items-center gap-1.5 text-[10px] text-[#6a6a6f]">
+                    <div className="flex items-center justify-between px-5 pt-3 pb-2 border-b border-neutral-200 dark:border-white/[0.06]">
+                      <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
                         <IconHome className="size-3" />
                         <span>Home</span>
                         <IconChevronRight className="size-2.5" />
-                        <span className="text-[#a1a1aa]">{activeObj.name}</span>
+                        <span className="text-muted-foreground">{activeObj.name}</span>
                       </div>
                       <div className="size-6 rounded-full bg-[#7c3aed]/30 flex items-center justify-center">
                         <span className="text-[9px] font-semibold text-[#a78bfa]">W</span>
@@ -269,10 +269,10 @@ export function StreamingPreview({ streamingContent, isRTL = false }: StreamingP
                     </div>
 
                     {/* Title row */}
-                    <div className="flex items-center justify-between px-5 pt-3 pb-2 border-b border-white/[0.06]">
+                    <div className="flex items-center justify-between px-5 pt-3 pb-2 border-b border-neutral-200 dark:border-white/[0.06]">
                       <div className="flex items-center gap-2.5">
                         <ObjectHeaderIcon iconName={activeObj.icon} />
-                        <span className="text-sm font-semibold text-white">{activeObj.name}</span>
+                        <span className="text-sm font-semibold text-foreground">{activeObj.name}</span>
                         {fields.length > 0 && (
                           <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#7c3aed]/10 text-[#a78bfa] font-medium">
                             {fields.length} fields
@@ -286,12 +286,12 @@ export function StreamingPreview({ streamingContent, isRTL = false }: StreamingP
                     </div>
 
                     {/* Tabs */}
-                    <div className="flex items-center gap-1 px-5 border-b border-white/[0.06]">
-                      <div className="flex items-center gap-1.5 px-3 py-2 text-[10px] font-medium text-white border-b-2 border-[#7c3aed]">
+                    <div className="flex items-center gap-1 px-5 border-b border-neutral-200 dark:border-white/[0.06]">
+                      <div className="flex items-center gap-1.5 px-3 py-2 text-[10px] font-medium text-foreground border-b-2 border-[#7c3aed]">
                         <IconLayoutGrid className="size-3" />
                         All {activeObj.name}
                       </div>
-                      <div className="flex items-center gap-1 px-3 py-2 text-[10px] text-[#6a6a6f]">
+                      <div className="flex items-center gap-1 px-3 py-2 text-[10px] text-muted-foreground">
                         <IconPlus className="size-2.5" />
                         View
                         <IconChevronDown className="size-2.5" />
@@ -299,8 +299,8 @@ export function StreamingPreview({ streamingContent, isRTL = false }: StreamingP
                     </div>
 
                     {/* Toolbar */}
-                    <div className="flex items-center gap-2 px-5 py-2 border-b border-white/[0.06]">
-                      <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-white/[0.04] text-[9px] text-[#a1a1aa]">
+                    <div className="flex items-center gap-2 px-5 py-2 border-b border-neutral-200 dark:border-white/[0.06]">
+                      <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-neutral-100 dark:bg-white/[0.04] text-[9px] text-muted-foreground">
                         <IconLayoutGrid className="size-3" />
                         <motion.div
                           className="size-1 rounded-full bg-[#7c3aed]"
@@ -309,20 +309,20 @@ export function StreamingPreview({ streamingContent, isRTL = false }: StreamingP
                         />
                         Loading...
                       </div>
-                      <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-white/[0.04] text-[9px] text-[#6a6a6f] flex-1 max-w-[120px]">
+                      <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-neutral-100 dark:bg-white/[0.04] text-[9px] text-muted-foreground flex-1 max-w-[120px]">
                         <IconSearch className="size-3" />
                         Search...
                       </div>
-                      <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-white/[0.04] text-[9px] text-[#6a6a6f]">
+                      <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-neutral-100 dark:bg-white/[0.04] text-[9px] text-muted-foreground">
                         <IconFilter className="size-3" />
                         Filter
                       </div>
                       <div className="flex-1" />
-                      <div className="flex items-center gap-1 px-2 py-1 text-[9px] text-[#6a6a6f]">
+                      <div className="flex items-center gap-1 px-2 py-1 text-[9px] text-muted-foreground">
                         <IconTableImport className="size-3" />
                         Import Data
                       </div>
-                      <div className="flex items-center gap-1 px-2 py-1 text-[9px] text-[#6a6a6f]">
+                      <div className="flex items-center gap-1 px-2 py-1 text-[9px] text-muted-foreground">
                         <IconAdjustments className="size-3" />
                         Manage Fields
                       </div>
@@ -334,9 +334,9 @@ export function StreamingPreview({ streamingContent, isRTL = false }: StreamingP
                       <div className="absolute inset-0 overflow-auto">
                         {/* Table header */}
                         {fields.length > 0 && (
-                          <div className="flex items-center bg-[#141416] border-b border-white/[0.06] sticky top-0 z-10 min-w-max">
+                          <div className="flex items-center bg-neutral-50 dark:bg-[#141416] border-b border-neutral-200 dark:border-white/[0.06] sticky top-0 z-10 min-w-max">
                             <div className="w-8 flex-shrink-0 flex items-center justify-center py-2">
-                              <div className="size-3 rounded border border-white/[0.15]" />
+                              <div className="size-3 rounded border border-neutral-300 dark:border-white/[0.15]" />
                             </div>
                             {fields.map((f, fi) => (
                               <motion.div
@@ -347,14 +347,14 @@ export function StreamingPreview({ streamingContent, isRTL = false }: StreamingP
                                 className="w-[120px] flex-shrink-0 px-3 py-2"
                               >
                                 <div className="flex items-center gap-1">
-                                  <span className="text-[9px] font-semibold text-[#6a6a6f] uppercase tracking-wider truncate">
+                                  <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider truncate">
                                     {f.name}
                                   </span>
-                                  <IconArrowsSort className="size-2.5 text-[#3a3a3f] flex-shrink-0" />
+                                  <IconArrowsSort className="size-2.5 text-neutral-300 dark:text-[#3a3a3f] flex-shrink-0" />
                                 </div>
                               </motion.div>
                             ))}
-                            <div className="w-14 flex-shrink-0 px-2 py-2 text-[9px] font-semibold text-[#6a6a6f] uppercase tracking-wider">
+                            <div className="w-14 flex-shrink-0 px-2 py-2 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">
                               Actions
                             </div>
                           </div>
@@ -369,10 +369,10 @@ export function StreamingPreview({ streamingContent, isRTL = false }: StreamingP
                                   initial={{ opacity: 0, y: 3 }}
                                   animate={{ opacity: 1, y: 0 }}
                                   transition={{ duration: 0.35, delay: ri * 0.08 }}
-                                  className="flex items-center border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors min-w-max"
+                                  className="flex items-center border-b border-neutral-100 dark:border-white/[0.03] hover:bg-neutral-50 dark:hover:bg-white/[0.02] transition-colors min-w-max"
                                 >
                                   <div className="w-8 flex-shrink-0 flex items-center justify-center py-2">
-                                    <div className="size-3 rounded border border-white/[0.1]" />
+                                    <div className="size-3 rounded border border-neutral-200 dark:border-white/[0.1]" />
                                   </div>
                                   {fields.map((f, ci) => {
                                     const val = String((row as Record<string, unknown>)[f.name] ?? "\u2014");
@@ -383,7 +383,7 @@ export function StreamingPreview({ streamingContent, isRTL = false }: StreamingP
                                     );
                                   })}
                                   <div className="w-14 flex-shrink-0 flex items-center justify-center py-2">
-                                    <IconDotsVertical className="size-3.5 text-[#4a4a4f]" />
+                                    <IconDotsVertical className="size-3.5 text-neutral-400 dark:text-[#4a4a4f]" />
                                   </div>
                                 </motion.div>
                               ))
@@ -393,15 +393,15 @@ export function StreamingPreview({ streamingContent, isRTL = false }: StreamingP
                                   initial={{ opacity: 0 }}
                                   animate={{ opacity: 1 }}
                                   transition={{ duration: 0.3, delay: ri * 0.1 }}
-                                  className="flex items-center border-b border-white/[0.06] min-w-max"
+                                  className="flex items-center border-b border-neutral-200 dark:border-white/[0.06] min-w-max"
                                 >
                                   <div className="w-8 flex-shrink-0 flex items-center justify-center py-2.5">
-                                    <div className="size-3 rounded border border-white/[0.15]" />
+                                    <div className="size-3 rounded border border-neutral-300 dark:border-white/[0.15]" />
                                   </div>
                                   {fields.map((_, ci) => (
                                     <div key={ci} className="w-[120px] flex-shrink-0 px-3 py-2.5">
                                       <div
-                                        className="h-3 rounded bg-white/[0.12] animate-pulse"
+                                        className="h-3 rounded bg-neutral-200 dark:bg-white/[0.12] animate-pulse"
                                         style={{ width: `${50 + ((ri * 17 + ci * 31) % 40)}%` }}
                                       />
                                     </div>
@@ -420,7 +420,7 @@ export function StreamingPreview({ streamingContent, isRTL = false }: StreamingP
                                 animate={{ opacity: [0.3, 1, 0.3] }}
                                 transition={{ duration: 1.2, repeat: Infinity }}
                               />
-                              <span className="text-xs text-[#6a6a6f]">Loading fields...</span>
+                              <span className="text-xs text-muted-foreground">Loading fields...</span>
                             </div>
                           </div>
                         )}
@@ -428,15 +428,15 @@ export function StreamingPreview({ streamingContent, isRTL = false }: StreamingP
                       </div>
 
                       {/* Pagination footer — loading state */}
-                      <div className="flex items-center justify-between px-4 h-10 border-t border-white/[0.06] bg-[#141416]">
-                        <div className="flex items-center gap-2 text-[9px] text-[#6a6a6f]">
+                      <div className="flex items-center justify-between px-4 h-10 border-t border-neutral-200 dark:border-white/[0.06] bg-neutral-50 dark:bg-[#141416]">
+                        <div className="flex items-center gap-2 text-[9px] text-muted-foreground">
                           <span>Rows per page</span>
-                          <div className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-white/[0.04] border border-white/[0.06]">
-                            <span className="text-[#a1a1aa]">13</span>
+                          <div className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-white/[0.04] border border-neutral-200 dark:border-white/[0.06]">
+                            <span className="text-muted-foreground">13</span>
                             <IconChevronDown className="size-2.5" />
                           </div>
                         </div>
-                        <div className="flex items-center gap-2 text-[9px] text-[#6a6a6f]">
+                        <div className="flex items-center gap-2 text-[9px] text-muted-foreground">
                           <motion.div
                             className="size-1 rounded-full bg-[#7c3aed]"
                             animate={{ opacity: [0.3, 1, 0.3] }}
@@ -478,12 +478,12 @@ export function StreamingPreview({ streamingContent, isRTL = false }: StreamingP
 // ── Smart cell renderer ──
 function CellRenderer({ value, type }: { value: string; type: FieldType }) {
   if (value === "\u2014" || value === "—" || !value) {
-    return <span className="text-[10px] text-[#3a3a3f]">—</span>;
+    return <span className="text-[10px] text-neutral-300 dark:text-[#3a3a3f]">—</span>;
   }
 
   switch (type) {
     case "name":
-      return <span className="text-[10px] font-medium text-white truncate block">{value}</span>;
+      return <span className="text-[10px] font-medium text-foreground truncate block">{value}</span>;
 
     case "status": {
       const sc = getStatusColor(value);
@@ -503,14 +503,14 @@ function CellRenderer({ value, type }: { value: string; type: FieldType }) {
           <div className={`size-5 rounded-full ${color} flex items-center justify-center flex-shrink-0`}>
             <span className="text-[8px] font-bold text-white">{initials}</span>
           </div>
-          <span className="text-[10px] text-[#c0c0c5] truncate">{value}</span>
+          <span className="text-[10px] text-foreground/80 dark:text-[#c0c0c5] truncate">{value}</span>
         </div>
       );
     }
 
     case "risk": {
       const rc = getRiskColor(value);
-      if (!rc) return <span className="text-[10px] text-[#3a3a3f]">—</span>;
+      if (!rc) return <span className="text-[10px] text-neutral-300 dark:text-[#3a3a3f]">—</span>;
       return (
         <div className="flex items-center gap-1">
           <IconFlag className={`size-3 ${rc.icon}`} />
@@ -520,7 +520,7 @@ function CellRenderer({ value, type }: { value: string; type: FieldType }) {
     }
 
     default:
-      return <span className="text-[10px] text-[#c0c0c5] truncate block">{value}</span>;
+      return <span className="text-[10px] text-foreground/80 dark:text-[#c0c0c5] truncate block">{value}</span>;
   }
 }
 
@@ -533,28 +533,28 @@ function StreamingSkeleton({ isRTL }: { isRTL: boolean }) {
       transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
       className="w-full h-full"
     >
-      <div className="w-full h-full rounded-2xl border border-white/[0.08] bg-[#1a1a1e] overflow-hidden">
+      <div className="w-full h-full rounded-2xl border border-neutral-200 dark:border-white/[0.08] bg-white dark:bg-[#1a1a1e] overflow-hidden">
         <div className="w-full h-full">
           <div className={`flex h-full ${isRTL ? "flex-row-reverse" : "flex-row"}`}>
             {/* Sidebar skeleton */}
             <div
-              className={`w-52 flex-shrink-0 border-white/[0.06] bg-[#141416] p-3 space-y-2 ${
+              className={`w-52 flex-shrink-0 border-neutral-200 dark:border-white/[0.06] bg-neutral-50 dark:bg-[#141416] p-3 space-y-2 ${
                 isRTL ? "border-l" : "border-r"
               }`}
             >
               {/* Logo skeleton */}
               <div className="flex items-center gap-2">
-                <div className="size-6 rounded-lg bg-white/[0.06] animate-pulse" />
-                <div className="h-3 w-20 rounded bg-white/[0.06] animate-pulse" />
+                <div className="size-6 rounded-lg bg-neutral-200 dark:bg-white/[0.06] animate-pulse" />
+                <div className="h-3 w-20 rounded bg-neutral-200 dark:bg-white/[0.06] animate-pulse" />
               </div>
               {/* Search skeleton */}
-              <div className="h-7 rounded-lg bg-white/[0.04] animate-pulse" />
-              <div className="h-px bg-white/[0.06] my-2" />
+              <div className="h-7 rounded-lg bg-neutral-100 dark:bg-white/[0.04] animate-pulse" />
+              <div className="h-px bg-neutral-200 dark:bg-white/[0.06] my-2" />
               {/* Nav items skeleton */}
               {[1, 2, 3].map((i) => (
                 <div key={i} className="flex items-center gap-2 px-2.5 py-1.5">
-                  <div className="size-3.5 rounded bg-white/[0.06] animate-pulse" />
-                  <div className="h-3 rounded bg-white/[0.06] animate-pulse" style={{ width: `${40 + i * 15}%` }} />
+                  <div className="size-3.5 rounded bg-neutral-200 dark:bg-white/[0.06] animate-pulse" />
+                  <div className="h-3 rounded bg-neutral-200 dark:bg-white/[0.06] animate-pulse" style={{ width: `${40 + i * 15}%` }} />
                 </div>
               ))}
             </div>
@@ -570,7 +570,7 @@ function StreamingSkeleton({ isRTL }: { isRTL: boolean }) {
                     transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.15 }}
                   />
                 ))}
-                <span className="text-xs text-[#6a6a6f] ms-1">Analyzing...</span>
+                <span className="text-xs text-muted-foreground ms-1">Analyzing...</span>
               </div>
             </div>
           </div>

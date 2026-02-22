@@ -72,14 +72,14 @@ export function TypewriterMarkdown({
         components={{
           h3: ({ children }) => (
             <div className={`${sectionMt} ${sectionMb} first:mt-0`}>
-              <div className={`h-px bg-white/[0.06] ${dividerMb}`} />
+              <div className={`h-px bg-neutral-200 dark:bg-white/[0.06] ${dividerMb}`} />
               <span className={`${headingSize} font-semibold uppercase tracking-widest text-[#7c3aed]`}>
                 {children}
               </span>
             </div>
           ),
           p: ({ children }) => (
-            <p className={`${textSize} text-[#9a9a9f] ${mbSize} ${leadingSize}`}>
+            <p className={`${textSize} text-muted-foreground ${mbSize} ${leadingSize}`}>
               {children}
             </p>
           ),
@@ -89,16 +89,16 @@ export function TypewriterMarkdown({
             </ul>
           ),
           li: ({ children }) => (
-            <li className={`flex items-start ${gapSize} ${textSize} text-[#b0b0b5] ${leadingSize}`}>
+            <li className={`flex items-start ${gapSize} ${textSize} text-muted-foreground ${leadingSize}`}>
               <span className={`${bulletMt} flex-shrink-0 size-[5px] rounded-full bg-[#7c3aed]/40`} />
               <span>{children}</span>
             </li>
           ),
           strong: ({ children }) => (
-            <strong className="font-medium text-[#e0e0e5]">{children}</strong>
+            <strong className="font-medium text-foreground">{children}</strong>
           ),
           em: ({ children }) => (
-            <em className="text-[#8a8a8f] not-italic">{children}</em>
+            <em className="text-muted-foreground not-italic">{children}</em>
           ),
         }}
       >

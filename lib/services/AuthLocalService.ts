@@ -4,10 +4,18 @@ import Cookies from "js-cookie";
 import { AUTH, AUTH_TOKEN, REFRESH_TOKEN, WORKSPACE_SUBDOMAIN } from "./LocalKeys";
 import { LoginResponse } from "@/lib/types/authTypes";
 
+// Consistent cookie options for auth tokens
+const AUTH_COOKIE_OPTIONS: Cookies.CookieAttributes = {
+  path: "/",
+  expires: 30,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "lax",
+};
+
 export const handleLogin = (response: LoginResponse) => {
-  Cookies.set(AUTH_TOKEN, response.token);
+  Cookies.set(AUTH_TOKEN, response.token, AUTH_COOKIE_OPTIONS);
   if (response.refresh_token) {
-    Cookies.set(REFRESH_TOKEN, response.refresh_token);
+    Cookies.set(REFRESH_TOKEN, response.refresh_token, AUTH_COOKIE_OPTIONS);
   }
   if (response.user) {
     localStorage.setItem(AUTH, JSON.stringify(response.user));
@@ -19,8 +27,8 @@ export const getToken = () => {
 };
 
 export const handleOtpLogin = (token: string) => {
-  Cookies.set(AUTH_TOKEN, token);
-  Cookies.set("isOtp", "true");
+  Cookies.set(AUTH_TOKEN, token, AUTH_COOKIE_OPTIONS);
+  Cookies.set("isOtp", "true", { path: "/" });
 };
 
 export const getUser = (): LoginResponse | null => {
@@ -36,14 +44,14 @@ export const getRefreshToken = () => {
 };
 
 export const handleLogout = () => {
-  Cookies.remove(AUTH_TOKEN);
-  Cookies.remove(REFRESH_TOKEN);
+  Cookies.remove(AUTH_TOKEN, { path: "/" });
+  Cookies.remove(REFRESH_TOKEN, { path: "/" });
   localStorage.removeItem(AUTH);
 };
 
 export const handleLogoutOtp = () => {
-  Cookies.remove(AUTH_TOKEN);
-  Cookies.remove("isOtp");
+  Cookies.remove(AUTH_TOKEN, { path: "/" });
+  Cookies.remove("isOtp", { path: "/" });
   sessionStorage.removeItem("verifyRegister");
   sessionStorage.removeItem("verifyForLogin");
   sessionStorage.removeItem("verifyForForgotPassword");

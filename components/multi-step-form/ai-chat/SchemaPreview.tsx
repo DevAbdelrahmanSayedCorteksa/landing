@@ -43,14 +43,14 @@ export function SchemaPreview({ template }: SchemaPreviewProps) {
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <h4 className="font-semibold text-sm text-white">
+            <h4 className="font-semibold text-sm text-foreground">
               {template.template_name}
             </h4>
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#1e1e22] text-[#a0a0a5] border border-white/[0.08]">
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-[#1e1e22] text-muted-foreground border border-neutral-200 dark:border-white/[0.08]">
               {template.category}
             </span>
           </div>
-          <div className="flex items-center gap-4 text-xs text-[#6a6a6f]">
+          <div className="flex items-center gap-4 text-xs text-muted-foreground">
             <span className="flex items-center gap-1">
               <IconDatabase className="size-3.5" />
               {objectCount} {objectCount === 1 ? "Object" : "Objects"}
@@ -75,14 +75,14 @@ export function SchemaPreview({ template }: SchemaPreviewProps) {
             onClick={() => setIsExpanded(!isExpanded)}
             className={cn(
               "size-6 rounded-md flex items-center justify-center transition-colors",
-              "hover:bg-white/5"
+              "hover:bg-neutral-100 dark:hover:bg-white/5"
             )}
           >
             <motion.div
               animate={{ rotate: isExpanded ? 180 : 0 }}
               transition={{ duration: 0.2 }}
             >
-              <IconChevronDown className="size-4 text-[#6a6a6f]" />
+              <IconChevronDown className="size-4 text-muted-foreground" />
             </motion.div>
           </button>
         )}
@@ -107,14 +107,14 @@ export function SchemaPreview({ template }: SchemaPreviewProps) {
                   return (
                     <div
                       key={index}
-                      className="rounded-md bg-[#0f0f0f]/60 p-3 text-xs"
+                      className="rounded-md bg-neutral-100/80 dark:bg-[#0f0f0f]/60 p-3 text-xs"
                     >
-                      <div className="flex items-center gap-2 font-semibold text-white mb-1">
+                      <div className="flex items-center gap-2 font-semibold text-foreground mb-1">
                         <ObjIcon className="size-3.5 text-[#7c3aed] flex-shrink-0" />
                         {obj.name || obj.object_name || `Object ${index + 1}`}
                       </div>
                       {obj.fields && obj.fields.length > 0 && (
-                        <div className="text-[#6a6a6f] ps-5.5">
+                        <div className="text-muted-foreground ps-5.5">
                           {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                           {obj.fields.slice(0, 3).map((field: any, idx: number) => (
                             <span key={idx}>
@@ -171,11 +171,11 @@ export function SchemaPreview({ template }: SchemaPreviewProps) {
           >
             <div className="mt-3 space-y-3">
               {Object.entries(sampleData!).map(([objectName, records]) => (
-                <div key={objectName} className="rounded-md bg-[#0f0f0f]/60 p-3">
-                  <div className="text-xs font-semibold text-white mb-2 flex items-center gap-2">
+                <div key={objectName} className="rounded-md bg-neutral-100/80 dark:bg-[#0f0f0f]/60 p-3">
+                  <div className="text-xs font-semibold text-foreground mb-2 flex items-center gap-2">
                     <IconDatabase className="size-3.5 text-[#7c3aed]" />
                     {objectName}
-                    <span className="text-[10px] font-normal px-1.5 py-0.5 rounded border border-white/[0.06] text-[#6a6a6f]">
+                    <span className="text-[10px] font-normal px-1.5 py-0.5 rounded border border-neutral-200 dark:border-white/[0.06] text-muted-foreground">
                       {records.length} {records.length === 1 ? "record" : "records"}
                     </span>
                   </div>
@@ -183,13 +183,13 @@ export function SchemaPreview({ template }: SchemaPreviewProps) {
                     {records.slice(0, 2).map((record, idx) => (
                       <div
                         key={idx}
-                        className="rounded border border-white/[0.06] bg-[#0f0f0f]/50 p-2 text-[10px]"
+                        className="rounded border border-neutral-200 dark:border-white/[0.06] bg-neutral-50 dark:bg-[#0f0f0f]/50 p-2 text-[10px]"
                       >
                         <div className="grid grid-cols-2 gap-x-3 gap-y-1">
                           {Object.entries(record).slice(0, 4).map(([key, value]) => (
                             <div key={key} className="truncate">
-                              <span className="text-[#6a6a6f]">{key}:</span>{" "}
-                              <span className="text-white font-medium">
+                              <span className="text-muted-foreground">{key}:</span>{" "}
+                              <span className="text-foreground font-medium">
                                 {String(value)}
                               </span>
                             </div>
@@ -203,7 +203,7 @@ export function SchemaPreview({ template }: SchemaPreviewProps) {
                       </div>
                     ))}
                     {records.length > 2 && (
-                      <div className="text-[10px] text-[#6a6a6f] text-center">
+                      <div className="text-[10px] text-muted-foreground text-center">
                         +{records.length - 2} more {records.length - 2 === 1 ? "record" : "records"}
                       </div>
                     )}

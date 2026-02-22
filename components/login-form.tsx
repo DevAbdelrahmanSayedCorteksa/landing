@@ -44,6 +44,9 @@ export function LoginForm() {
         sileo.success({ title: t("loginSuccess"), description: t("loginSuccessDesc") });
         const loginData = res.data;
 
+        // Always save tokens & user data to cookies/localStorage first
+        handleLogin(loginData);
+
         // System admin - always redirect to CRM (no subdomain needed)
         if (loginData.isSystemAdmin) {
           const ssoUrl = buildSSORedirectUrl(
@@ -69,7 +72,6 @@ export function LoginForm() {
         }
         // No workspaces and not admin - redirect to multi-step form
         else {
-          handleLogin(loginData);
           router.push("/multi-step-form");
         }
       } else if (res.status === ACCEPTED) {

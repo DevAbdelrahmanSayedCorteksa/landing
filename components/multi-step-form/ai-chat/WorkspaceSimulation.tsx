@@ -244,43 +244,43 @@ export function WorkspaceSimulation({ template, isRTL = false, onComplete, skipA
           <div className={`flex h-full ${isRTL ? "flex-row-reverse" : "flex-row"}`}>
             {/* ═══ SIDEBAR ═══ */}
             <div
-              className={`w-52 flex-shrink-0 border-white/[0.06] bg-[#141416] flex flex-col overflow-hidden ${
+              className={`w-52 flex-shrink-0 border-neutral-200 dark:border-white/[0.06] bg-neutral-50 dark:bg-[#141416] flex flex-col overflow-hidden ${
                 isRTL ? "border-l" : "border-r"
               }`}
             >
               {/* Logo area */}
-              <div className="px-3 pt-3 pb-2 border-b border-white/[0.06]">
+              <div className="px-3 pt-3 pb-2 border-b border-neutral-200 dark:border-white/[0.06]">
                 <div className="flex items-center gap-2">
                   <div className="size-6 flex items-center justify-center flex-shrink-0">
                     <Image src="/Corteksa.svg" alt="Logo" width={18} height={18} className="w-[18px] h-[18px]" />
                   </div>
                   <div className="flex items-center gap-1 min-w-0">
-                    <span className="text-[11px] font-semibold text-white/80 truncate">Corteksa CRM</span>
-                    <IconChevronDown className="size-3 text-white/30 flex-shrink-0" />
+                    <span className="text-[11px] font-semibold text-foreground truncate">Corteksa CRM</span>
+                    <IconChevronDown className="size-3 text-muted-foreground flex-shrink-0" />
                   </div>
                 </div>
               </div>
 
               {/* Search bar */}
               <div className="px-3 mt-3 mb-2">
-                <div className="flex items-center gap-2 h-8 px-2.5 rounded-md bg-[#1a1a1e] border border-white/[0.08]">
-                  <IconSearch className="size-3.5 text-[#52525b] flex-shrink-0" />
-                  <span className="text-[11px] text-[#52525b] flex-1">Search</span>
-                  <span className="text-[10px] text-[#52525b] bg-white/[0.06] px-1.5 py-0.5 rounded-sm font-medium text-nowrap">⌘K</span>
+                <div className="flex items-center gap-2 h-8 px-2.5 rounded-md bg-white dark:bg-[#1a1a1e] border border-neutral-200 dark:border-white/[0.08]">
+                  <IconSearch className="size-3.5 text-muted-foreground flex-shrink-0" />
+                  <span className="text-[11px] text-muted-foreground flex-1">Search</span>
+                  <span className="text-[10px] text-muted-foreground bg-neutral-200 dark:bg-white/[0.06] px-1.5 py-0.5 rounded-sm font-medium text-nowrap">⌘K</span>
                 </div>
               </div>
 
               {/* Static nav items */}
               <div className="px-2 space-y-0.5">
-                <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11px] text-[#6a6a6f]">
+                <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11px] text-muted-foreground">
                   <IconHome className="size-3.5 flex-shrink-0" />
                   <span>Home</span>
                 </div>
-                <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11px] text-[#6a6a6f]">
+                <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11px] text-muted-foreground">
                   <IconCheckbox className="size-3.5 flex-shrink-0" />
                   <span>My Tasks</span>
                 </div>
-                <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11px] text-[#6a6a6f]">
+                <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11px] text-muted-foreground">
                   <IconHeadphones className="size-3.5 flex-shrink-0" />
                   <span>Support</span>
                 </div>
@@ -288,8 +288,8 @@ export function WorkspaceSimulation({ template, isRTL = false, onComplete, skipA
 
               {/* Units section */}
               <div className="px-3 mt-3">
-                <div className="h-px bg-white/[0.06] mb-2" />
-                <span className="text-[9px] font-semibold uppercase tracking-widest text-[#4a4a4f] px-0.5">Units</span>
+                <div className="h-px bg-neutral-200 dark:bg-white/[0.06] mb-2" />
+                <span className="text-[9px] font-semibold uppercase tracking-widest text-neutral-400 dark:text-[#4a4a4f] px-0.5">Units</span>
               </div>
 
               {/* Object list */}
@@ -311,8 +311,8 @@ export function WorkspaceSimulation({ template, isRTL = false, onComplete, skipA
                         isActive
                           ? "bg-[#7c3aed]/10 text-[#a78bfa] font-medium"
                           : done
-                            ? "text-[#6a6a6f] hover:bg-white/[0.04] hover:text-white cursor-pointer"
-                            : "text-[#4a4a4f]"
+                            ? "text-muted-foreground hover:bg-neutral-100 dark:hover:bg-white/[0.04] hover:text-foreground cursor-pointer"
+                            : "text-neutral-400 dark:text-[#4a4a4f]"
                       }`}
                     >
                       <SideIcon className="size-3.5 flex-shrink-0" />
@@ -324,33 +324,33 @@ export function WorkspaceSimulation({ template, isRTL = false, onComplete, skipA
               </div>
 
               {/* Bottom icons bar */}
-              <div className="px-3 h-10 border-t border-white/[0.06] flex items-center gap-1">
-                <div className="size-6 rounded-md flex items-center justify-center text-[#4a4a4f] hover:text-[#6a6a6f]">
+              <div className="px-3 h-10 border-t border-neutral-200 dark:border-white/[0.06] flex items-center gap-1">
+                <div className="size-6 rounded-md flex items-center justify-center text-neutral-400 dark:text-[#4a4a4f] hover:text-muted-foreground">
                   <IconBell className="size-3.5" />
                 </div>
-                <div className="size-6 rounded-md flex items-center justify-center text-[#4a4a4f] hover:text-[#6a6a6f]">
+                <div className="size-6 rounded-md flex items-center justify-center text-neutral-400 dark:text-[#4a4a4f] hover:text-muted-foreground">
                   <IconSettings className="size-3.5" />
                 </div>
-                <div className="size-6 rounded-md flex items-center justify-center text-[#4a4a4f] hover:text-[#6a6a6f]">
+                <div className="size-6 rounded-md flex items-center justify-center text-neutral-400 dark:text-[#4a4a4f] hover:text-muted-foreground">
                   <IconFlag className="size-3.5" />
                 </div>
               </div>
             </div>
 
             {/* ═══ MAIN CONTENT ═══ */}
-            <div className="flex-1 min-w-0 flex flex-col overflow-hidden bg-[#141416]">
+            <div className="flex-1 min-w-0 flex flex-col overflow-hidden bg-neutral-50 dark:bg-[#141416]">
               {obj && (
                   <div
                     key={showIdx}
                     className="flex-1 min-w-0 flex flex-col overflow-hidden"
                   >
                     {/* Breadcrumb + user avatar */}
-                    <div className="flex items-center justify-between px-5 pt-3 pb-2 border-b border-white/[0.06]">
-                      <div className="flex items-center gap-1.5 text-[10px] text-[#6a6a6f]">
+                    <div className="flex items-center justify-between px-5 pt-3 pb-2 border-b border-neutral-200 dark:border-white/[0.06]">
+                      <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
                         <IconHome className="size-3" />
                         <span>Home</span>
                         <IconChevronRight className="size-2.5" />
-                        <span className="text-[#a1a1aa]">{obj.name}</span>
+                        <span className="text-muted-foreground">{obj.name}</span>
                       </div>
                       <div className="size-6 rounded-full bg-[#7c3aed]/30 flex items-center justify-center">
                         <span className="text-[9px] font-semibold text-[#a78bfa]">W</span>
@@ -358,14 +358,14 @@ export function WorkspaceSimulation({ template, isRTL = false, onComplete, skipA
                     </div>
 
                     {/* Title row */}
-                    <div className="flex items-center justify-between px-5 pt-3 pb-2 border-b border-white/[0.06]">
+                    <div className="flex items-center justify-between px-5 pt-3 pb-2 border-b border-neutral-200 dark:border-white/[0.06]">
                       <div className="flex items-center gap-2.5">
                         <ObjectHeaderIcon iconName={obj.icon} />
                         <div className="min-w-0">
                           {isBuilt && !isBuilding ? (
-                            <span className="text-sm font-semibold text-white">{obj.name}</span>
+                            <span className="text-sm font-semibold text-foreground">{obj.name}</span>
                           ) : (
-                            <Typer text={obj.name} className="text-sm font-semibold text-white" speed={50} delay={100} />
+                            <Typer text={obj.name} className="text-sm font-semibold text-foreground" speed={50} delay={100} />
                           )}
                         </div>
                       </div>
@@ -381,12 +381,12 @@ export function WorkspaceSimulation({ template, isRTL = false, onComplete, skipA
                     </div>
 
                     {/* Tabs */}
-                    <div className="flex items-center gap-1 px-5 border-b border-white/[0.06]">
-                      <div className="flex items-center gap-1.5 px-3 py-2 text-[10px] font-medium text-white border-b-2 border-[#7c3aed]">
+                    <div className="flex items-center gap-1 px-5 border-b border-neutral-200 dark:border-white/[0.06]">
+                      <div className="flex items-center gap-1.5 px-3 py-2 text-[10px] font-medium text-foreground border-b-2 border-[#7c3aed]">
                         <IconLayoutGrid className="size-3" />
                         All {obj.name}
                       </div>
-                      <div className="flex items-center gap-1 px-3 py-2 text-[10px] text-[#6a6a6f]">
+                      <div className="flex items-center gap-1 px-3 py-2 text-[10px] text-muted-foreground">
                         <IconPlus className="size-2.5" />
                         View
                         <IconChevronDown className="size-2.5" />
@@ -394,25 +394,25 @@ export function WorkspaceSimulation({ template, isRTL = false, onComplete, skipA
                     </div>
 
                     {/* Toolbar */}
-                    <div className="flex items-center gap-2 px-5 py-2 border-b border-white/[0.06]">
-                      <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-white/[0.04] text-[9px] text-[#a1a1aa]">
+                    <div className="flex items-center gap-2 px-5 py-2 border-b border-neutral-200 dark:border-white/[0.06]">
+                      <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-neutral-100 dark:bg-white/[0.04] text-[9px] text-muted-foreground">
                         <IconLayoutGrid className="size-3" />
                         {isBuilt ? totalRecords : "..."} records
                       </div>
-                      <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-white/[0.04] text-[9px] text-[#6a6a6f] flex-1 max-w-[120px]">
+                      <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-neutral-100 dark:bg-white/[0.04] text-[9px] text-muted-foreground flex-1 max-w-[120px]">
                         <IconSearch className="size-3" />
                         Search...
                       </div>
-                      <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-white/[0.04] text-[9px] text-[#6a6a6f]">
+                      <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-neutral-100 dark:bg-white/[0.04] text-[9px] text-muted-foreground">
                         <IconFilter className="size-3" />
                         Filter
                       </div>
                       <div className="flex-1" />
-                      <div className="flex items-center gap-1 px-2 py-1 rounded-md text-[9px] text-[#6a6a6f]">
+                      <div className="flex items-center gap-1 px-2 py-1 rounded-md text-[9px] text-muted-foreground">
                         <IconTableImport className="size-3" />
                         Import Data
                       </div>
-                      <div className="flex items-center gap-1 px-2 py-1 rounded-md text-[9px] text-[#6a6a6f]">
+                      <div className="flex items-center gap-1 px-2 py-1 rounded-md text-[9px] text-muted-foreground">
                         <IconAdjustments className="size-3" />
                         Manage Fields
                       </div>
@@ -423,10 +423,10 @@ export function WorkspaceSimulation({ template, isRTL = false, onComplete, skipA
                       <div className="relative flex-1">
                       <div className="absolute inset-0 overflow-auto">
                         {/* Table header */}
-                        <div className="flex items-center bg-[#141416] border-b border-white/[0.06] sticky top-0 z-10 min-w-max">
+                        <div className="flex items-center bg-neutral-50 dark:bg-[#141416] border-b border-neutral-200 dark:border-white/[0.06] sticky top-0 z-10 min-w-max">
                           {/* Checkbox col */}
                           <div className="w-8 flex-shrink-0 flex items-center justify-center py-2">
-                            <div className="size-3 rounded border border-white/[0.15]" />
+                            <div className="size-3 rounded border border-neutral-300 dark:border-white/[0.15]" />
                           </div>
 
                           {obj.fields.map((f, fi) => {
@@ -443,25 +443,25 @@ export function WorkspaceSimulation({ template, isRTL = false, onComplete, skipA
                               >
                                 <div className="flex items-center gap-1">
                                   {isBuilt && !isBuilding ? (
-                                    <span className="text-[9px] font-semibold text-[#6a6a6f] uppercase tracking-wider truncate">
+                                    <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider truncate">
                                       {f.name}
                                     </span>
                                   ) : (
                                     <Typer
                                       text={f.name}
-                                      className="text-[9px] font-semibold text-[#6a6a6f] uppercase tracking-wider truncate"
+                                      className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider truncate"
                                       speed={35}
                                       delay={0}
                                     />
                                   )}
-                                  <IconArrowsSort className="size-2.5 text-[#3a3a3f] flex-shrink-0" />
+                                  <IconArrowsSort className="size-2.5 text-neutral-300 dark:text-[#3a3a3f] flex-shrink-0" />
                                 </div>
                               </motion.div>
                             );
                           })}
 
                           {/* Actions col */}
-                          <div className="w-14 flex-shrink-0 px-2 py-2 text-[9px] font-semibold text-[#6a6a6f] uppercase tracking-wider">
+                          <div className="w-14 flex-shrink-0 px-2 py-2 text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">
                             Actions
                           </div>
                         </div>
@@ -478,11 +478,11 @@ export function WorkspaceSimulation({ template, isRTL = false, onComplete, skipA
                                 initial={{ opacity: 0, y: 3 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.35 }}
-                                className="flex items-center border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors min-w-max"
+                                className="flex items-center border-b border-neutral-100 dark:border-white/[0.03] hover:bg-neutral-50 dark:hover:bg-white/[0.02] transition-colors min-w-max"
                               >
                                 {/* Checkbox */}
                                 <div className="w-8 flex-shrink-0 flex items-center justify-center py-2">
-                                  <div className="size-3 rounded border border-white/[0.1]" />
+                                  <div className="size-3 rounded border border-neutral-200 dark:border-white/[0.1]" />
                                 </div>
 
                                 {obj.fields.map((f, ci) => {
@@ -495,7 +495,7 @@ export function WorkspaceSimulation({ template, isRTL = false, onComplete, skipA
                                         isBuilt && !isBuilding ? (
                                           <CellRenderer value={val} type={f.type} />
                                         ) : (
-                                          <Typer text={val} className="text-[10px] text-[#c0c0c5] truncate block" speed={25} delay={0} />
+                                          <Typer text={val} className="text-[10px] text-foreground/80 dark:text-[#c0c0c5] truncate block" speed={25} delay={0} />
                                         )
                                       ) : (
                                         <div className="h-4" />
@@ -506,7 +506,7 @@ export function WorkspaceSimulation({ template, isRTL = false, onComplete, skipA
 
                                 {/* Actions */}
                                 <div className="w-14 flex-shrink-0 flex items-center justify-center py-2">
-                                  <IconDotsVertical className="size-3.5 text-[#4a4a4f]" />
+                                  <IconDotsVertical className="size-3.5 text-neutral-400 dark:text-[#4a4a4f]" />
                                 </div>
                               </motion.div>
                             );
@@ -523,15 +523,15 @@ export function WorkspaceSimulation({ template, isRTL = false, onComplete, skipA
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 0.5 }}
                                 transition={{ duration: 0.3 }}
-                                className="flex items-center border-b border-white/[0.03] min-w-max"
+                                className="flex items-center border-b border-neutral-100 dark:border-white/[0.03] min-w-max"
                               >
                                 <div className="w-8 flex-shrink-0 flex items-center justify-center py-2.5">
-                                  <div className="size-3 rounded border border-white/[0.06]" />
+                                  <div className="size-3 rounded border border-neutral-200 dark:border-white/[0.06]" />
                                 </div>
                                 {obj.fields.map((_, ci) => (
                                   <div key={ci} className="w-[120px] flex-shrink-0 px-3 py-2.5">
                                     <div
-                                      className="h-3 rounded bg-white/[0.06] animate-pulse"
+                                      className="h-3 rounded bg-neutral-200 dark:bg-white/[0.06] animate-pulse"
                                       style={{ width: `${50 + ((ri * 17 + ci * 31) % 40)}%` }}
                                     />
                                   </div>
@@ -545,15 +545,15 @@ export function WorkspaceSimulation({ template, isRTL = false, onComplete, skipA
                       </div>
 
                       {/* Pagination footer */}
-                      <div className="flex items-center justify-between px-4 h-10 border-t border-white/[0.06] bg-[#141416]">
-                        <div className="flex items-center gap-2 text-[9px] text-[#6a6a6f]">
+                      <div className="flex items-center justify-between px-4 h-10 border-t border-neutral-200 dark:border-white/[0.06] bg-neutral-50 dark:bg-[#141416]">
+                        <div className="flex items-center gap-2 text-[9px] text-muted-foreground">
                           <span>Rows per page</span>
-                          <div className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-white/[0.04] border border-white/[0.06]">
-                            <span className="text-[#a1a1aa]">{Math.min(obj.rows.length || 13, 13)}</span>
+                          <div className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-white/[0.04] border border-neutral-200 dark:border-white/[0.06]">
+                            <span className="text-muted-foreground">{Math.min(obj.rows.length || 13, 13)}</span>
                             <IconChevronDown className="size-2.5" />
                           </div>
                         </div>
-                        <div className="flex items-center gap-3 text-[9px] text-[#6a6a6f]">
+                        <div className="flex items-center gap-3 text-[9px] text-muted-foreground">
                           <span>
                             {isBuilt
                               ? `1 - ${Math.min(obj.rows.length || 13, 13)} of ${totalRecords}`
@@ -568,13 +568,13 @@ export function WorkspaceSimulation({ template, isRTL = false, onComplete, skipA
                                 className={`size-5 rounded flex items-center justify-center text-[9px] ${
                                   p === 1
                                     ? "bg-[#7c3aed] text-white"
-                                    : "text-[#6a6a6f] hover:bg-white/[0.04]"
+                                    : "text-muted-foreground hover:bg-neutral-100 dark:hover:bg-white/[0.04]"
                                 }`}
                               >
                                 {p}
                               </div>
                             ))}
-                            <span className="text-[#4a4a4f] px-0.5">...</span>
+                            <span className="text-neutral-400 dark:text-[#4a4a4f] px-0.5">...</span>
                           </div>
                         </div>
                       </div>
@@ -592,12 +592,12 @@ export function WorkspaceSimulation({ template, isRTL = false, onComplete, skipA
 // ── Smart cell renderer ──
 function CellRenderer({ value, type }: { value: string; type: FieldType }) {
   if (value === "\u2014" || value === "—" || !value) {
-    return <span className="text-[10px] text-[#3a3a3f]">—</span>;
+    return <span className="text-[10px] text-neutral-300 dark:text-[#3a3a3f]">—</span>;
   }
 
   switch (type) {
     case "name":
-      return <span className="text-[10px] font-medium text-white truncate block">{value}</span>;
+      return <span className="text-[10px] font-medium text-foreground truncate block">{value}</span>;
 
     case "status": {
       const sc = getStatusColor(value);
@@ -617,14 +617,14 @@ function CellRenderer({ value, type }: { value: string; type: FieldType }) {
           <div className={`size-5 rounded-full ${color} flex items-center justify-center flex-shrink-0`}>
             <span className="text-[8px] font-bold text-white">{initials}</span>
           </div>
-          <span className="text-[10px] text-[#c0c0c5] truncate">{value}</span>
+          <span className="text-[10px] text-foreground/80 dark:text-[#c0c0c5] truncate">{value}</span>
         </div>
       );
     }
 
     case "risk": {
       const rc = getRiskColor(value);
-      if (!rc) return <span className="text-[10px] text-[#3a3a3f]">—</span>;
+      if (!rc) return <span className="text-[10px] text-neutral-300 dark:text-[#3a3a3f]">—</span>;
       return (
         <div className="flex items-center gap-1">
           <IconFlag className={`size-3 ${rc.icon}`} />
@@ -634,7 +634,7 @@ function CellRenderer({ value, type }: { value: string; type: FieldType }) {
     }
 
     default:
-      return <span className="text-[10px] text-[#c0c0c5] truncate block">{value}</span>;
+      return <span className="text-[10px] text-foreground/80 dark:text-[#c0c0c5] truncate block">{value}</span>;
   }
 }
 

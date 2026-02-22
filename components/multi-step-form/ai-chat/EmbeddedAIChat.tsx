@@ -51,7 +51,7 @@ export function EmbeddedAIChat({ updateFormData, onMessagesChange }: EmbeddedAIC
   }, [messages.length, onMessagesChange]);
 
   return (
-    <div className="flex flex-col h-full bg-[#0f0f0f]">
+    <div className="flex flex-col h-full bg-neutral-50 dark:bg-[#0f0f0f]">
       {/* Content area - switches between welcome and chat */}
       <div className="flex-1 overflow-hidden h-full">
         <AnimatePresence mode="wait">

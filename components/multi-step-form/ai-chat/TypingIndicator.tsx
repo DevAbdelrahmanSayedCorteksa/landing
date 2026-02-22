@@ -24,7 +24,7 @@ export function TypingIndicator() {
       <div className="inline-block">
         <TextShimmer
           duration={1.5}
-          className="text-sm font-medium [--base-color:#71717a] [--base-gradient-color:#ffffff] dark:[--base-color:#71717a] dark:[--base-gradient-color:#ffffff]"
+          className="text-sm font-medium [--base-color:#71717a] [--base-gradient-color:#18181b] dark:[--base-color:#71717a] dark:[--base-gradient-color:#ffffff]"
         >
           Generating...
         </TextShimmer>

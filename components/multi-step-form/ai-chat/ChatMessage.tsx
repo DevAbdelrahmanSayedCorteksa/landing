@@ -33,10 +33,10 @@ export function ChatMessage({ message }: ChatMessageProps) {
         </div>
         <div className="flex flex-col gap-1">
           <div className="rounded-2xl rounded-tl-sm px-4 py-2.5 bg-red-500/[0.08] border border-red-500/15">
-            <p className="text-sm text-red-300/90 leading-relaxed">
+            <p className="text-sm text-red-600 dark:text-red-300/90 leading-relaxed">
               {message.content}
             </p>
-            <p className="text-[11px] text-red-400/50 mt-1.5">
+            <p className="text-[11px] text-red-500/50 dark:text-red-400/50 mt-1.5">
               Try sending your message again.
             </p>
           </div>
@@ -55,8 +55,8 @@ export function ChatMessage({ message }: ChatMessageProps) {
         className="flex justify-end"
       >
         <div className="max-w-[85%]">
-          <div className="rounded-2xl rounded-tr-sm px-4 py-2.5 bg-[#1e1e22] border border-white/[0.06]">
-            <div className="text-sm text-[#c4c4c7] leading-relaxed whitespace-pre-wrap break-words">
+          <div className="rounded-2xl rounded-tr-sm px-4 py-2.5 bg-neutral-100 dark:bg-[#1e1e22] border border-neutral-200 dark:border-white/[0.06]">
+            <div className="text-sm text-foreground leading-relaxed whitespace-pre-wrap break-words">
               {message.content}
             </div>
           </div>
@@ -83,14 +83,14 @@ export function ChatMessage({ message }: ChatMessageProps) {
             className="w-full h-full"
           />
         </div>
-        <span className="text-xs font-medium text-[#8a8a8f]">Cortex AI</span>
+        <span className="text-xs font-medium text-muted-foreground">Cortex AI</span>
         {message.templateName && (
-          <Badge variant="secondary" className="text-[10px] h-5 bg-[#1e1e22] text-[#a0a0a5] border-white/[0.08]">
+          <Badge variant="secondary" className="text-[10px] h-5 bg-neutral-100 dark:bg-[#1e1e22] text-muted-foreground border-neutral-200 dark:border-white/[0.08]">
             {message.templateName}
           </Badge>
         )}
         {message.category && message.templateName && (
-          <span className="text-[10px] text-[#6a6a6f]">
+          <span className="text-[10px] text-muted-foreground">
             {message.category}
           </span>
         )}
@@ -98,7 +98,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
 
       {/* Message body */}
       <div className="ps-8">
-        <div className="text-sm text-[#f0f0f3] leading-relaxed whitespace-pre-wrap break-words">
+        <div className="text-sm text-foreground leading-relaxed whitespace-pre-wrap break-words">
           {message.content}
         </div>
 

@@ -43,7 +43,7 @@ function ModelSelector({ selectedModel = 'sonnet-4.5', onModelChange }: {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-medium transition-all duration-200 text-[#8a8a8f] hover:text-white hover:bg-white/5 active:scale-95"
+        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-medium transition-all duration-200 text-muted-foreground hover:text-foreground hover:bg-neutral-100 dark:hover:bg-white/5 active:scale-95"
       >
         {selected.icon}
         <span>{selected.name}</span>
@@ -53,9 +53,9 @@ function ModelSelector({ selectedModel = 'sonnet-4.5', onModelChange }: {
       {isOpen && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
-          <div className="absolute bottom-full left-0 mb-2 z-50 min-w-[220px] bg-[#1a1a1e]/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/50 overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-200">
+          <div className="absolute bottom-full left-0 mb-2 z-50 min-w-[220px] bg-white/95 dark:bg-[#1a1a1e]/95 backdrop-blur-xl border border-neutral-200 dark:border-white/10 rounded-xl shadow-2xl shadow-neutral-200/50 dark:shadow-black/50 overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-200">
             <div className="p-1.5">
-              <div className="px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-[#5a5a5f]">
+              <div className="px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                 Select Model
               </div>
               {models.map((model) => (
@@ -63,7 +63,7 @@ function ModelSelector({ selectedModel = 'sonnet-4.5', onModelChange }: {
                   key={model.id}
                   onClick={() => handleSelect(model)}
                   className={`w-full flex items-center gap-3 px-2.5 py-2 rounded-lg text-left transition-all duration-150 ${
-                    selected.id === model.id ? 'bg-white/10 text-white' : 'text-[#a0a0a5] hover:bg-white/5 hover:text-white'
+                    selected.id === model.id ? 'bg-neutral-100 text-foreground dark:bg-white/10 dark:text-white' : 'text-muted-foreground hover:bg-neutral-100 hover:text-foreground dark:hover:bg-white/5 dark:hover:text-white'
                   }`}
                 >
                   <div className="flex-shrink-0">{model.icon}</div>
@@ -78,7 +78,7 @@ function ModelSelector({ selectedModel = 'sonnet-4.5', onModelChange }: {
                         </span>
                       )}
                     </div>
-                    <span className="text-[11px] text-[#6a6a6f]">{model.description}</span>
+                    <span className="text-[11px] text-muted-foreground">{model.description}</span>
                   </div>
                   {selected.id === model.id && <Check className="size-4 text-blue-400 flex-shrink-0" />}
                 </button>
@@ -124,8 +124,8 @@ function ChatInput({ onSend, placeholder = "What do you want to build?" }: {
 
   return (
     <div className="relative w-full max-w-[680px] mx-auto">
-      <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-b from-white/[0.08] to-transparent pointer-events-none" />
-      <div className="relative rounded-2xl bg-[#1e1e22] ring-1 ring-white/[0.08] shadow-[0_0_0_1px_rgba(255,255,255,0.05),0_2px_20px_rgba(0,0,0,0.4)]">
+      <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-b from-neutral-200 dark:from-white/[0.08] to-transparent pointer-events-none" />
+      <div className="relative rounded-2xl bg-white dark:bg-[#1e1e22] ring-1 ring-neutral-200 dark:ring-white/[0.08] shadow-[0_0_0_1px_rgba(0,0,0,0.05),0_2px_20px_rgba(0,0,0,0.08)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.05),0_2px_20px_rgba(0,0,0,0.4)]">
         <div className="relative">
           <textarea
             ref={textareaRef}
@@ -133,7 +133,7 @@ function ChatInput({ onSend, placeholder = "What do you want to build?" }: {
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
-            className="w-full resize-none bg-transparent text-[15px] text-white placeholder-[#5a5a5f] px-5 pt-5 pb-3 focus:outline-none min-h-[80px] max-h-[200px]"
+            className="w-full resize-none bg-transparent text-[15px] text-foreground placeholder-muted-foreground px-5 pt-5 pb-3 focus:outline-none min-h-[80px] max-h-[200px]"
             style={{ height: '80px' }}
           />
         </div>
@@ -143,14 +143,14 @@ function ChatInput({ onSend, placeholder = "What do you want to build?" }: {
             <div className="relative">
               <button
                 disabled
-                className="flex items-center justify-center size-8 rounded-full bg-white/[0.08] text-[#8a8a8f] opacity-50 cursor-not-allowed"
+                className="flex items-center justify-center size-8 rounded-full bg-neutral-100 dark:bg-white/[0.08] text-muted-foreground opacity-50 cursor-not-allowed"
               >
                 <Plus className="size-4" />
               </button>
             </div>
 
             {/* Cortex AI Model Selector */}
-            <button className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-medium transition-all duration-200 text-[#8a8a8f] hover:text-white hover:bg-white/5 cursor-default">
+            <button className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-medium transition-all duration-200 text-muted-foreground hover:text-foreground hover:bg-neutral-100 dark:hover:bg-white/5 cursor-default">
               <div className="size-4 rounded-md bg-gradient-to-br from-[#7c3aed]/20 to-[#7c3aed]/10 flex items-center justify-center p-0.5">
                 <Image
                   src="/Corteksa.svg"
@@ -168,7 +168,7 @@ function ChatInput({ onSend, placeholder = "What do you want to build?" }: {
           <div className="flex-1" />
 
           <div className="flex items-center gap-2">
-            <button className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-medium text-[#6a6a6f] hover:text-white hover:bg-white/5 transition-all duration-200">
+            <button className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-neutral-100 dark:hover:bg-white/5 transition-all duration-200">
               <Lightbulb className="size-4" />
               <span className="hidden sm:inline">Plan</span>
             </button>
@@ -192,15 +192,35 @@ function ChatInput({ onSend, placeholder = "What do you want to build?" }: {
 function RayBackground() {
   return (
     <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none select-none">
-      <div className="absolute inset-0 bg-[#0f0f0f]" />
+      <div className="absolute inset-0 bg-neutral-50 dark:bg-[#0f0f0f]" />
+
+      {/* Light mode: softer purple glow, no dark edges */}
       <div
-        className="absolute left-1/2 -translate-x-1/2 w-[4000px] h-[1800px] sm:w-[6000px]"
+        className="absolute left-1/2 -translate-x-1/2 w-[4000px] h-[1800px] sm:w-[6000px] dark:hidden"
+        style={{
+          background: `radial-gradient(circle at center 800px, rgba(124, 58, 237, 0.35) 0%, rgba(124, 58, 237, 0.15) 14%, rgba(124, 58, 237, 0.07) 18%, rgba(124, 58, 237, 0.02) 22%, transparent 25%)`
+        }}
+      />
+
+      {/* Dark mode: original intense glow */}
+      <div
+        className="absolute left-1/2 -translate-x-1/2 w-[4000px] h-[1800px] sm:w-[6000px] hidden dark:block"
         style={{
           background: `radial-gradient(circle at center 800px, rgba(124, 58, 237, 0.8) 0%, rgba(124, 58, 237, 0.35) 14%, rgba(124, 58, 237, 0.18) 18%, rgba(124, 58, 237, 0.08) 22%, rgba(17, 17, 20, 0.2) 25%)`
         }}
       />
-      <div 
-        className="absolute top-[175px] left-1/2 w-[1600px] h-[1600px] sm:top-1/2 sm:w-[3043px] sm:h-[2865px]"
+
+      {/* Light mode: subtle bottom arc glow */}
+      <div
+        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[2000px] h-[600px] dark:hidden"
+        style={{
+          background: `radial-gradient(ellipse at center bottom, rgba(124, 58, 237, 0.12) 0%, rgba(124, 58, 237, 0.04) 40%, transparent 70%)`
+        }}
+      />
+
+      {/* Planet circles — dark mode only (inline dark colors can't be theme-switched) */}
+      <div
+        className="absolute top-[175px] left-1/2 w-[1600px] h-[1600px] sm:top-1/2 sm:w-[3043px] sm:h-[2865px] hidden dark:block"
         style={{ transform: 'translate(-50%) rotate(180deg)' }}
       >
         <div className="absolute w-full h-full rounded-full -mt-[13px]" style={{ background: 'radial-gradient(43.89% 25.74% at 50.02% 97.24%, #111114 0%, #0f0f0f 100%)', border: '16px solid white', transform: 'rotate(180deg)', zIndex: 5 }} />
@@ -247,7 +267,7 @@ function PromptSuggestions({ suggestions, onSelect }: { suggestions?: string[]; 
         <button
           key={i}
           onClick={() => onSelect?.(prompt)}
-          className="px-4 py-2 rounded-full text-xs font-medium border border-white/10 bg-white/[0.03] hover:bg-white/[0.08] text-[#8a8a8f] hover:text-white transition-all duration-200 active:scale-95"
+          className="px-4 py-2 rounded-full text-xs font-medium border border-neutral-200 dark:border-white/10 bg-neutral-50 dark:bg-white/[0.03] hover:bg-neutral-100 dark:hover:bg-white/[0.08] text-muted-foreground hover:text-foreground transition-all duration-200 active:scale-95"
         >
           {prompt}
         </button>
@@ -277,20 +297,20 @@ export function BoltStyleChat({
   onSend,
 }: BoltChatProps) {
   return (
-    <div className="relative flex flex-col items-center justify-center h-full w-full overflow-hidden bg-[#0f0f0f]">
+    <div className="relative flex flex-col items-center justify-center h-full w-full overflow-hidden bg-neutral-50 dark:bg-[#0f0f0f]">
       <RayBackground />
       {/* Content container */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center w-full h-full overflow-hidden">
         {/* Title section */}
         <div className="text-center mb-6">
-          <h1 className="text-4xl sm:text-5xl font-bold text-white tracking-tight mb-1">
+          <h1 className="text-4xl sm:text-5xl font-bold text-foreground tracking-tight mb-1">
             {title}{' '}
-            <span className="bg-gradient-to-b from-[#a855f7] via-[#7c3aed] to-white bg-clip-text text-transparent italic">
+            <span className="bg-gradient-to-b from-[#a855f7] via-[#7c3aed] to-[#c084fc] dark:to-white bg-clip-text text-transparent italic">
               build
             </span>
             {' '}today?
           </h1>
-          <p className="text-base font-semibold sm:text-lg text-[#8a8a8f]">{subtitle}</p>
+          <p className="text-base font-semibold sm:text-lg text-muted-foreground">{subtitle}</p>
         </div>
 
         {/* Chat input */}

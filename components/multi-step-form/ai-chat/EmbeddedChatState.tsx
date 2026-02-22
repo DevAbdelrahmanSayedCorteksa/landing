@@ -46,7 +46,7 @@ export function EmbeddedChatState({
   );
 
   return (
-    <div className="flex flex-col h-full w-full bg-[#0f0f0f]">
+    <div className="flex flex-col h-full w-full bg-neutral-50 dark:bg-[#0f0f0f]">
       {/* Messages - scrollable area */}
       <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-6 py-6 scrollbar-hide [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         <motion.div
@@ -81,7 +81,7 @@ export function EmbeddedChatState({
                       className="w-full h-full"
                     />
                   </div>
-                  <span className="text-xs font-medium text-[#8a8a8f]">
+                  <span className="text-xs font-medium text-muted-foreground">
                     Cortex AI
                   </span>
                 </div>
@@ -152,7 +152,7 @@ function InlineBuildProgress({
       >
         <TextShimmer
           duration={1.8}
-          className="text-sm font-medium [--base-color:#c0c0c5] [--base-gradient-color:#ffffff]"
+          className="text-sm font-medium [--base-color:#71717a] [--base-gradient-color:#18181b] dark:[--base-color:#c0c0c5] dark:[--base-gradient-color:#ffffff]"
         >
           {t("thinking")}
         </TextShimmer>
@@ -167,18 +167,18 @@ function InlineBuildProgress({
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-        className="rounded-xl border border-white/[0.08] bg-[#1a1a1e]/80 p-4"
+        className="rounded-xl border border-neutral-200 dark:border-white/[0.08] bg-white/80 dark:bg-[#1a1a1e]/80 p-4"
       >
         <div className="flex items-center gap-3">
           <PhaseIcon phase="analyzing" />
           <TextShimmer
             duration={1.8}
-            className="text-sm font-medium [--base-color:#c0c0c5] [--base-gradient-color:#ffffff]"
+            className="text-sm font-medium [--base-color:#71717a] [--base-gradient-color:#18181b] dark:[--base-color:#c0c0c5] dark:[--base-gradient-color:#ffffff]"
           >
             {t("analyzing")}
           </TextShimmer>
         </div>
-        <div className="mt-3 h-0.5 rounded-full bg-white/[0.06] overflow-hidden">
+        <div className="mt-3 h-0.5 rounded-full bg-neutral-200 dark:bg-white/[0.06] overflow-hidden">
           <motion.div
             className="h-full w-1/3 rounded-full bg-gradient-to-r from-[#7c3aed]/50 via-[#a78bfa]/70 to-[#7c3aed]/50"
             animate={{ x: ["-100%", "400%"] }}
@@ -196,15 +196,15 @@ function InlineBuildProgress({
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-        className="rounded-xl border border-white/[0.06] bg-[#1e1e22] px-4 py-3"
+        className="rounded-xl border border-neutral-200 dark:border-white/[0.06] bg-white dark:bg-[#1e1e22] px-4 py-3"
       >
         <p className="text-[11px] font-semibold uppercase tracking-widest text-[#7c3aed] mb-1">
           {planResult.category.replace(/_/g, " ")}
         </p>
-        <p className="text-sm font-medium text-[#fafafa]">
+        <p className="text-sm font-medium text-foreground">
           {planResult.template_name}
         </p>
-        <p className="text-xs text-[#71717a] mt-1">
+        <p className="text-xs text-muted-foreground mt-1">
           {planResult.objects.length} {planResult.objects.length === 1 ? "object" : "objects"} · {t("reviewPlanRight")}
         </p>
       </motion.div>
@@ -229,7 +229,7 @@ function InlineBuildProgress({
           <IconLoader2 className="size-4 text-[#7c3aed] animate-spin" />
           <TextShimmer
             duration={1.8}
-            className="text-sm font-semibold [--base-color:#e0e0e5] [--base-gradient-color:#ffffff]"
+            className="text-sm font-semibold [--base-color:#52525b] [--base-gradient-color:#18181b] dark:[--base-color:#e0e0e5] dark:[--base-gradient-color:#ffffff]"
           >
             {phaseMessage || t("phaseBuilding")}
           </TextShimmer>
@@ -271,7 +271,7 @@ function InlineBuildProgress({
                       <div className="size-1.5 rounded-sm bg-[#7c3aed]" />
                     </div>
                   ) : (
-                    <div className="size-4 rounded border border-[#2a2a2f] bg-transparent" />
+                    <div className="size-4 rounded border border-neutral-300 dark:border-[#2a2a2f] bg-transparent" />
                   )}
                 </div>
 
@@ -279,7 +279,7 @@ function InlineBuildProgress({
                 {task.status === "in_progress" ? (
                   <TextShimmer
                     duration={1.8}
-                    className="text-[13px] [--base-color:#a0a0a5] [--base-gradient-color:#ffffff]"
+                    className="text-[13px] [--base-color:#71717a] [--base-gradient-color:#18181b] dark:[--base-color:#a0a0a5] dark:[--base-gradient-color:#ffffff]"
                   >
                     {task.label}
                   </TextShimmer>
@@ -287,8 +287,8 @@ function InlineBuildProgress({
                   <span
                     className={`text-[13px] transition-colors duration-300 ${
                       task.status === "completed"
-                        ? "text-[#5a5a5f] line-through decoration-[#3a3a3f]"
-                        : "text-[#3a3a3f]"
+                        ? "text-neutral-400 dark:text-[#5a5a5f] line-through decoration-neutral-300 dark:decoration-[#3a3a3f]"
+                        : "text-neutral-400 dark:text-[#3a3a3f]"
                     }`}
                   >
                     {task.label}

@@ -92,8 +92,8 @@ async function refreshAccessToken(config: RetryableRequestConfig) {
         const newAccessToken = response.data.data.token;
         const newRefreshToken = response.data.data.refresh_token;
 
-        Cookies.set(AUTH_TOKEN, newAccessToken);
-        Cookies.set(REFRESH_TOKEN, newRefreshToken);
+        Cookies.set(AUTH_TOKEN, newAccessToken, { path: "/", expires: 30, secure: process.env.NODE_ENV === "production", sameSite: "lax" });
+        Cookies.set(REFRESH_TOKEN, newRefreshToken, { path: "/", expires: 30, secure: process.env.NODE_ENV === "production", sameSite: "lax" });
         apiClient.defaults.headers.common["Authorization"] =
           `Bearer ${newAccessToken}`;
 

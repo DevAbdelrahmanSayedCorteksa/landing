@@ -65,30 +65,30 @@ export function TemplatePreviewPanel({ slug, confirmedSlug, onUseTemplate, onCom
   const isInitialLoad = isLoading && !template;
 
   return (
-    <div className="h-full flex flex-col overflow-hidden bg-[#1e1e22] relative">
+    <div className="h-full flex flex-col overflow-hidden bg-white dark:bg-[#1e1e22] relative">
 
       {/* Header — static, no AnimatePresence, content updates in-place */}
       {template && (
         <div className="mx-6 mt-5 mb-1 flex-shrink-0">
-          <div className="flex items-center justify-between gap-4 rounded-xl border border-white/[0.06] bg-[#27272a]/80 px-4 py-3">
+          <div className="flex items-center justify-between gap-4 rounded-xl border border-neutral-200 dark:border-white/[0.06] bg-neutral-100 dark:bg-[#27272a]/80 px-4 py-3">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2.5 mb-1">
                 <div className={`size-5 rounded-full flex items-center justify-center flex-shrink-0 ${isConfirmed ? "bg-emerald-500/15" : "bg-[#7c3aed]/15"}`}>
                   <Check className={`size-3 ${isConfirmed ? "text-emerald-400" : "text-[#a78bfa]"}`} strokeWidth={3} />
                 </div>
-                <p className="text-sm font-semibold text-[#fafafa] truncate">
+                <p className="text-sm font-semibold text-foreground truncate">
                   {template.name}
                 </p>
               </div>
-              <div className="flex items-center gap-2 text-xs text-[#71717a] flex-wrap ps-7">
+              <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap ps-7">
                 {template.category && (
                   <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#7c3aed]/10 text-[#a78bfa]">
                     {template.category.replace(/_/g, " ")}
                   </span>
                 )}
-                <span className="text-[#3f3f46]">·</span>
+                <span className="text-neutral-400 dark:text-[#3f3f46]">·</span>
                 <span>{objectCount} {objectCount === 1 ? "Object" : "Objects"}</span>
-                <span className="text-[#3f3f46]">·</span>
+                <span className="text-neutral-400 dark:text-[#3f3f46]">·</span>
                 <span>{relationCount} {relationCount === 1 ? "Relation" : "Relations"}</span>
               </div>
             </div>
@@ -132,7 +132,7 @@ export function TemplatePreviewPanel({ slug, confirmedSlug, onUseTemplate, onCom
           <div className="flex items-center justify-center h-full">
             <div className="flex flex-col items-center gap-3">
               <IconLoader2 className="size-8 text-[#7c3aed] animate-spin" />
-              <p className="text-sm text-[#71717a]">Loading preview…</p>
+              <p className="text-sm text-muted-foreground">Loading preview…</p>
             </div>
           </div>
         )}
@@ -141,8 +141,8 @@ export function TemplatePreviewPanel({ slug, confirmedSlug, onUseTemplate, onCom
         {error && !isLoading && (
           <div className="flex items-center justify-center h-full">
             <div className="flex flex-col items-center gap-3 text-center px-8">
-              <AlertCircle className="size-8 text-[#71717a]" />
-              <p className="text-sm text-[#71717a]">{error}</p>
+              <AlertCircle className="size-8 text-muted-foreground" />
+              <p className="text-sm text-muted-foreground">{error}</p>
             </div>
           </div>
         )}
@@ -175,7 +175,7 @@ export function TemplatePreviewPanel({ slug, confirmedSlug, onUseTemplate, onCom
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.1 }}
-              className="absolute inset-0 z-10 flex items-center justify-center bg-[#1e1e22]/50"
+              className="absolute inset-0 z-10 flex items-center justify-center bg-white/50 dark:bg-[#1e1e22]/50"
             >
               <IconLoader2 className="size-6 text-[#7c3aed] animate-spin" />
             </motion.div>
@@ -186,7 +186,7 @@ export function TemplatePreviewPanel({ slug, confirmedSlug, onUseTemplate, onCom
 
       {/* Cortex AI branding */}
       <span
-        className={`${unbounded.className} absolute bottom-4 end-5 text-xs font-normal tracking-wider text-[#fafafa]/30`}
+        className={`${unbounded.className} absolute bottom-4 end-5 text-xs font-normal tracking-wider text-foreground/20 dark:text-[#fafafa]/30`}
       >
         Cortex <span className="text-[#7c3aed]/50">AI</span>
       </span>

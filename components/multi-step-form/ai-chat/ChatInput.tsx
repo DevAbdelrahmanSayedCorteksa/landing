@@ -52,10 +52,10 @@ export function ChatInput({
   return (
     <div className="relative w-full max-w-[680px] mx-auto">
       {/* Gradient border glow */}
-      <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-b from-white/[0.08] to-transparent pointer-events-none" />
+      <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-b from-neutral-200 dark:from-white/[0.08] to-transparent pointer-events-none" />
 
       {/* Main container */}
-      <div className="relative rounded-2xl bg-[#1e1e22] ring-1 ring-white/[0.08] shadow-[0_0_0_1px_rgba(255,255,255,0.05),0_2px_20px_rgba(0,0,0,0.4)]">
+      <div className="relative rounded-2xl bg-white dark:bg-[#1e1e22] ring-1 ring-neutral-200 dark:ring-white/[0.08] shadow-[0_0_0_1px_rgba(0,0,0,0.04),0_2px_20px_rgba(0,0,0,0.08)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.05),0_2px_20px_rgba(0,0,0,0.4)]">
         {/* Textarea */}
         <div className="relative">
           <textarea
@@ -66,7 +66,7 @@ export function ChatInput({
             placeholder={placeholder}
             disabled={disabled}
             dir="ltr"
-            className="w-full resize-none bg-transparent text-[15px] text-white placeholder-[#5a5a5f] px-5 pt-5 pb-3 focus:outline-none min-h-[80px] max-h-[200px]"
+            className="w-full resize-none bg-transparent text-[15px] text-foreground placeholder-muted-foreground px-5 pt-5 pb-3 focus:outline-none min-h-[80px] max-h-[200px]"
             style={{ height: "80px" }}
           />
         </div>
@@ -78,14 +78,14 @@ export function ChatInput({
             <div className="relative">
               <button
                 disabled
-                className="flex items-center justify-center size-8 rounded-full bg-white/[0.08] text-[#8a8a8f] opacity-50 cursor-not-allowed"
+                className="flex items-center justify-center size-8 rounded-full bg-neutral-100 dark:bg-white/[0.08] text-muted-foreground opacity-50 cursor-not-allowed"
               >
                 <Plus className="size-4" />
               </button>
             </div>
 
             {/* Cortex AI Model Selector */}
-            <button className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-medium transition-all duration-200 text-[#8a8a8f] hover:text-white hover:bg-white/5 cursor-default">
+            <button className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-medium transition-all duration-200 text-muted-foreground hover:text-foreground hover:bg-neutral-100 dark:hover:bg-white/5 cursor-default">
               <div className="size-4 rounded-md bg-gradient-to-br from-[#7c3aed]/20 to-[#7c3aed]/10 flex items-center justify-center p-0.5">
                 <Image
                   src="/Corteksa.svg"
